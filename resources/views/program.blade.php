@@ -61,7 +61,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">Sistem Informasi Bina Desa</a>
+            <a class="navbar-brand" href="#">Sistem Informasi Bina Desa
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -86,7 +86,7 @@
 
     <section class="hero-section">
         <div class="container">
-            <h1 class="display-6 mb-2">Daftar Program Bantuan Sosial</h1>
+            <h1 class="display-6 mb-2">Daftar Program Bantuan Sosial
             {{-- Menggunakan count() dengan Null Coalescing untuk menghindari error --}}
             <p class="lead mb-0">Total **{{ count($programs ?? []) }}** program aktif telah dialokasikan anggarannya</p>
         </div>
