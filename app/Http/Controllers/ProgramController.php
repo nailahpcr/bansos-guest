@@ -11,36 +11,33 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $programs = [
+        $programs = 
+            [[
+                'program_id' => '1',
+                'kode' => 'BANSOS2025',
+                'nama_program' => 'Program Bantuan Sosial',
+                'tahun' => '2025',
+                'deskripsi' => 'Bantuan sosial berupa paket sembako untuk keluarga kurang mampu',
+                'anggaran' => '150000000.00',
+            ],
             [
-                'program_id' => '1'
-                'kode' => 'BANSOS2025'
-                'nama_program' => 'Program Bantuan Sosial'
-                'tahun' => '2025'
-                'deskripsi' => 'Bantuan sosial berupa paket sembako untuk keluarga kurang mampu'
-                'anggaran' => '150000000.00'
-            ]
+                'program_id' => '2',
+                'kode' => 'PKH2025',
+                'nama_program' => 'Program Keluarga Harapan',
+                'tahun' => '2025',
+                'deskripsi' => 'Bantuan sosial dalam memenuhi kebutuhan pendidikan dan kesehatan',
+                'anggaran' => '250000000.00',
+            ],
             [
-                'program_id' => '2'
-                'kode' => 'PKH2025'
-                'nama_program' => 'Program Keluarga Harapan'
-                'tahun' => '2025'
-                'deskripsi' => 'Bantuan sosial dalam memenuhi kebutuhan pendidikan dan kesehatan'
-                'anggaran' => '250000000.00'
-            ]
-            [
-                'program_id' => '3'
-                'kode' => 'BR2025'
-                'nama_program' => 'Program Bedah Rumah'
-                'tahun' => '2025'
-                'deskripsi' => 'Bantuan renovasi rumah tidak layak huni '
-                'anggaran' => '500000000.00'
-            ]
-        ];
-        return view('program', $programs);
-
-        
-        
+                'program_id' => '3',
+                'kode' => 'BR2025',
+                'nama_program' => 'Program Bedah Rumah',
+                'tahun' => '2025',
+                'deskripsi' => 'Bantuan renovasi rumah tidak layak huni',
+                'anggaran' => '500000000.00',
+            ]];
+    
+        return view('program', compact('programs')); 
     }
 
     /**
