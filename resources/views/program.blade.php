@@ -86,7 +86,7 @@
 
     <section class="hero-section">
         <div class="container">
-            <h1 class="display-6 mb-2">Daftar Program Bantuan Sosial
+            <h1 class="display-6 mb-2">Daftar Program Bantuan Sosial dan Penerima Manfaat
             {{-- Menggunakan count() dengan Null Coalescing untuk menghindari error --}}
             <p class="lead mb-0">Total **{{ count($programs ?? []) }}** program aktif telah dialokasikan anggarannya</p>
         </div>
