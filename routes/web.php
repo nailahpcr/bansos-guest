@@ -1,32 +1,68 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProgramBantuanController;
 use App\Http\Controllers\WargaController;
-use App\Http\Controllers\Warga;
+use App\Http\Controllers\UserController;
 
-Route::get('dashboard', [DashboardController::class,'index']) ->name('dashboard'); 
-Route::get('/program', [ProgramController::class, 'index']);
+/*
+|--------------------------------------------------------------------------
+| Rute Publik (Bisa diakses Guest / Tamu)
+|--------------------------------------------------------------------------
+*/
 
-// Route untuk menampilkan halaman login
-Route::get('/auth', [AuthController::class, 'index'])->name('login-form');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Route untuk memproses data dari form login
-Route::post('/auth/login', [AuthController::class, 'login'])->name('login-process');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'create'])->name('login');
+    Route::post('/login', [AuthController::class, 'store']);
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/register', [AuthController::class, 'daftar']);
+});
 
-// Route untuk halaman tujuan setelah login berhasil
-// Route::get('/dashboard', function () {
-//     // Memastikan hanya bisa diakses jika ada session 'success'
-//     if (!session('success')) {
-//         return redirect()->route('login-form');
-//     }
-//     return view('dashboard');
-// })->name('dashboard');
+Route::get('/program', [ProgramController::class, 'indexPublic'])->name('program.public.index');
+Route::get('/program/{program}', [ProgramController::class, 'showPublic'])->name('program.public.show');
 
-Route::resource('program-bantuan', ProgramBantuanController::class);
-Route::resource('/admin/program-bantuan', ProgramBantuanController::class);
-Route::resource('warga', WargaController::class);
-Route::get('/warga', [Warga::class, 'index']);
+
+/*
+|--------------------------------------------------------------------------
+| Rute Terproteksi (Hanya untuk User Role 'Warga' yang sudah Login)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+    
+    Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
+    Route::get('/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
+
+    /* | Fitur A: CRUD Program Bantuan
+    */
+    Route::prefix('kelola-program')->name('program.')->group(function () {
+        Route::get('/', [ProgramController::class, 'index'])->name('index');
+        Route::get('/create', [ProgramController::class, 'create'])->name('create');
+        Route::post('/', [ProgramController::class, 'store'])->name('store');
+        Route::get('/{program}', [ProgramController::class, 'show'])->name('show');
+        Route::get('/{program}/edit', [ProgramController::class, 'edit'])->name('edit');
+        Route::put('/{program}', [ProgramController::class, 'update'])->name('update');
+        Route::delete('/{program}', [ProgramController::class, 'destroy'])->name('destroy');
+    });
+
+    /* | Fitur B: Mengikuti Program Bantuan
+    */
+    Route::post('/program/{program}/ajukan', [ProgramController::class, 'ajukanProgram'])->name('program.ajukan');
+    
+    Route::delete('/program/{program}/batalkan', [ProgramController::class, 'batalkanProgram'])->name('program.batalkan');
+
+    /* | Fitur C: CRUD data diri Warga
+    | DIPERBAIKI: Menggunakan nama 'warga' agar parameter binding cocok
+    */
+    Route::resource('warga', WargaController::class);
+
+    /* | Fitur D: CRUD Akun User (jika masih diperlukan)
+    | DIPERBAIKI: Menggunakan nama 'user' agar parameter binding cocok
+    */
+    Route::resource('user', UserController::class);
+
+});
+

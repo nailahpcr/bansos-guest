@@ -2,89 +2,89 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProgramBantuan; // Ganti jika nama model Anda berbeda
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProgramController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function indexPublic()
+    {
+        $programs = ProgramBantuan::latest()->paginate(9);
+        // Tampilkan view untuk guest
+        return view('home', compact('programs'));
+    }
+
     public function index()
     {
-        $programs = 
-            [[
-                'program_id' => '1',
-                'kode' => 'BANSOS2025',
-                'nama_program' => 'Program Bantuan Sosial',
-                'tahun' => '2025',
-                'deskripsi' => 'Bantuan sosial berupa paket sembako untuk keluarga kurang mampu',
-                'anggaran' => '150000000.00',
-            ],
-            [
-                'program_id' => '2',
-                'kode' => 'PKH2025',
-                'nama_program' => 'Program Keluarga Harapan',
-                'tahun' => '2025',
-                'deskripsi' => 'Bantuan sosial dalam memenuhi kebutuhan pendidikan dan kesehatan',
-                'anggaran' => '250000000.00',
-            ],
-            [
-                'program_id' => '3',
-                'kode' => 'BR2025',
-                'nama_program' => 'Program Bedah Rumah',
-                'tahun' => '2025',
-                'deskripsi' => 'Bantuan renovasi rumah tidak layak huni',
-                'anggaran' => '500000000.00',
-            ]];
-    
-        return view('program', compact('programs')); 
+        $programs = ProgramBantuan::latest()->paginate(10);
+        // Tampilkan view manajemen CRUD untuk warga
+        return view('program.index', compact('programs'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('program.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kode' => 'required|unique:program_bantuan',
+            'nama_program' => 'required',
+            'tahun' => 'required|integer',
+            'anggaran' => 'required|numeric',
+        ]);
+
+        ProgramBantuan::create($request->all());
+        return redirect()->route('program.index')->with('success', 'Program baru berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(ProgramBantuan $program)
     {
-        //
+        return view('program.show', compact('program'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(ProgramBantuan $program)
     {
-        //
+        return view('program.edit', compact('program'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, ProgramBantuan $program)
     {
-        //
+        $request->validate([
+            'kode' => 'required|unique:programBantuan,kode,' . $program->program_id . ',program_id',
+            'nama_program' => 'required',
+            'tahun' => 'required|integer',
+            'anggaran' => 'required|numeric',
+        ]);
+
+        $program->update($request->all());
+        return redirect()->route('program.index')->with('success', 'Program berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(ProgramBantuan $program)
     {
-        //
+        $program->delete();
+        return redirect()->route('program.index')->with('success', 'Program berhasil dihapus.');
     }
+
+    public function ajukanProgram($program_id)
+    {
+        $user = Auth::user();
+
+        $program = ProgramBantuan::findOrFail($program_id);
+
+        $user->programBantuans()->attach($program->program_id);
+
+        return redirect()->route('program.index')->with('success', 'Anda berhasil mengikuti program ' . $program->nama_program);
+    }
+
+    public function batalkanProgram(ProgramBantuan $program) 
+{
+    $user = Auth::user();
+    $user->programBantuans()->detach($program); 
+    return redirect()->route('program.index')->with('success', 'Partisipasi Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
+}
 }
