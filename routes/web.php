@@ -32,12 +32,10 @@ Route::get('/program/{program}', [ProgramController::class, 'showPublic'])->name
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
-    
+
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
     Route::get('/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
 
-    /* | Fitur A: CRUD Program Bantuan
-    */
     Route::prefix('kelola-program')->name('program.')->group(function () {
         Route::get('/', [ProgramController::class, 'index'])->name('index');
         Route::get('/create', [ProgramController::class, 'create'])->name('create');
@@ -48,20 +46,9 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{program}', [ProgramController::class, 'destroy'])->name('destroy');
     });
 
-    /* | Fitur B: Mengikuti Program Bantuan
-    */
     Route::post('/program/{program}/ajukan', [ProgramController::class, 'ajukanProgram'])->name('program.ajukan');
-    
     Route::delete('/program/{program}/batalkan', [ProgramController::class, 'batalkanProgram'])->name('program.batalkan');
-
-    /* | Fitur C: CRUD data diri Warga
-    | DIPERBAIKI: Menggunakan nama 'warga' agar parameter binding cocok
-    */
     Route::resource('warga', WargaController::class);
-
-    /* | Fitur D: CRUD Akun User (jika masih diperlukan)
-    | DIPERBAIKI: Menggunakan nama 'user' agar parameter binding cocok
-    */
     Route::resource('user', UserController::class);
 
 });

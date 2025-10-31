@@ -5,7 +5,6 @@
                 <div class="nav-inner">
                     <nav class="navbar navbar-expand-lg">
                         <a class="navbar-brand" href="{{ url('/') }}">
-                            {{-- Saya asumsikan path logo Anda benar --}}
                             <img src="{{ asset('guest/assets/images/logo/white-logo.svg') }}" alt="Logo">
                         </a>
                         <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
@@ -23,30 +22,31 @@
                                 </li>
                                 <li class="nav-item">
                                     {{-- Menggunakan route 'home' dari file rute Anda untuk Guest --}}
+
                                     @guest
-                                    <a href="#program" class="page-scroll active" aria-label="Toggle navigation">Program</a>
+                                        <a href="#program" class="page-scroll active"
+                                            aria-label="Toggle navigation">Program</a>
                                     @endguest
                                     @auth
-                                    <a href="{{ route('program.index') }}" aria-label="Toggle navigation">Program</a>
+                                        <a href="{{ route('program.index') }}" aria-label="Toggle navigation">Program</a>
                                     @endauth
                                 </li>
                                 <li class="nav-item">
                                     @guest
-                                    <a href="#overview" class="page-scroll" aria-label="Toggle navigation">Data Warga</a>
+                                        <a href="#overview" class="page-scroll" aria-label="Toggle navigation">Warga</a>
                                     @endguest
                                     @auth
-                                    <a href="{{ route('warga.index') }}" aria-label="Toggle navigation">Data Warga</a>
+                                        <a href="{{ route('warga.index') }}" aria-label="Toggle navigation">Warga</a>
                                     @endauth
                                 </li>
+
                                 <li class="nav-item">
-                                    <a href="#pricing" class="page-scroll" aria-label="Toggle navigation">Data Pendaftar</a>
-                                </li>
-                                 <li class="nav-item">
-                                    <a href="#team" class="page-scroll" aria-label="Toggle navigation">Team</a>
+                                    <a href="#about" class="page-scroll" aria-label="Toggle navigation">About</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#blog" class="page-scroll" aria-label="Toggle navigation">Blog</a>
+                                    <a href="#pricing" class="page-scroll" aria-label="Toggle navigation">Pendaftar</a>
                                 </li>
+
 
                                 {{-- ================================================= --}}
                                 {{-- LOGIKA KONDISIONAL UNTUK TAMPILAN MOBILE --}}
@@ -68,13 +68,14 @@
                                     </li>
                                     <li class="nav-item d-lg-none">
                                         {{-- Link Logout di mobile --}}
-                                        <a href="{{ route('logout') }}" 
-                                           onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();" 
-                                           aria-label="Toggle navigation">
+                                        <a href="{{ route('logout') }}"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();"
+                                            aria-label="Toggle navigation">
                                             Logout
                                         </a>
                                         {{-- Form Logout yang aman (tersembunyi) --}}
-                                        <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST"
+                                            style="display: none;">
                                             @csrf
                                         </form>
                                     </li>
@@ -84,8 +85,8 @@
                                 {{-- ================================================= --}}
 
                             </ul>
-                        </div> 
-                        
+                        </div>
+
                         {{-- ================================================= --}}
                         {{-- LOGIKA KONDISIONAL UNTUK TAMPILAN DESKTOP --}}
                         {{-- ================================================= --}}
@@ -103,14 +104,15 @@
                                 <span class="text-white me-3" style="white-space: nowrap;">
                                     Halo, {{ Auth::user()->nama }}
                                 </span>
-                                
+
                                 {{-- Tombol Logout yang aman (wajib menggunakan form) --}}
                                 <a href="{{ route('logout') }}" class="btn"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">
+                                    onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">
                                     Logout
                                 </a>
                                 {{-- Form Logout yang aman (tersembunyi) --}}
-                                <form id="logout-form-desktop" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                <form id="logout-form-desktop" action="{{ route('logout') }}" method="POST"
+                                    style="display: none;">
                                     @csrf
                                 </form>
                             @endauth

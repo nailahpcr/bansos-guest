@@ -35,7 +35,7 @@
     <main>
         @yield('content')
     </main>
-    
+
     {{-- Memanggil komponen footer --}}
     @include('layout.partials._footer_guest')
 
@@ -51,7 +51,7 @@
     <script src="{{ asset('assets/js/count-up.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script type="text/javascript">
-        //====== counter up 
+        //====== counter up
         var cu = new counterUp({
             start: 0,
             duration: 2000,
@@ -62,5 +62,4 @@
         cu.start();
     </script>
 </body>
-
 </html>

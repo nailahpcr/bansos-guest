@@ -6,7 +6,7 @@
 
 <section id="features" class="features section">
     <div class="container">
-        
+
         {{-- SECTION TITLE (Diadaptasi dari kode Anda) --}}
         <div class="row">
             <div class="col-12">
@@ -19,7 +19,6 @@
             </div>
         </div>
 
-        {{-- TAMPILAN DETAIL DALAM BENTUK "LIST" / TABEL --}}
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10 col-12">
                 <div class="card shadow-sm wow fadeInUp" data-wow-delay=".8s">
@@ -62,11 +61,11 @@
                                     <th>No. Telepon</th>
                                     <td>{{ $warga->telp ?? '-' }}</td>
                                 </tr>
-                               
+
                                  <tr>
                                     <th>Tanggal Dibuat</th>
-                                    {{-- 
-                                      PERBAIKAN ERROR: 
+                                    {{--
+                                      PERBAIKAN ERROR:
                                       Menggunakan helper optional() untuk mencegah error
                                       jika $warga->created_at bernilai null.
                                     --}}
@@ -83,7 +82,7 @@
                     <div class="card-footer text-end">
                         {{-- Tombol navigasi --}}
                         <a href="{{ route('warga.index') }}" class="btn btn-secondary">Kembali ke Daftar</a>
-                        
+
                     </div>
                 </div>
             </div>

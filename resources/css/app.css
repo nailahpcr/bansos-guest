@@ -9,3 +9,87 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* =========================================
+   About Section
+========================================= */
+.about-section {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    background-color: #ffffff;
+}
+
+/* Penyesuaian untuk Kolom Gambar agar lebih dinamis */
+.about-img {
+    position: relative; /* Diperlukan untuk elemen dekoratif */
+    margin-bottom: 30px;
+    padding-left: 20px; /* Memberi ruang untuk shape di kiri */
+    padding-bottom: 20px; /* Memberi ruang untuk shape di bawah */
+}
+
+/* Elemen Dekoratif di belakang gambar */
+.about-img::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 90%;
+    height: 90%;
+    background-color: #f0f4ff; /* Ganti warna sesuai tema Anda */
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.about-img img {
+    position: relative; /* Agar gambar berada di atas shape */
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+
+/* Styling untuk Konten Teks */
+.about-content {
+    padding-left: 20px; /* Memberi sedikit jarak dari gambar */
+}
+
+.about-content .sub-title {
+    color: #e84e5d; /* Warna sesuai yang Anda tentukan */
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.about-content h2 {
+    font-size: 38px;
+    font-weight: 700;
+    /* Menaikkan sedikit line-height agar lebih lega jika judulnya menjadi 2 baris */
+    line-height: 1.3;
+    margin-bottom: 20px;
+    color: #222; /* Warna teks yang lebih gelap agar mudah dibaca */
+
+
+    max-width: 100%;
+}
+
+.about-content p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #555;
+}
+
+
+/* Media query untuk memastikan tampilan tetap baik di layar kecil (mobile) */
+@media (max-width: 991px) {
+    .about-content {
+        padding-left: 0; /* Hapus padding di mobile */
+    }
+    .about-img {
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+    .about-img::before {
+        display: none; /* Sembunyikan shape di mobile agar tidak aneh */
+    }
+}
