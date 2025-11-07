@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('layout.guest.app')
 @section('title', 'Edit Pengguna')
 @section('content')
 
@@ -20,7 +20,7 @@
                     <div class="card-body p-4">
                         <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
                             @csrf
-                            @method('PUT') {{-- PENTING untuk update --}}
+                            @method('PUT') 
                             <div class="mb-3">
                                 <label for="name" class="form-label"><strong>Nama Lengkap:</strong></label>
                                 <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required>

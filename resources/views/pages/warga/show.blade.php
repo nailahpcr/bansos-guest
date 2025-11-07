@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('layout.guest.app')
 
 @section('title', 'Detail Data Warga')
 
@@ -42,7 +42,6 @@
                                 </tr>
                                 <tr>
                                     <th>Alamat Email</th>
-                                    {{-- Menggunakan null coalescing '??' untuk data opsional --}}
                                     <td>{{ $warga->email ?? '-' }}</td>
                                 </tr>
                                 <tr>
@@ -64,16 +63,10 @@
 
                                  <tr>
                                     <th>Tanggal Dibuat</th>
-                                    {{--
-                                      PERBAIKAN ERROR:
-                                      Menggunakan helper optional() untuk mencegah error
-                                      jika $warga->created_at bernilai null.
-                                    --}}
                                     <td>{{ optional($warga->created_at)->format('d F Y \p\u\k\u\l H:i') }}</td>
                                 </tr>
                                 <tr>
                                     <th>Terakhir Diperbarui</th>
-                                    {{-- PERBAIKAN ERROR: Terapkan juga di updated_at --}}
                                     <td>{{ optional($warga->updated_at)->format('d F Y \p\u\k\u\l H:i') }}</td>
                                 </tr>
                             </tbody>
@@ -82,12 +75,10 @@
                     <div class="card-footer text-end">
                         {{-- Tombol navigasi --}}
                         <a href="{{ route('warga.index') }}" class="btn btn-secondary">Kembali ke Daftar</a>
-
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </section>
 @endsection

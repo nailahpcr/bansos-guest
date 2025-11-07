@@ -18,22 +18,23 @@
                             <ul id="nav" class="navbar-nav ms-auto">
                                 {{-- Menu Navigasi standar Anda --}}
                                 <li class="nav-item">
-                                    <a href="#home" class="page-scroll active" aria-label="Toggle navigation">Home</a>
+                                    <a href="#home" class="page-scroll {{ request()->routeIs('home') ? 'active' : '' }}" aria-label="Toggle navigation">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     {{-- Menggunakan route 'home' dari file rute Anda untuk Guest --}}
 
                                     @guest
-                                        <a href="#program" class="page-scroll active"
+                                        <a href="#program" class="page-scroll {{ request()->routeIs('pelanggan.*') ? 'active' : '' }}"
                                             aria-label="Toggle navigation">Program</a>
                                     @endguest
                                     @auth
-                                        <a href="{{ route('program.index') }}" aria-label="Toggle navigation">Program</a>
+                                        <a href="{{ route('kelola-program.index') }}" aria-label="Toggle navigation">Program</a>
                                     @endauth
                                 </li>
                                 <li class="nav-item">
                                     @guest
-                                        <a href="#overview" class="page-scroll" aria-label="Toggle navigation">Warga</a>
+                                        <a href="#overview" class="page-scroll {{ request()->routeIs('warga.*') ? 'active' : '' }}"
+                                            aria-label="Toggle navigation">Warga</a>
                                     @endguest
                                     @auth
                                         <a href="{{ route('warga.index') }}" aria-label="Toggle navigation">Warga</a>
@@ -47,11 +48,6 @@
                                     <a href="#pricing" class="page-scroll" aria-label="Toggle navigation">Pendaftar</a>
                                 </li>
 
-
-                                {{-- ================================================= --}}
-                                {{-- LOGIKA KONDISIONAL UNTUK TAMPILAN MOBILE --}}
-                                {{-- ================================================= --}}
-                                {{-- Tombol-tombol ini hanya akan muncul di tampilan mobile (di dalam menu collapse) --}}
                                 @guest
                                     <li class="nav-item d-lg-none">
                                         <a href="{{ route('register') }}" aria-label="Toggle navigation">Daftar</a>
@@ -80,17 +76,9 @@
                                         </form>
                                     </li>
                                 @endauth
-                                {{-- ================================================= --}}
-                                {{-- AKHIR DARI LOGIKA MOBILE --}}
-                                {{-- ================================================= --}}
-
                             </ul>
                         </div>
 
-                        {{-- ================================================= --}}
-                        {{-- LOGIKA KONDISIONAL UNTUK TAMPILAN DESKTOP --}}
-                        {{-- ================================================= --}}
-                        {{-- Tombol-tombol ini hanya akan muncul di desktop (di luar menu collapse) --}}
                         <div class="button add-list-button d-none d-lg-flex">
                             @guest
                                 {{-- Tampilkan "Daftar" dan "Masuk" jika belum login --}}
@@ -99,28 +87,19 @@
                             @endguest
 
                             @auth
-                                {{-- Tampilkan Nama Warga dan Tombol Logout jika sudah login --}}
-                                {{-- Kita menggunakan 'Auth::user()->nama' karena model login Anda adalah Warga --}}
                                 <span class="text-white me-3" style="white-space: nowrap;">
                                     Halo, {{ Auth::user()->nama }}
                                 </span>
-
-                                {{-- Tombol Logout yang aman (wajib menggunakan form) --}}
                                 <a href="{{ route('logout') }}" class="btn"
                                     onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">
                                     Logout
                                 </a>
-                                {{-- Form Logout yang aman (tersembunyi) --}}
                                 <form id="logout-form-desktop" action="{{ route('logout') }}" method="POST"
                                     style="display: none;">
                                     @csrf
                                 </form>
                             @endauth
                         </div>
-                        {{-- ================================================= --}}
-                        {{-- AKHIR DARI LOGIKA DESKTOP --}}
-                        {{-- ================================================= --}}
-
                     </nav>
                 </div>
             </div>

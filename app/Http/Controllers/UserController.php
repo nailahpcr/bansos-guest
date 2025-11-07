@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
       $users = User::latest()->paginate(10);
-      return view('users.index', compact('users'));
+      return view('pages.users.index', compact('users'));
     }
 
     /**
@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        return view('pages.users.create');
     }
 
     /**
@@ -67,7 +67,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        return view('pages.user.edit', compact('user'));
     }
 
     /**

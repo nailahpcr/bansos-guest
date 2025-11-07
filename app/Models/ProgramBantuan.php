@@ -14,7 +14,6 @@ class ProgramBantuan extends Model
      *
      * @var string
      */
-    // BERITAHU MODEL UNTUK MENGGUNAKAN TABEL 'program_bantuan' (singular)
     protected $table = 'program_bantuan';
 
     /**
@@ -22,7 +21,6 @@ class ProgramBantuan extends Model
      *
      * @var string
      */
-    // BERITAHU MODEL APA PRIMARY KEY-NYA
     protected $primaryKey = 'program_id';
 
     /**
@@ -30,7 +28,6 @@ class ProgramBantuan extends Model
      *
      * @var array
      */
-    // SESUAIKAN DENGAN KOLOM DI DATABASE ANDA
     protected $fillable = [
         'kode',
         'nama_program',
@@ -46,16 +43,15 @@ class ProgramBantuan extends Model
     public function wargas()
     {
         return $this->belongsToMany(
-            Warga::class, 
-            'program_bantuan_warga', // Nama tabel pivot
-            'program_bantuan_program_id', // Foreign key di pivot
-            'warga_warga_id' // Foreign key lain di pivot
+            Warga::class,
+            'program_bantuan_warga',
+            'program_bantuan_program_id',
+            'warga_warga_id'
         )->withPivot('status', 'tanggal_pengajuan')->withTimestamps();
     }
 
     public function programBantuans()
 {
-    // return $this->belongsToMany(RelatedModel, 'pivot_table_name', 'foreign_pivot_key', 'related_pivot_key');
     return $this->belongsToMany(ProgramBantuan::class, 'program_bantuan_warga', 'warga_id', 'program_bantuan_id');
 }
 }

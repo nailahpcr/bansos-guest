@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash; // <-- INI PERBAIKAN UNTUK ERROR ANDA
 use Illuminate\Validation\Rules;      // <-- Ini untuk validasi password
-use Illuminate\Validation\ValidationException; 
+use Illuminate\Validation\ValidationException;
 use App\Models\Warga;
 
 class AuthController extends Controller
@@ -17,8 +17,8 @@ class AuthController extends Controller
      */
     public function create()
     {
-    
-        return view('auth.login'); 
+
+        return view('pages.auth.login');
     }
 
     /**
@@ -33,8 +33,8 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            
-            return redirect()->route('warga.dashboard'); 
+
+            return redirect()->route('warga.dashboard');
         }
 
         return back()->withErrors([
@@ -56,7 +56,7 @@ class AuthController extends Controller
     }
 
     public function register(){
-        return view('auth.register');
+        return view('pages.auth.register');
     }
 
     public function daftar(Request $request)
@@ -100,7 +100,7 @@ class AuthController extends Controller
      */
     public function show(string $id)
     {
-        // 
+        //
     }
 
     /**
@@ -108,7 +108,7 @@ class AuthController extends Controller
      */
     public function edit(string $id)
     {
-        // 
+        //
     }
 
     /**

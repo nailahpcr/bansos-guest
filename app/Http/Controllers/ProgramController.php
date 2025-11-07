@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\ProgramBantuan; // Ganti jika nama model Anda berbeda
@@ -20,48 +19,57 @@ class ProgramController extends Controller
     {
         $programs = ProgramBantuan::latest()->paginate(10);
         // Tampilkan view manajemen CRUD untuk warga
-        return view('program.index', compact('programs'));
+        return view('pages.program.index', compact('programs'));
     }
 
     public function create()
     {
-        return view('program.create');
+        return view('pages.program.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kode' => 'required|unique:program_bantuan',
+            'kode'         => 'required|unique:program_bantuan',
             'nama_program' => 'required',
-            'tahun' => 'required|integer',
-            'anggaran' => 'required|numeric',
+            'tahun'        => 'required|integer',
+            'anggaran'     => 'required|numeric',
         ]);
 
         ProgramBantuan::create($request->all());
-        return redirect()->route('program.index')->with('success', 'Program baru berhasil dibuat.');
+        return redirect()->route('kelola-program.index')->with('success', 'Program baru berhasil dibuat.');
     }
 
     public function show(ProgramBantuan $program)
     {
-        return view('program.show', compact('program'));
+        return view('pages.program.show', compact('program'));
     }
 
-    public function edit(ProgramBantuan $program)
+    public function edit(string $program_id)
     {
-        return view('program.edit', compact('program'));
+        $program = ProgramBantuan::findOrFail($program_id);
+        return view('pages.program.edit', compact('program'));
     }
 
-    public function update(Request $request, ProgramBantuan $program)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'kode' => 'required|unique:programBantuan,kode,' . $program->program_id . ',program_id',
+        // Validasi input
+        $validatedData = $request->validate([
+            'kode'         => 'required',
             'nama_program' => 'required',
-            'tahun' => 'required|integer',
-            'anggaran' => 'required|numeric',
+            'tahun'        => 'required|integer',
+            'anggaran'     => 'required|numeric',
+            'deskripsi'     => 'required',
         ]);
 
-        $program->update($request->all());
-        return redirect()->route('program.index')->with('success', 'Program berhasil diperbarui.');
+        // Ambil data program berdasarkan ID
+        $program = ProgramBantuan::findOrFail($id);
+
+        // Update data program
+        $program->update($validatedData);
+
+        // Redirect kembali ke index dengan pesan sukses
+        return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
     }
 
     public function destroy(ProgramBantuan $program)
@@ -81,10 +89,10 @@ class ProgramController extends Controller
         return redirect()->route('program.index')->with('success', 'Anda berhasil mengikuti program ' . $program->nama_program);
     }
 
-    public function batalkanProgram(ProgramBantuan $program) 
-{
-    $user = Auth::user();
-    $user->programBantuans()->detach($program); 
-    return redirect()->route('program.index')->with('success', 'Partisipasi Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
-}
+    public function batalkanProgram(ProgramBantuan $program)
+    {
+        $user = Auth::user();
+        $user->programBantuans()->detach($program);
+        return redirect()->route('program.index')->with('success', 'Partisipasi Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
+    }
 }

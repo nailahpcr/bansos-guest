@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('layout.guest.app')
 
 @section('title', 'Bantuan Sosial & Bina Desa')
 
@@ -9,7 +9,7 @@
             integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
-    
+
     {{-- Bagian Hero --}}
     <section id="home" class="hero-area">
         <div class="container">
@@ -29,7 +29,6 @@
                 </div>
                 <div class="col-lg-7 col-md-12 col-12">
                     <div class="hero-image wow fadeInRight" data-wow-delay=".4s">
-                        {{-- Ganti gambar dengan yang lebih relevan, misal: kegiatan di desa atau penyerahan bantuan --}}
                         <img src="{{ asset('guest/assets/images/hero/kegiatan-desa.jpg') }}" alt="Kegiatan Bina Desa">
                     </div>
                 </div>
@@ -42,25 +41,23 @@
         <div class="container">
             <div class="row align-items-center">
 
-                {{-- Kolom Gambar --}}
-                <div class="col-lg-6">
-                    <div class="about-img wow fadeInLeft" data-wow-delay=".4s">
-                        {{-- Menggunakan helper asset() adalah praktik terbaik di Laravel --}}
-                        <img src="{{ asset('assets/images/about/about-image.jpg') }}" alt="Tentang Kami Appvila" />
+                <div class="col-lg-6 wow fadeInRight" data-wow-delay=".2s"> {{-- Menggunakan fadeInRight untuk gambar --}}
+                    <div class="about-image text-center text-lg-start"> {{-- Sesuaikan perataan gambar --}}
+                        <img src="{{ asset('assets/images/about/about-image.jpg') }}" alt="Tentang Kami Appvila"
+                            class="img-fluid" />
                     </div>
                 </div>
 
-                {{-- Kolom Konten Teks --}}
-                <div class="col-lg-6">
-                    <div class="about-content wow fadeInRight" data-wow-delay=".4s">
+                <div class="col-lg-6 wow fadeInLeft" data-wow-delay=".4s">
+                    <div class="about-content text-end">
                         <div class="section-title">
                             <span class="sub-title">About Us</span>
                             <h2 class="mb-25">Mengenal Appvila Lebih Dekat</h2>
                         </div>
                         <p class="mb-35">
                             Appvila adalah sebuah inisiatif yang lahir dari kepedulian untuk membangun komunitas desa yang
-                            mandiri dan sejahtera.
-                            Kami percaya bahwa setiap desa memiliki potensi luar biasa yang dapat dikembangkan melalui
+                            mandiri dan sejahtera. Kami percaya bahwa setiap desa memiliki potensi luar biasa yang dapat
+                            dikembangkan melalui
                             program yang tepat sasaran dan berkelanjutan.
                         </p>
                     </div>
@@ -68,6 +65,10 @@
 
             </div>
         </div>
+    </section>
+
+    <section id="features" class="features section">
+        {{-- ... (Konten fitur Anda tetap sama) ... --}}
     </section>
 
     {{-- Bagian Fitur / Program Unggulan --}}
@@ -84,14 +85,12 @@
                 </div>
             </div>
 
-            {{-- Menampilkan pesan sukses setelah operasi CRUD --}}
             @if ($message = Session::get('success'))
                 <div class="alert alert-success wow fadeInUp" data-wow-delay=".7s">
                     <p>{{ $message }}</p>
                 </div>
             @endif
 
-            {{-- Tombol Tambah Program, hanya muncul untuk user yang sudah login --}}
             @auth
                 <div class="row mb-4">
                     <div class="col-12 text-center">
@@ -142,9 +141,6 @@
 
         </div>
     </section>
-
-    {{-- POTONGAN KONTEN LAIN SEPERTI ACHIEVEMENT, PRICING, DLL MASUKKAN DI SINI --}}
-    {{-- ... (lanjutkan copy-paste section lain dari HTML asli ke sini) ... --}}
 
     {{-- Bagian Call to Action / Ajakan Kolaborasi --}}
     <section class="section call-action">

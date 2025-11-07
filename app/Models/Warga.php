@@ -3,18 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// UBAH INI: dari Model biasa
-// use Illuminate\Database\Eloquent\Model; 
-// MENJADI INI: Model yang bisa login
-use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-// TAMBAHKAN INI UNTUK RELASI
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\ProgramBantuan; // Pastikan Anda sudah punya model ProgramBantuan
+use App\Models\ProgramBantuan;
 
-// UBAH INI: 'extends Model' MENJADI 'extends Authenticatable'
-class Warga extends Authenticatable 
+
+class Warga extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -64,6 +60,6 @@ class Warga extends Authenticatable
                     ->withPivot('status', 'tanggal_pengajuan') // Ambil juga kolom status & tanggal dari tabel pivot
                     ->withTimestamps(); // Beritahu Laravel bahwa tabel pivot ini juga punya timestamps
     }
-    
+
 }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Warga;
-use Illuminate\Support\Facades\Auth; // <-- Pastikan ini ada
+use Illuminate\Support\Facades\Auth;
 
 class WargaController extends Controller
 {
@@ -13,9 +13,8 @@ class WargaController extends Controller
      */
     public function dashboard()
     {
-        $warga = Auth::user(); // Dapatkan warga yang sedang login
-        
-        // Ambil riwayat program yang diikuti
+        $warga = Auth::user();
+
         $programDiajukan = $warga->programBantuans()
                                 ->orderBy('pivot_tanggal_pengajuan', 'desc')
                                 ->paginate(5);
@@ -29,7 +28,7 @@ class WargaController extends Controller
     public function index()
     {
         $wargas = Warga::latest()->paginate(10);
-        return view('warga.warga_crud.index', compact('wargas'));
+        return view('pages.warga.index', compact('wargas'));
     }
 
     /**
@@ -37,7 +36,7 @@ class WargaController extends Controller
      */
     public function create()
     {
-        return view('warga_crud.create');
+        return view('pages.warga.create');
     }
 
     /**
@@ -46,7 +45,6 @@ class WargaController extends Controller
     public function store(Request $request)
     {
        $request->validate([
-            // ... (aturan validasi Anda sudah benar)
             'no_ktp' => 'required|string|size:16|unique:warga,no_ktp',
             'nama' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
@@ -57,8 +55,6 @@ class WargaController extends Controller
        ]);
 
         Warga::create($request->all());
-
-        // DIPERBAIKI: Menggunakan nama rute 'warga.index'
         return redirect()->route('warga.index')
                          ->with('success', 'Data warga berhasil ditambahkan.');
     }
@@ -66,29 +62,27 @@ class WargaController extends Controller
     /**
      * Menampilkan detail dari satu data warga.
      */
-    public function show(Warga $warga) // <-- Sekarang 'warga' akan cocok
+    public function show(Warga $warga)
     {
-        // PENTING: Muat data relasi program bantuan
         $warga->load('programBantuans');
-        
-        return view('warga.warga_crud.show', compact('warga'));
+
+        return view('pages.warga.show', compact('warga'));
     }
 
     /**
      * Menampilkan form untuk mengedit data warga.
      */
-    public function edit(Warga $warga) // <-- 'warga' cocok
+    public function edit(Warga $warga)
     {
-        return view('warga_crud.edit', compact('warga'));
+        return view('pages.warga.edit', compact('warga'));
     }
 
     /**
      * Mengupdate data warga yang ada di database.
      */
-    public function update(Request $request, Warga $warga) // <-- 'warga' cocok
+    public function update(Request $request, Warga $warga)
     {
         $request->validate([
-            // ... (aturan validasi Anda sudah benar)
             'no_ktp' => 'required|string|size:16|unique:warga,no_ktp,' . $warga->warga_id . ',warga_id',
             'nama' => 'required|string|max:255',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
@@ -100,19 +94,17 @@ class WargaController extends Controller
 
         $warga->update($request->all());
 
-        // DIPERBAIKI: Menggunakan nama rute 'warga.index'
         return redirect()->route('warga.index')
                          ->with('success', 'Data warga berhasil diperbarui.');
-    } 
+    }
 
     /**
      * Menghapus data warga dari database.
      */
-    public function destroy(Warga $warga) // <-- 'warga' cocok
+    public function destroy(Warga $warga)
     {
         $warga->delete();
 
-        // DIPERBAIKI: Menggunakan nama rute 'warga.index'
         return redirect()->route('warga.index')
                          ->with('success', 'Data warga berhasil dihapus.');
     }

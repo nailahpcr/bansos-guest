@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('layout.guest.app')
 
 @section('title', 'Bantuan Sosial & Bina Desa')
 

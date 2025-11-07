@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('layout.guest.app')
 
 @section('title', 'Kelola Program Bantuan')
 
@@ -22,7 +22,7 @@
             {{-- TOMBOL TAMBAH PROGRAM --}}
             <div class="row mb-4">
                 <div class="col-12 text-center">
-                    <a class="btn btn-primary wow fadeInUp" data-wow-delay=".8s" href="{{ route('program.create') }}">
+                    <a class="btn btn-primary wow fadeInUp" data-wow-delay=".8s" href="{{ route('kelola-program.create') }}">
                         <i class="fas fa-plus me-1"></i> Tambah Program Baru
                     </a>
                 </div>
@@ -55,11 +55,11 @@
                             <div class="action-buttons mt-3">
 
                                 {{-- Tombol Edit (Link Biasa) --}}
-                                <a href="{{ route('program.edit', $program->program_id) }}"
+                                <a href="{{ route('kelola-program.edit', $program->program_id) }}"
                                     class="btn btn-sm btn-info text-white d-inline-block mb-1">Edit</a>
 
                                 {{-- Tombol Hapus (Form Terpisah) --}}
-                                <form action="{{ route('program.destroy', $program->program_id) }}" method="POST"
+                                <form action="{{ route('kelola-program.destroy', $program->program_id) }}" method="POST"
                                     class="d-inline-block mb-1"
                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini? Ini adalah data CRUD Anda.');">
                                     @csrf
@@ -86,7 +86,7 @@
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success">Ikuti Program</button>
                                     </form>
-                                @endif  
+                                @endif
 
                             </div>
                             {{-- =================== AKHIR PERUBAHAN =================== --}}

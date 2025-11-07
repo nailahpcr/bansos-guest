@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $programs = ProgramBantuan::latest()->paginate(10); 
-        return view('home',  compact('programs'));
+        $programs = ProgramBantuan::latest()->paginate(10);
+        return view('pages.home',  compact('programs'));
     }
 }
