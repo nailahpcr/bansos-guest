@@ -44,7 +44,7 @@
                 <div class="col-12">
                     <div class="section-title">
                         <h3 class="wow zoomIn" data-wow-delay=".2s">Akses Terbatas</h3>
-                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Selamat Datang Kembali, Admin</h2>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Selamat Datang Kembali</h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s">Silakan masuk menggunakan email dan password Anda
                             untuk mengelola data.</p>
                     </div>

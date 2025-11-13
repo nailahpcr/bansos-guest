@@ -29,40 +29,9 @@
                 </div>
                 <div class="col-lg-7 col-md-12 col-12">
                     <div class="hero-image wow fadeInRight" data-wow-delay=".4s">
-                        <img src="{{ asset('guest/assets/images/hero/kegiatan-desa.jpg') }}" alt="Kegiatan Bina Desa">
+                        <img src="{{ asset('/assets/images/about/Bantuan1.jpg') }}" alt="Kegiatan Bina Desa">
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- About Section --}}
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="row align-items-center">
-
-                <div class="col-lg-6 wow fadeInRight" data-wow-delay=".2s"> {{-- Menggunakan fadeInRight untuk gambar --}}
-                    <div class="about-image text-center text-lg-start"> {{-- Sesuaikan perataan gambar --}}
-                        <img src="{{ asset('assets/images/about/about-image.jpg') }}" alt="Tentang Kami Appvila"
-                            class="img-fluid" />
-                    </div>
-                </div>
-
-                <div class="col-lg-6 wow fadeInLeft" data-wow-delay=".4s">
-                    <div class="about-content text-end">
-                        <div class="section-title">
-                            <span class="sub-title">About Us</span>
-                            <h2 class="mb-25">Mengenal Appvila Lebih Dekat</h2>
-                        </div>
-                        <p class="mb-35">
-                            Appvila adalah sebuah inisiatif yang lahir dari kepedulian untuk membangun komunitas desa yang
-                            mandiri dan sejahtera. Kami percaya bahwa setiap desa memiliki potensi luar biasa yang dapat
-                            dikembangkan melalui
-                            program yang tepat sasaran dan berkelanjutan.
-                        </p>
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
@@ -81,7 +50,7 @@
                     <div class="section-title">
                         <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen Program</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Kelola Program Bantuan</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Di halaman ini, Anda (sebagai warga) dapat membuat,
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Di halaman ini, Anda dapat membuat,
                             mengubah, dan menghapus program bantuan.</p>
                     </div>
                 </div>
@@ -186,9 +155,6 @@
                         <h2 class="wow fadeInUp" data-wow-delay=".2s">Jadilah Bagian Dari Perubahan Positif di Desa</h2>
                         <p class="wow fadeInUp" data-wow-delay=".4s">Setiap kontribusi Anda, besar maupun kecil, akan sangat
                             berarti bagi pembangunan dan kesejahteraan masyarakat. Mari bergerak bersama kami.</p>
-                        <div class="button wow fadeInUp" data-wow-delay=".6s">
-                            <a href="{{ url('/donasi') }}" class="btn">Donasi Sekarang</a>
-                        </div>
                     </div>
                 </div>
             </div>

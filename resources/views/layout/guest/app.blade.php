@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>@yield('title', 'Appvilla') - Nama Aplikasi Anda</title>
+    <title>@yield('title', 'Appvilla') - Bantuan Sosial dan Pemanfaatan</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    @include('layout.guest.css');
+    @include('layout.guest.css')
 
 </head>
 

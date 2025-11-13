@@ -5,7 +5,7 @@
                 <div class="nav-inner">
                     <nav class="navbar navbar-expand-lg">
                         <a class="navbar-brand" href="{{ url('/') }}">
-                            <img src="{{ asset('guest/assets/images/logo/white-logo.svg') }}" alt="Logo">
+                            <img src="{{ asset('/assets/images/logo/logo.png') }}" alt="Logo" style="width: 80px; height: 80px;">
                         </a>
                         <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -18,7 +18,7 @@
                             <ul id="nav" class="navbar-nav ms-auto">
                                 {{-- Menu Navigasi standar Anda --}}
                                 <li class="nav-item">
-                                    <a href="#home" class="page-scroll {{ request()->routeIs('home') ? 'active' : '' }}" aria-label="Toggle navigation">Home</a>
+                                    <a href="{{route ('home')}}" aria-label="Toggle navigation">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     {{-- Menggunakan route 'home' dari file rute Anda untuk Guest --}}
@@ -43,9 +43,6 @@
 
                                 <li class="nav-item">
                                     <a href="#about" class="page-scroll" aria-label="Toggle navigation">About</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#pricing" class="page-scroll" aria-label="Toggle navigation">Pendaftar</a>
                                 </li>
 
                                 @guest

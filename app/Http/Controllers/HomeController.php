@@ -12,4 +12,10 @@ class HomeController extends Controller
         $programs = ProgramBantuan::latest()->paginate(10);
         return view('pages.home',  compact('programs'));
     }
+
+    public function about()
+{
+    return view('pages.about'); 
 }
+}
+

@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('guest')->group(function () {
@@ -22,16 +23,6 @@ Route::get('/program', [ProgramController::class, 'indexPublic'])->name('program
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 Route::get('/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
 
-// Route::prefix('kelola-program')->name('program.')->group(function () {
-//     Route::get('/', [ProgramController::class, 'index'])->name('index');
-//     Route::get('/create', [ProgramController::class, 'create'])->name('create');
-//     Route::post('/', [ProgramController::class, 'store'])->name('store');
-//     Route::get('/{program}', [ProgramController::class, 'show'])->name('show');
-//     Route::get('/{program}/edit', [ProgramController::class, 'edit'])->name('edit');
-//     Route::put('/{program}', [ProgramController::class, 'update'])->name('update');
-//     Route::delete('/{program}', [ProgramController::class, 'destroy'])->name('destroy');
-// });
-
 Route::resource('kelola-program', ProgramController::class)->parameters([
     'kelola-program' => 'program',]);
 
@@ -40,3 +31,4 @@ Route::post('/program/{program}/ajukan', [ProgramController::class, 'ajukanProgr
 Route::delete('/program/{program}/batalkan', [ProgramController::class, 'batalkanProgram'])->name('program.batalkan');
 Route::resource('warga', WargaController::class);
 Route::resource('user', UserController::class);
+Route::get('/about', [HomeController::class, 'about'])->name('about');
