@@ -16,7 +16,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-5 col-md-12 col-12">
                     <div class="hero-content">
-                        <h1 class="wow fadeInLeft" data-wow-delay=".4s">Mewujudkan Kesejahteraan Melalui Bantuan Sosial dan
+                        <h1 class="wow fadeInLeft" data-wow-delay=".4s">Bantuan Sosial dan
                             Pemanfaatan.</h1>
                         <p class="wow fadeInLeft" data-wow-delay=".6s">Kami berkomitmen untuk membangun masyarakat desa yang
                             mandiri, sejahtera, dan berdaya saing melalui program-program yang tepat sasaran dan
