@@ -40,4 +40,3 @@ Route::post('/program/{program}/ajukan', [ProgramController::class, 'ajukanProgr
 Route::delete('/program/{program}/batalkan', [ProgramController::class, 'batalkanProgram'])->name('program.batalkan');
 Route::resource('warga', WargaController::class);
 Route::resource('user', UserController::class);
-
