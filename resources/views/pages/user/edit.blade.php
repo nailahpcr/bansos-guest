@@ -74,7 +74,7 @@
                                 <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
                             </div>
 
-                            <button type="submit" class="main-btn btn-hover">Simpan Perubahan</button>
+                            <button type="submit" class="btn btn-primary">Simpan perubahan</button>
                             <a href="{{ route('user.index') }}" class="btn btn-secondary ms-2">Batal</a>
                         </form>
                     </div>
