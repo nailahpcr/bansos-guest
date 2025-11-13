@@ -41,6 +41,16 @@
                                     @endauth
                                 </li>
 
+                                 <li class="nav-item">
+                                    @guest
+                                        <a href="#overview" class="page-scroll {{ request()->routeIs('user.*') ? 'active' : '' }}"
+                                            aria-label="Toggle navigation">User</a>
+                                    @endguest
+                                    @auth
+                                        <a href="{{ route('user.index') }}" aria-label="Toggle navigation">User</a>
+                                    @endauth
+                                </li>
+
                                 <li class="nav-item">
                                     <a href="#about" class="page-scroll" aria-label="Toggle navigation">About</a>
                                 </li>

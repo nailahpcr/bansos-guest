@@ -7,7 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('guest')->group(function () {
@@ -26,9 +25,11 @@ Route::get('/dashboard', [WargaController::class, 'dashboard'])->name('warga.das
 Route::resource('kelola-program', ProgramController::class)->parameters([
     'kelola-program' => 'program',]);
 
-
 Route::post('/program/{program}/ajukan', [ProgramController::class, 'ajukanProgram'])->name('program.ajukan');
 Route::delete('/program/{program}/batalkan', [ProgramController::class, 'batalkanProgram'])->name('program.batalkan');
-Route::resource('warga', WargaController::class);
-Route::resource('user', UserController::class);
+
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+
+Route::resource('warga', WargaController::class);
+Route::resource('user', UserController::class)->parameters([
+    'user' => 'users',]);
