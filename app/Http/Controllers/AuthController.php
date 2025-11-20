@@ -34,7 +34,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->route('warga.dashboard');
+            return redirect()->route('warga.index');
         }
 
         return back()->withErrors([

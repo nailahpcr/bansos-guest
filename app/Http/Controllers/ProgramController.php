@@ -11,14 +11,14 @@ class ProgramController extends Controller
     public function indexPublic()
     {
         $programs = ProgramBantuan::latest()->paginate(9);
-        // Tampilkan view untuk guest
+
         return view('home', compact('programs'));
     }
 
     public function index()
     {
         $programs = ProgramBantuan::latest()->paginate(10);
-        // Tampilkan view manajemen CRUD untuk warga
+    
         return view('pages.program.index', compact('programs'));
     }
 
@@ -53,7 +53,6 @@ class ProgramController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validasi input
         $validatedData = $request->validate([
             'kode'         => 'required',
             'nama_program' => 'required',
@@ -62,19 +61,17 @@ class ProgramController extends Controller
             'deskripsi'     => 'required',
         ]);
 
-        // Ambil data program berdasarkan ID
         $program = ProgramBantuan::findOrFail($id);
 
-        // Update data program
         $program->update($validatedData);
 
-        // Redirect kembali ke index dengan pesan sukses
         return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
     }
 
     public function destroy(ProgramBantuan $program)
     {
         $program->delete();
+        
         return redirect()->route('kelola-program.index')->with('success', 'Program berhasil dihapus.');
     }
 
@@ -93,6 +90,7 @@ class ProgramController extends Controller
     {
         $user = Auth::user();
         $user->programBantuans()->detach($program);
+
         return redirect()->route('kelola-program.index')->with('success', 'Partisipasi Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
     }
 }

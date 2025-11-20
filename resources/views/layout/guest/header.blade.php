@@ -5,7 +5,8 @@
                 <div class="nav-inner">
                     <nav class="navbar navbar-expand-lg">
                         <a class="navbar-brand" href="{{ url('/') }}">
-                            <img src="{{ asset('/assets/images/logo/logo.png') }}" alt="Logo" style="width: 80px; height: 80px;">
+                            <img src="{{ asset('/assets/images/logo/BinaDesa.png') }}" alt="Logo Bina Desa"
+                                style="width: 210px; height: auto;">
                         </a>
                         <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -16,24 +17,24 @@
                         </button>
                         <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                             <ul id="nav" class="navbar-nav ms-auto">
-                                {{-- Menu Navigasi standar Anda --}}
                                 <li class="nav-item">
-                                    <a href="{{route ('home')}}" aria-label="Toggle navigation">Home</a>
+                                    <a href="{{ route('home') }}" aria-label="Toggle navigation">Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    {{-- Menggunakan route 'home' dari file rute Anda untuk Guest --}}
-
                                     @guest
-                                        <a href="#program" class="page-scroll {{ request()->routeIs('pelanggan.*') ? 'active' : '' }}"
+                                        <a href="#program"
+                                            class="page-scroll {{ request()->routeIs('pelanggan.*') ? 'active' : '' }}"
                                             aria-label="Toggle navigation">Program</a>
                                     @endguest
                                     @auth
-                                        <a href="{{ route('kelola-program.index') }}" aria-label="Toggle navigation">Program</a>
+                                        <a href="{{ route('kelola-program.index') }}"
+                                            aria-label="Toggle navigation">Program</a>
                                     @endauth
                                 </li>
                                 <li class="nav-item">
                                     @guest
-                                        <a href="#overview" class="page-scroll {{ request()->routeIs('warga.*') ? 'active' : '' }}"
+                                        <a href="#overview"
+                                            class="page-scroll {{ request()->routeIs('warga.*') ? 'active' : '' }}"
                                             aria-label="Toggle navigation">Warga</a>
                                     @endguest
                                     @auth
@@ -41,9 +42,10 @@
                                     @endauth
                                 </li>
 
-                                 <li class="nav-item">
+                                <li class="nav-item">
                                     @guest
-                                        <a href="#overview" class="page-scroll {{ request()->routeIs('user.*') ? 'active' : '' }}"
+                                        <a href="#overview"
+                                            class="page-scroll {{ request()->routeIs('user.*') ? 'active' : '' }}"
                                             aria-label="Toggle navigation">User</a>
                                     @endguest
                                     @auth
@@ -52,8 +54,28 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="#about" class="page-scroll" aria-label="Toggle navigation">About</a>
+                                    @guest
+                                        <a href="#overview"
+                                            class="page-scroll {{ request()->routeIs('pendaftar.*') ? 'active' : '' }}"
+                                            aria-label="Toggle navigation">Pendaftar</a>
+                                    @endguest
+                                    @auth
+                                        <a href="{{ route('pendaftar.index') }}"
+                                            aria-label="Toggle navigation">Pendaftar</a>
+                                    @endauth
                                 </li>
+
+                                <li class="nav-item">
+                                    @guest
+                                        <a href="#overview"
+                                            class="page-scroll {{ request()->routeIs('About.*') ? 'active' : '' }}"
+                                            aria-label="Toggle navigation">About</a>
+                                    @endguest
+                                    @auth
+                                        <a href="{{ route('about') }}" aria-label="Toggle navigation">About</a>
+                                    @endauth
+                                </li>
+
 
                                 @guest
                                     <li class="nav-item d-lg-none">

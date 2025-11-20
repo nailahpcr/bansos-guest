@@ -19,17 +19,33 @@ class WargaController extends Controller
                                 ->orderBy('pivot_tanggal_pengajuan', 'desc')
                                 ->paginate(5);
 
-        return view('warga.dashboard', compact('warga', 'programDiajukan'));
+        return view('pages.warga.index', compact('warga', 'programDiajukan'));
     }
 
-    /**
+    /** 
      * Menampilkan daftar semua data warga.
      */
-    public function index()
+    public function index(Request $request) 
     {
-        $wargas = Warga::latest()->paginate(10);
-        return view('pages.warga.index', compact('wargas'));
-    }
+        $search = $request->input('search');
+
+        $wargaQuery = Warga::query()->latest();
+
+        if ($search) {
+            $wargaQuery->where(function ($query) use ($search) {
+                $query->where('nama', 'like', '%' . $search . '%')
+                      ->orWhere('no_ktp', 'like', '%' . $search . '%')
+                      ->orWhere('agama', 'like', '%' . $search . '%');
+            });
+        }
+
+       $wargas = $wargaQuery->paginate(10)->withQueryString();
+
+        $totalWarga = Warga::count();
+        $totalLakiLaki = Warga::where('jenis_kelamin', 'Laki-laki')->count();
+        $totalPerempuan = Warga::where('jenis_kelamin', 'Perempuan')->count();
+
+        return view('pages.warga.index', compact('wargas', 'totalWarga', 'totalLakiLaki', 'totalPerempuan', 'search'));    }
 
     /**
      * Menampilkan form untuk menambah data warga baru.

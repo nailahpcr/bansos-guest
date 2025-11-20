@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaController;
+use App\Http\Controllers\PendaftarController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -20,7 +21,7 @@ Route::get('/program', [ProgramController::class, 'indexPublic'])->name('program
 // Route::get('/program/{program}', [ProgramController::class, 'showPublic'])->name('program.public.show');
 
 Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
-Route::get('/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
+// Route::get('/dashboard', [WargaController::class, 'dashboard'])->name('warga.dashboard');
 
 Route::resource('kelola-program', ProgramController::class)->parameters([
     'kelola-program' => 'program',]);
@@ -33,3 +34,6 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::resource('warga', WargaController::class);
 Route::resource('user', UserController::class)->parameters([
     'user' => 'users',]);
+
+Route::resource('pendaftar', PendaftarController::class);
+

@@ -23,8 +23,8 @@ class Warga extends Authenticatable
     protected $fillable = [
         'no_ktp',
         'nama',
-        'email', // <-- Tambahkan
-        'password', // <-- Tambahkan
+        'email', 
+        'password', 
         'jenis_kelamin',
         'agama',
         'pekerjaan',
@@ -47,18 +47,15 @@ class Warga extends Authenticatable
         'password' => 'hashed', // Otomatis hash saat di-create
     ];
 
-    // =================================================================
-    // TAMBAHAN: Relasi Many-to-Many ke Program Bantuan
-    // =================================================================
+
     /**
      * Relasi untuk program bantuan yang diikuti oleh warga.
      */
     public function programBantuans(): BelongsToMany
     {
-        // Sesuaikan nama tabel pivot dan foreign key jika berbeda
         return $this->belongsToMany(ProgramBantuan::class, 'program_bantuan_warga', 'warga_warga_id', 'program_bantuan_program_id')
-                    ->withPivot('status', 'tanggal_pengajuan') // Ambil juga kolom status & tanggal dari tabel pivot
-                    ->withTimestamps(); // Beritahu Laravel bahwa tabel pivot ini juga punya timestamps
+                    ->withPivot('status', 'tanggal_pengajuan') 
+                    ->withTimestamps(); 
     }
 
 }

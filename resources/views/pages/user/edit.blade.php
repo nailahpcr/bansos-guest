@@ -1,82 +1,94 @@
 @extends('layout.guest.app')
 
+@section('title', 'Edit Data User')
+
 @section('content')
-    <section id="form-user-cta-section" class="cta-section pt-130 pb-100">
+    <section id="features" class="features section">
         <div class="container">
+            {{-- SECTION TITLE --}}
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title text-center mb-50">
-                        <h2>Edit Data User</h2>
-                        <p class="mb-30">Ubah data user sesuai dengan informasi terbaru.</p>
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen User</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Edit Data Pengguna</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Perbarui informasi akun pengguna yang terdaftar.</p>
                     </div>
                 </div>
             </div>
 
-            {{-- Menampilkan Error Validasi --}}
-            @if($errors->any())
-                <div class="row justify-content-center mb-4">
-                    <div class="col-lg-8">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <h4 class="alert-heading mb-0">Terjadi Kesalahan!</h4>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            <div class="row justify-content-center">
+            {{-- FORM EDIT --}}
+            <div class="row justify-content-center wow fadeInUp" data-wow-delay=".7s">
                 <div class="col-lg-8">
-                    <div class="card card-shadow-sm p-5">
-                        {{-- Form diarahkan ke route 'users.update' dengan method PUT/PATCH --}}
-                        <form action="{{ route('user.update', $users) }}" method="POST">
-                            @csrf
-                            @method('PUT')
+                    <div class="card shadow-sm">
+                        <div class="card-body">
 
-                            {{-- Nama --}}
-                            <div class="mb-4">
-                                <label for="name" class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $users->name) }}" required>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            {{-- Error Handling --}}
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
-                            {{-- Email --}}
-                            <div class="mb-4">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $users->email) }}" required>
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            {{-- Form Start --}}
+                            {{-- Pastikan parameter route sesuai dengan controller Anda ($users atau $user) --}}
+                            <form action="{{ route('user.update', $users->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
 
-                            <hr class="my-4">
-                            <p class="text-muted">Kosongkan kolom password di bawah jika Anda tidak ingin mengubah password.</p>
+                                {{-- Baris 1: Nama & Email --}}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="name" class="form-label">Nama Lengkap</label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            value="{{ old('name', $users->name) }}" required>
+                                    </div>
 
-                            {{-- Password --}}
-                            <div class="mb-4">
-                                <label for="password" class="form-label">Password Baru</label>
-                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            
-                            {{-- Konfirmasi Password --}}
-                            <div class="mb-4">
-                                <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
-                            </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            value="{{ old('email', $users->email) }}" required>
+                                    </div>
+                                </div>
 
-                            <button type="submit" class="btn btn-primary">Simpan perubahan</button>
-                            <a href="{{ route('user.index') }}" class="btn btn-secondary ms-2">Batal</a>
-                        </form>
+                                {{-- Divider untuk Password --}}
+                                <div class="alert alert-light border mt-2 mb-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Kosongkan kolom password di bawah jika tidak ingin mengubahnya.
+                                    </small>
+                                </div>
+
+                                {{-- Baris 2: Password & Konfirmasi --}}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password" class="form-label">Password Baru</label>
+                                        <input type="password" class="form-control" id="password" name="password"
+                                            placeholder="********">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                                        <input type="password" class="form-control" id="password_confirmation"
+                                            name="password_confirmation" placeholder="********">
+                                    </div>
+                                </div>
+
+                                {{-- Tombol Aksi (Style Warga) --}}
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ route('user.index') }}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-1"></i> Kembali
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save me-1"></i> Simpan Perubahan
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

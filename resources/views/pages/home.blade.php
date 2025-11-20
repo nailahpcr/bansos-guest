@@ -23,7 +23,6 @@
                             berkelanjutan.</p>
                         <div class="button wow fadeInLeft" data-wow-delay=".8s">
                             <a href="#features" class="btn">Lihat Program Kami</a>
-                            <a href="{{ url('/kontak') }}" class="btn btn-alt">Hubungi Kami</a>
                         </div>
                     </div>
                 </div>
