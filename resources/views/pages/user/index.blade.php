@@ -35,7 +35,7 @@
                             <div class="col-md-4 col-lg-3">
                                 <div class="input-group">
                                     <input type="text" name="search" class="form-control" id="searchInput" 
-                                           value="{{ request('search') }}" placeholder="Cari Nama/Email/ID User..." aria-label="Search">
+                                        value="{{ request('search') }}" placeholder="Cari Nama/Email/ID User..." aria-label="Search">
                                     <button type="submit" class="input-group-text" id="basic-addon2">
                                         {{-- Ikon Search SVG --}}
                                         <svg class="icon icon-xxs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -81,16 +81,30 @@
                     <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay=".{{ ($loop->iteration % 4) + 1 }}s">
                         <div class="card shadow-sm h-100">
                             <div class="card-body d-flex flex-column">
-                                {{-- Nama & Email --}}
-                                <h5 class="card-title fw-bold">{{ $user->name }}</h5>
-                                <h6 class="card-subtitle mb-3 text-muted">
-                                    <i class="fas fa-envelope me-1"></i> {{ $user->email }}
-                                </h6>
+                                
+                                {{-- START: PERUBAHAN TATA LETAK PROFIL (Horizontal) --}}
+                                <div class="d-flex align-items-center mb-3">
+                                    {{-- Gambar Profil di sebelah kiri --}}
+                                    <img 
+                                        src="{{ $user->profile_picture ? Storage::url($user->profile_picture) : asset('images/default_profile.png') }}"
+                                        alt="Foto Profil {{ $user->name }}"
+                                        class="img-fluid rounded-circle border border-3 border-light me-3"
+                                        style="width: 50px; height: 50px; object-fit: cover;">
 
-                                <hr>
+                                    {{-- Nama & Email di sebelah kanan --}}
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title fw-bold mb-0" style="font-size: 1.1rem;">{{ $user->name }}</h5>
+                                        <h6 class="card-subtitle text-muted" style="font-size: 0.85rem;">
+                                            <i class="fas fa-envelope me-1"></i> {{ $user->email }}
+                                        </h6>
+                                    </div>
+                                </div>
+                                {{-- END: PERUBAHAN TATA LETAK PROFIL --}}
+
+                                <hr class="my-2">
 
                                 {{-- Tanggal Bergabung (Dengan Ikon Kalender) --}}
-                                <p class="card-text mb-2">
+                                <p class="card-text mb-2 pt-2">
                                     <i class="fas fa-calendar-alt me-2 text-success"></i>
                                     <strong>Bergabung:</strong> {{ $user->created_at->format('d M Y') }}
                                 </p>

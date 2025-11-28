@@ -31,7 +31,7 @@
                         @endif
 
                         {{-- Form Start --}}
-                        <form action="{{ route('user.store') }}" method="POST">
+                        <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             {{-- Field Nama Lengkap --}}
@@ -67,6 +67,21 @@
                                 </div>
                             </div>
 
+                            {{-- Profile Picture Upload --}}
+                            <div class="mb-3">
+                                <label for="profile_picture" class="form-label"><strong>Foto Profil (opsional):</strong></label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img id="createPreview" src="https://via.placeholder.com/150" alt="Preview" class="img-thumbnail" style="max-width:150px">
+                                    <div class="flex-grow-1">
+                                        <input type="file" name="profile_picture" id="profile_picture" accept="image/*" class="form-control @error('profile_picture') is-invalid @enderror">
+                                        @error('profile_picture')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengunggah foto profil.</small>
+                                    </div>
+                                </div>
+                            </div>
+
                             {{-- Tombol Aksi (Kanan Bawah) --}}
                             <div class="text-end mt-4">
                                 <a class="btn btn-secondary" href="{{ route('user.index') }}"> Kembali</a>
@@ -83,3 +98,14 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.getElementById('profile_picture')?.addEventListener('change', function (e) {
+        const [file] = this.files;
+        if (file) {
+            document.getElementById('createPreview').src = URL.createObjectURL(file);
+        }
+    });
+</script>
+@endpush

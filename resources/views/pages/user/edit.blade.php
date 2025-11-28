@@ -35,7 +35,7 @@
 
                             {{-- Form Start --}}
                             {{-- Pastikan parameter route sesuai dengan controller Anda ($users atau $user) --}}
-                            <form action="{{ route('user.update', $users->id) }}" method="POST">
+                            <form action="{{ route('user.update', $users->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 
@@ -53,6 +53,23 @@
                                             value="{{ old('email', $users->email) }}" required>
                                     </div>
                                 </div>
+
+                                    {{-- Profile Picture Upload --}}
+                                    <div class="mb-3">
+                                        <label for="profile_picture" class="form-label">Foto Profil (opsional)</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img id="editPreview" src="{{ $users->profile_picture ? asset('storage/'.$users->profile_picture) : 'https://via.placeholder.com/150' }}" 
+                                            alt="Foto Profil" class="img-thumbnail" style="max-width:150px">
+                                            <div class="flex-grow-1">
+                                                <input type="file" name="profile_picture" id="edit_profile_picture" accept="image/*" class="form-control @error('profile_picture') 
+                                                is-invalid @enderror">
+                                                @error('profile_picture')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                                <small class="text-muted">Unggah foto baru untuk mengganti foto saat ini. Biarkan kosong untuk mempertahankan foto lama.</small>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 {{-- Divider untuk Password --}}
                                 <div class="alert alert-light border mt-2 mb-3">
@@ -95,3 +112,14 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    document.getElementById('edit_profile_picture')?.addEventListener('change', function (e) {
+        const [file] = this.files;
+        if (file) {
+            document.getElementById('editPreview').src = URL.createObjectURL(file);
+        }
+    });
+</script>
+@endpush
