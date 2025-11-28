@@ -29,6 +29,41 @@
                 </div>
             </div>
 
+            {{-- Search Bar dan Reset Button --}}
+            <div class="row mb-4 wow fadeInUp" data-wow-delay=".8s">
+                <div class="col-lg-12">
+                    <form action="{{ route('pendaftar.index') }}" method="GET">
+                        <div class="input-group">
+                            {{-- Input Pencarian --}}
+                            <input type="text" name="q" class="form-control"
+                                placeholder="Cari berdasarkan Nama Warga..." value="{{ request('q') }}">
+
+                            {{-- Dropdown Status Filter --}}
+                            <select name="status" class="form-select" style="max-width:200px">
+                                <option value="">Semua Status</option>
+                                @if(!empty($statuses) && is_array($statuses))
+                                    @foreach($statuses as $s)
+                                        <option value="{{ $s }}" {{ request('status') == $s ? 'selected' : '' }}>{{ $s }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+
+                            {{-- Tombol Cari --}}
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search me-1"></i> Cari
+                            </button>
+
+                            {{-- Tombol Reset (Hanya muncul jika ada query atau status) --}}
+                            @if (request('q') || request('status'))
+                                <a href="{{ route('pendaftar.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-sync-alt me-1"></i> Reset
+                                </a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             {{-- Alerts --}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show wow fadeInUp" data-wow-delay=".8s"
@@ -84,12 +119,12 @@
                                 {{-- Tombol Aksi --}}
                                 <div class="mt-auto">
                                     <div class="btn-group w-100" role="group">
-                                        <a href="{{ route('pendaftar.edit', $item->pendaftar_id) }}"
+                                        <a href="{{ route('pendaftar.edit', ['pendaftar' => $item->id]) }}"
                                             class="btn btn-warning">
                                             <i class="fas fa-edit me-1"></i> Edit
                                         </a>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ $item->pendaftar_id }}">
+                                            data-bs-target="#deleteModal{{ $item->id }}">
                                             <i class="fas fa-trash me-1"></i> Hapus
                                         </button>
                                     </div>
@@ -100,7 +135,7 @@
                     </div>
 
                     <!-- Delete Confirmation Modal -->
-                    <div class="modal fade" id="deleteModal{{ $item->pendaftar_id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -117,7 +152,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <form action="{{ route('pendaftar.destroy', $item->pendaftar_id) }}" method="POST"
+                                    <form action="{{ route('pendaftar.destroy', $item->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
                                         @method('DELETE')

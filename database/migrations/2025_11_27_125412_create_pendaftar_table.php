@@ -14,9 +14,10 @@ class PendaftarController extends Controller
      */
     public function index(Request $request)
     {
+        // Ambil query pencarian
         $search = $request->query('q');
-        $status = $request->query('status');
         
+        // Mulai query Pendaftar dengan eager loading
         $query = Pendaftar::with(['program', 'warga']);
         
         // Logika Pencarian
@@ -28,7 +29,9 @@ class PendaftarController extends Controller
                 // 1. Mencari berdasarkan nama warga atau NIK.
                 $q->whereHas('warga', function($qWarga) use ($searchTerm) {
                     $qWarga->whereRaw('LOWER(nama) LIKE ?', ['%' . $searchTerm . '%'])
-                           ->orWhere('no_ktp', 'like', '%' . $searchTerm . '%'); 
+                           // PERBAIKAN: Mengganti ke 'nik'
+                           // Jika masih error, GANTI 'nik' DENGAN NAMA KOLOM NIK YANG PASTI DI TABEL WARGA ANDA.
+                           ->orWhere('nik', 'like', '%' . $searchTerm . '%'); 
                 });
                 
                 // 2. Mencari berdasarkan nama program (Case-insensitive)
@@ -39,24 +42,25 @@ class PendaftarController extends Controller
             });
         }
 
-        if ($status) {
-            $query->where('status', $status);
-        }
-
+        // Lanjutkan dengan pagination menggunakan variabel $query yang sudah disaring
         $pendaftar = $query->latest()->paginate(6);
-        $pendaftar->appends(['q' => $search ?? null, 'status' => $status ?? null]); 
         
-        $totalPendaftar = Pendaftar::count(); 
+        // Pastikan pagination links mempertahankan parameter pencarian
+        // Variabel $search bisa null, jadi gunakan operator null-coalesce
+        $pendaftar->appends(['q' => $search ?? null]); 
+        
+        // Hitung statistik (Mengacu pada jumlah Pendaftar)
+        $totalPendaftar = Pendaftar::count(); // Total Pendaftar
         $totalLakiLaki = Pendaftar::whereHas('warga', function($q) {
-            $q->where('jenis_kelamin', 'Laki-laki'); 
+            $q->where('jenis_kelamin', 'Laki-laki'); // Sesuaikan kolom dan nilai jenis kelamin
         })->count();
     
         $totalPerempuan = Pendaftar::whereHas('warga', function($q) {
-            $q->where('jenis_kelamin', 'Perempuan'); 
+            $q->where('jenis_kelamin', 'Perempuan'); // Sesuaikan kolom dan nilai jenis kelamin
         })->count();
 
-        $statuses = ['Pending', 'Verifikasi', 'Ditolak'];
-        return view('pages.pendaftar.index', compact('pendaftar', 'totalPendaftar', 'totalLakiLaki', 'totalPerempuan', 'search', 'status', 'statuses'));
+        // Kirimkan variabel 'search' dan statistik ke view
+        return view('pages.pendaftar.index', compact('pendaftar', 'totalPendaftar', 'totalLakiLaki', 'totalPerempuan', 'search'));
     }
 
     /**
@@ -79,9 +83,11 @@ class PendaftarController extends Controller
         $request->validate([
             'program_id' => 'required|exists:program_bantuan,program_id',
             'warga_id'   => 'required|exists:warga,warga_id',
+            // Pastikan status yang diinput sesuai dengan ENUM di database
             'status'     => 'required|in:Pending,Verifikasi,Ditolak', 
         ]);
 
+        // Cek duplikasi agar warga tidak daftar program yang sama 2 kali
         $cek = Pendaftar::where('program_id', $request->program_id)
                              ->where('warga_id', $request->warga_id)
                              ->first();
@@ -106,6 +112,7 @@ class PendaftarController extends Controller
      */
     public function show(string $id)
     {
+        // Method show biasanya digunakan untuk menampilkan detail, bisa diisi nanti
         $pendaftar = Pendaftar::findOrFail($id);
         return view('pages.pendaftar.show', compact('pendaftar'));
     }
@@ -115,6 +122,7 @@ class PendaftarController extends Controller
      */
     public function edit(string $id)
     {
+        // Menggunakan findOrFail untuk penanganan 404 yang lebih baik
         $pendaftar = Pendaftar::findOrFail($id); 
         $programs = ProgramBantuan::all();
         $wargas = Warga::all();
@@ -127,14 +135,17 @@ class PendaftarController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Menggunakan findOrFail untuk penanganan 404 yang lebih baik
         $pendaftar = Pendaftar::findOrFail($id); 
 
         $request->validate([
             'program_id' => 'required|exists:program_bantuan,program_id', 
             'warga_id'   => 'required|exists:warga,warga_id', 
+            // Pastikan status yang diinput sesuai dengan ENUM di database
             'status'     => 'required|in:Pending,Verifikasi,Ditolak', 
         ]);
 
+        // Update data secara eksplisit
         $pendaftar->update([
             'program_id' => $request->program_id,
             'warga_id' => $request->warga_id,
@@ -151,6 +162,7 @@ class PendaftarController extends Controller
      */
     public function destroy(string $id)
     {
+        // Menggunakan findOrFail untuk penanganan 404 yang lebih baik
         $pendaftar = Pendaftar::findOrFail($id); 
         $pendaftar->delete();
 

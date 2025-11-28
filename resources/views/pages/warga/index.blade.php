@@ -23,11 +23,47 @@
                 </div>
 
                 <div class="d-flex align-items-center">
+                    {{-- FORM FILTER DAN SEARCH (Hanya Satu Form) --}}
                     <form action="{{ route('warga.index') }}" method="GET" class="d-flex me-3">
-                        <input type="text" name="search" class="form-control"
-                            placeholder="Cari NIK, Nama, atau Agama..." value="{{ request('search') }}">
-                     
+
+                        {{-- 1. DROPDOWN FILTER JENIS KELAMIN --}}
+                        <div class="me-2">
+                            <select name="gender" class="form-select" onchange="this.form.submit()">
+                                {{-- Value kosong dikirim sebagai 'Semua' --}}
+                                <option value="" {{ request('gender') == '' ? 'selected' : '' }}>Semua Jenis Kelamin</option>
+                                {{-- Nilai disesuaikan dengan Controller: Laki-laki dan Perempuan --}}
+                                <option value="Laki-laki" {{ request('gender') == 'Laki-laki' ? 'selected' : '' }}>
+                                    Laki-laki
+                                </option>
+                                <option value="Perempuan" {{ request('gender') == 'Perempuan' ? 'selected' : '' }}>
+                                    Perempuan
+                                </option>
+                            </select>
+                        </div>
+
+                        {{-- 2. INPUT SEARCH DAN TOMBOL SUBMIT --}}
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control"
+                                placeholder="Cari NIK, Nama, atau Agama..." value="{{ request('search') }}">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            
+                            {{-- 3. TOMBOL RESET --}}
+                            {{-- Tampilkan tombol reset hanya jika ada filter yang aktif --}}
+                            @if (request('search') || request('gender'))
+                                <a href="{{ route('warga.index') }}" class="btn btn-secondary" title="Reset Filter">
+                                    <i class="fas fa-undo"></i>
+                                </a>
+                            @endif
+
+                        </div>
+                        
+                        {{-- HAPUS: Input hidden 'gender' dihilangkan karena duplikasi dengan 'select' di atas --}}
+                        {{-- HAPUS: @if (request('gender')) ... @endif --}}
+
                     </form>
+
                     <a href="{{ route('warga.create') }}" class="btn btn-success">
                         Tambah Warga
                     </a>
@@ -90,7 +126,8 @@
                                     <div class="h3 mb-0 fw-bolder text-gray-800">{{ number_format($totalLakiLaki) }}</div>
                                     <!-- Pastikan $totalWarga tidak nol untuk menghindari pembagian dengan nol -->
                                     <p class="text-muted small mb-0">
-                                        {{ number_format(($totalLakiLaki / ($totalWarga ?: 1)) * 100, 1) }}% dari total.</p>
+                                        {{ number_format(($totalLakiLaki / ($totalWarga ?: 1)) * 100, 1) }}% dari total.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -213,10 +250,11 @@
 
             <div class="row mt-4">
                 <div class="col-12 d-flex justify-content-center wow fadeInUp" data-wow-delay="1s">
-                    {!! $wargas->links() !!}
+                    {!! $wargas->appends(request()->except('page'))->links() !!}
                 </div>
             </div>
 
         </div>
+
     </section>
 @endsection

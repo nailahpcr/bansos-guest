@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\ProgramBantuan;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 
 class Warga extends Authenticatable
@@ -44,7 +46,7 @@ class Warga extends Authenticatable
     */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed', // Otomatis hash saat di-create
+        'password' => 'hashed', 
     ];
 
 
@@ -58,5 +60,18 @@ class Warga extends Authenticatable
                     ->withTimestamps(); 
     }
 
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
+    {
+        // Iterasi melalui setiap kolom yang diizinkan untuk difilter
+        foreach ($filterableColumns as $column) {
+            // Cek apakah request memiliki nilai untuk kolom saat ini
+            if ($request->filled($column)) {
+                // Tambahkan kondisi WHERE ke query
+                $query->where($column, $request->input($column));
+            }
+        }
+        
+        return $query;
+    }
 }
 

@@ -17,7 +17,7 @@ class WargaDummy extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-        for ($i = 0; $i < 50; $i++) { 
+        for ($i = 0; $i < 100; $i++) { 
             
             $jenis_kelamin_faker = $faker->randomElement(['male', 'female']);
             $jenis_kelamin_db = ($jenis_kelamin_faker == 'male') ? 'Laki-laki' : 'Perempuan'; 

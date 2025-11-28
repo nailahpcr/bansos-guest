@@ -26,27 +26,38 @@ class WargaController extends Controller
      * Menampilkan daftar semua data warga.
      */
     public function index(Request $request) 
-    {
-        $search = $request->input('search');
+{
+    // Ambil parameter pencarian (search) dan filter jenis kelamin (gender)
+    $search = $request->input('search');
+    $genderFilter = $request->input('gender'); // Parameter baru untuk filter gender
 
-        $wargaQuery = Warga::query()->latest();
+    $wargaQuery = Warga::query()->latest();
 
-        if ($search) {
-            $wargaQuery->where(function ($query) use ($search) {
-                $query->where('nama', 'like', '%' . $search . '%')
-                      ->orWhere('no_ktp', 'like', '%' . $search . '%')
-                      ->orWhere('agama', 'like', '%' . $search . '%');
-            });
-        }
+    // 1. Logika Pencarian (Nama, NIK, Agama)
+    if ($search) {
+        $wargaQuery->where(function ($query) use ($search) {
+            $query->where('nama', 'like', '%' . $search . '%')
+                  ->orWhere('no_ktp', 'like', '%' . $search . '%')
+                  ->orWhere('agama', 'like', '%' . $search . '%');
+        });
+    }
 
-       $wargas = $wargaQuery->paginate(10)->withQueryString();
+    // 2. Logika Pemfilteran Jenis Kelamin (Gender)
+    // Jika parameter filter gender ada dan nilainya bukan 'Semua' (atau kosong)
+    if ($genderFilter && $genderFilter !== 'Semua') {
+        // Asumsi: Nilai di database adalah 'Laki-laki' dan 'Perempuan'
+        $wargaQuery->where('jenis_kelamin', $genderFilter);
+    }
 
-        $totalWarga = Warga::count();
-        $totalLakiLaki = Warga::where('jenis_kelamin', 'Laki-laki')->count();
-        $totalPerempuan = Warga::where('jenis_kelamin', 'Perempuan')->count();
+    $wargas = $wargaQuery->paginate(10)->withQueryString();
 
-        return view('pages.warga.index', compact('wargas', 'totalWarga', 'totalLakiLaki', 'totalPerempuan', 'search'));    }
+    $totalWarga = Warga::count();
+    $totalLakiLaki = Warga::where('jenis_kelamin', 'Laki-laki')->count();
+    $totalPerempuan = Warga::where('jenis_kelamin', 'Perempuan')->count();
 
+    // Pastikan variabel genderFilter juga dikirim ke view agar filter bisa dipertahankan
+    return view('pages.warga.index', compact('wargas', 'totalWarga', 'totalLakiLaki', 'totalPerempuan', 'search', 'genderFilter')); 
+}
     /**
      * Menampilkan form untuk menambah data warga baru.
      */
