@@ -44,8 +44,7 @@ class PendaftarController extends Controller
         }
 
         $pendaftar = $query->latest()->paginate(6);
-        $pendaftar->appends(['q' => $search ?? null, 'status' => $status ?? null]); 
-        
+        $pendaftar->appends($request->except('page'));        
         $totalPendaftar = Pendaftar::count(); 
         $totalLakiLaki = Pendaftar::whereHas('warga', function($q) {
             $q->where('jenis_kelamin', 'Laki-laki'); 

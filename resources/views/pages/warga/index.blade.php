@@ -16,22 +16,25 @@
                 </div>
             </div>
 
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
+            {{-- Title & Add Button --}}
+            <div class="row mb-4 wow fadeInUp" data-wow-delay=".7s">
+                <div class="col-lg-12 d-flex justify-content-between align-items-center">
                     <h3 class="mb-0">Daftar Warga</h3>
+                    <a class="btn btn-success" href="{{ route('warga.create') }}">
+                        <i class="fas fa-plus me-1"></i> Tambah Warga
+                    </a>
                 </div>
+            </div>
 
-                <div class="d-flex align-items-center">
-                    {{-- FORM FILTER DAN SEARCH (Hanya Satu Form) --}}
-                    <form action="{{ route('warga.index') }}" method="GET" class="d-flex me-3">
-
-                        {{-- 1. DROPDOWN FILTER JENIS KELAMIN --}}
-                        <div class="me-2">
-                            <select name="gender" class="form-select" onchange="this.form.submit()">
-                                {{-- Value kosong dikirim sebagai 'Semua' --}}
+            {{-- Search Bar, Filter, dan Reset Button --}}
+            <div class="row mb-4 wow fadeInUp" data-wow-delay=".8s">
+                <div class="col-lg-12">
+                    <form action="{{ route('warga.index') }}" method="GET">
+                        <div class="input-group">
+                            
+                            {{-- Dropdown Filter Jenis Kelamin --}}
+                            <select name="gender" class="form-select" style="max-width:200px">
                                 <option value="" {{ request('gender') == '' ? 'selected' : '' }}>Semua Jenis Kelamin</option>
-                                {{-- Nilai disesuaikan dengan Controller: Laki-laki dan Perempuan --}}
                                 <option value="Laki-laki" {{ request('gender') == 'Laki-laki' ? 'selected' : '' }}>
                                     Laki-laki
                                 </option>
@@ -39,36 +42,28 @@
                                     Perempuan
                                 </option>
                             </select>
-                        </div>
 
-                        {{-- 2. INPUT SEARCH DAN TOMBOL SUBMIT --}}
-                        <div class="input-group">
+                            {{-- Input Search (q) --}}
                             <input type="text" name="search" class="form-control"
                                 placeholder="Cari NIK, Nama, atau Agama..." value="{{ request('search') }}">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
                             
-                            {{-- 3. TOMBOL RESET --}}
-                            {{-- Tampilkan tombol reset hanya jika ada filter yang aktif --}}
+                            {{-- Tombol Cari --}}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-1"></i> Cari
+                            </button>
+
+                            {{-- Tombol Reset (Hanya muncul jika ada filter yang aktif) --}}
                             @if (request('search') || request('gender'))
                                 <a href="{{ route('warga.index') }}" class="btn btn-secondary" title="Reset Filter">
-                                    <i class="fas fa-undo"></i>
+                                    <i class="fas fa-sync-alt me-1"></i> Reset
                                 </a>
                             @endif
 
                         </div>
-                        
-                        {{-- HAPUS: Input hidden 'gender' dihilangkan karena duplikasi dengan 'select' di atas --}}
-                        {{-- HAPUS: @if (request('gender')) ... @endif --}}
-
                     </form>
-
-                    <a href="{{ route('warga.create') }}" class="btn btn-success">
-                        Tambah Warga
-                    </a>
                 </div>
             </div>
+            {{-- AKHIR PERUBAHAN UTAMA --}}
 
             <hr>
             @if (session('success'))
@@ -89,13 +84,11 @@
 
             <div class="row g-4 mb-5 justify-content-center">
 
-                <!-- Card Total Pendaftar -->
                 <div class="col-xl-4 col-md-6 wow fadeInUp" data-wow-delay=".7s">
                     <div class="card shadow h-100 border-start border-5 border-primary rounded-3">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    <!-- Icon Total Warga -->
                                     <i class="fas fa-users fa-3x text-primary opacity-75"></i>
                                 </div>
                                 <div class="col ps-4">
@@ -110,13 +103,11 @@
                     </div>
                 </div>
 
-                <!-- Card Laki-laki -->
                 <div class="col-xl-4 col-md-6 wow fadeInUp" data-wow-delay=".8s">
                     <div class="card shadow h-100 border-start border-5 border-info rounded-3">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    <!-- Icon Laki-laki -->
                                     <i class="fas fa-male fa-3x text-info opacity-75"></i>
                                 </div>
                                 <div class="col ps-4">
@@ -124,7 +115,6 @@
                                         Warga Laki-laki
                                     </div>
                                     <div class="h3 mb-0 fw-bolder text-gray-800">{{ number_format($totalLakiLaki) }}</div>
-                                    <!-- Pastikan $totalWarga tidak nol untuk menghindari pembagian dengan nol -->
                                     <p class="text-muted small mb-0">
                                         {{ number_format(($totalLakiLaki / ($totalWarga ?: 1)) * 100, 1) }}% dari total.
                                     </p>
@@ -134,13 +124,11 @@
                     </div>
                 </div>
 
-                <!-- Card Perempuan -->
                 <div class="col-xl-4 col-md-6 wow fadeInUp" data-wow-delay=".9s">
                     <div class="card shadow h-100 border-start border-5 border-danger rounded-3">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    <!-- Icon Perempuan -->
                                     <i class="fas fa-female fa-3x text-danger opacity-75"></i>
                                 </div>
                                 <div class="col ps-4">
@@ -148,7 +136,6 @@
                                         Warga Perempuan
                                     </div>
                                     <div class="h3 mb-0 fw-bolder text-gray-800">{{ number_format($totalPerempuan) }}</div>
-                                    <!-- Pastikan $totalWarga tidak nol untuk menghindari pembagian dengan nol -->
                                     <p class="text-muted small mb-0">
                                         {{ number_format(($totalPerempuan / ($totalWarga ?: 1)) * 100, 1) }}% dari total.
                                     </p>
@@ -200,7 +187,6 @@
                         </div>
                     </div>
 
-                    <!-- Delete Confirmation Modal -->
                     <div class="modal fade" id="deleteModal{{ $warga->warga_id }}" tabindex="-1"
                         aria-labelledby="deleteModalLabel{{ $warga->warga_id }}" aria-hidden="true">
                         <div class="modal-dialog">

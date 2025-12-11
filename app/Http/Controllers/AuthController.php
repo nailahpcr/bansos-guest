@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; // <-- INI PERBAIKAN UNTUK ERROR ANDA
-use Illuminate\Validation\Rules;      // <-- Ini untuk validasi password
+use Illuminate\Support\Facades\Hash; 
+use Illuminate\Validation\Rules;      
 use Illuminate\Validation\ValidationException;
 use App\Models\Warga;
 

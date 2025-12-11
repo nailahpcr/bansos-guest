@@ -2,8 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProgramBantuan; 
+use App\Models\MediaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProgramController extends Controller
 {
@@ -13,6 +15,14 @@ class ProgramController extends Controller
         $programs = ProgramBantuan::latest()->paginate(9);
 
         return view('home', compact('programs'));
+    }
+
+    public function showPublic(ProgramBantuan $program)
+    {
+        $media = MediaModel::where('ref_table', 'program_bantuan')
+                             ->where('ref_id', $program->program_id)
+                             ->get();
+        return view('pages.program.show', compact('program', 'media'));
     }
 
     public function index()
@@ -34,6 +44,7 @@ class ProgramController extends Controller
             'nama_program' => 'required',
             'tahun'        => 'required|integer',
             'anggaran'     => 'required|numeric',
+            'deskripsi'    => 'nullable|string',
         ]);
 
         ProgramBantuan::create($request->all());
@@ -42,45 +53,107 @@ class ProgramController extends Controller
 
     public function show(ProgramBantuan $program)
     {
-        return view('pages.program.show', compact('program'));
+        $media = MediaModel::where('ref_table', 'program_bantuan')
+                             ->where('ref_id', $program->program_id)
+                             ->get();
+        return view('pages.program.show', compact('program', 'media'));
     }
 
-    public function edit(string $program_id)
+    public function edit(ProgramBantuan $program)
     {
-        $program = ProgramBantuan::findOrFail($program_id);
         return view('pages.program.edit', compact('program'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, ProgramBantuan $program)
     {
         $validatedData = $request->validate([
-            'kode'         => 'required',
+            'kode'         => 'required|unique:program_bantuan,kode,' . $program->program_id . ',program_id',
             'nama_program' => 'required',
             'tahun'        => 'required|integer',
             'anggaran'     => 'required|numeric',
-            'deskripsi'     => 'required',
+            'deskripsi'    => 'nullable|string',
         ]);
 
-        $program = ProgramBantuan::findOrFail($id);
-
         $program->update($validatedData);
-
         return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
     }
 
     public function destroy(ProgramBantuan $program)
     {
+        $mediaToDelete = MediaModel::where('ref_table', 'program_bantuan')
+                                   ->where('ref_id', $program->program_id)
+                                   ->get();
+                                   
+        foreach ($mediaToDelete as $media) {
+            // Hapus file fisik dari storage
+            Storage::delete('uploads/program_bantuan/' . $media->file_name); 
+            $media->delete(); // Hapus entri dari tabel media
+        }
+
         $program->delete();
-        
         return redirect()->route('kelola-program.index')->with('success', 'Program berhasil dihapus.');
+    }
+
+    public function uploadMedia(Request $request, ProgramBantuan $program)
+    {
+        $request->validate([
+            'file_program' => 'required|file|max:10240', // 10MB
+            'caption' => 'nullable|string|max:255',
+        ]);
+
+        if ($request->hasFile('file_program')) {
+            $file = $request->file('file_program');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = 'uploads/program_bantuan/';
+        
+            // Simpan file
+            $file->storeAs($filePath, $fileName, 'public');
+
+            // Simpan ke database
+            MediaModel::create([
+                'ref_table' => 'program_bantuan',
+                'ref_id' => $program->program_id,
+                'file_name' => $fileName,
+                'caption' => $request->caption,
+                'mime_type' => $file->getMimeType(),
+                'sort_order' => 0,
+            ]);
+
+            return redirect()->route('kelola-program.show', $program->program_id)
+                             ->with('success', 'File berhasil diunggah.');
+        }
+        
+        return back()->with('error', 'Gagal mengunggah file.');
+    }
+
+    public function deleteMedia($media_id)
+    {
+        $media = MediaModel::findOrFail($media_id);
+        $program_id = $media->ref_id;
+        
+        // Hapus file fisik
+        Storage::delete('uploads/program_bantuan/' . $media->file_name);
+        
+        // Hapus entri dari tabel media
+        $media->delete();
+        
+        // Tentukan redirect berdasarkan route sebelumnya
+        $previousUrl = url()->previous();
+        
+        // Jika datang dari route admin, redirect ke admin
+        if (str_contains($previousUrl, '/kelola-program/')) {
+            return redirect()->route('kelola-program.show', $program_id)
+                             ->with('success', 'Dokumen berhasil dihapus.');
+        }
+
+        // Redirect ke program.show (public route) 
+        return redirect()->route('program.show', $program_id)
+                         ->with('success', 'Dokumen berhasil dihapus.');
     }
 
     public function ajukanProgram($program_id)
     {
         $user = Auth::user();
-
-        $program = ProgramBantuan::findOrFail($program_id);
-
         $user->programBantuans()->attach($program->program_id);
 
         return redirect()->route('kelola-program.index')->with('success', 'Anda berhasil mengikuti program ' . $program->nama_program);
@@ -93,4 +166,6 @@ class ProgramController extends Controller
 
         return redirect()->route('kelola-program.index')->with('success', 'Partisipasi Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
     }
+
+
 }

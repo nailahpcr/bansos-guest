@@ -13,8 +13,8 @@
                     <div class="section-title">
                         <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen Program</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Kelola Program Bantuan</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Di halaman ini, Anda (sebagai warga) dapat membuat,
-                            mengubah, dan menghapus program bantuan.</p>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Anda dapat membuat,
+                            mengubah, dan menghapus program bantuan</p>
                     </div>
                 </div>
             </div>
@@ -22,7 +22,8 @@
             {{-- TOMBOL TAMBAH PROGRAM --}}
             <div class="row mb-4">
                 <div class="col-12 text-center">
-                    <a class="btn btn-primary wow fadeInUp" data-wow-delay=".8s" href="{{ route('kelola-program.create') }}">
+                    <a class="btn btn-primary wow fadeInUp" data-wow-delay=".8s"
+                        href="{{ route('kelola-program.create') }}">
                         <i class="fas fa-plus me-1"></i> Tambah Program Baru
                     </a>
                 </div>
@@ -50,8 +51,12 @@
                             <p>{{ Str::limit($program->deskripsi, 100) }}</p>
                             <p><strong>Anggaran:</strong> Rp {{ number_format($program->anggaran, 0, ',', '.') }}</p>
 
-                        
+
                             <div class="action-buttons mt-3">
+
+                                {{-- Tombol Detail (untuk melihat dokumen dan fitur unggah) --}}
+                                <a href="{{ route('kelola-program.show', $program) }}"
+                                    class="btn btn-sm btn-success text-white d-inline-block mb-1">Detail & Dokumen</a>
 
                                 {{-- Tombol Edit (Link Biasa) --}}
                                 <a href="{{ route('kelola-program.edit', $program->program_id) }}"
@@ -67,29 +72,29 @@
                                 </form>
 
                                 {{-- Tombol Kondisional (Ikuti / Batalkan) --}}
-                                {{-- Cek apakah Warga yang login sudah mengikuti program ini --}}
-                                @if (Auth::user() && Auth::user()->programBantuans->contains($program->program_id))
-                                    {{-- JIKA SUDAH IKUT: Tampilkan form dengan tombol "Batalkan Partisipasi" --}}
-                                    <form action="{{ route('program.batalkan', $program->program_id) }}" method="POST"
-                                        class="d-inline-block mb-1"
-                                        onsubmit="return confirm('Anda yakin ingin membatalkan partisipasi di program ini?');">
-                                        @csrf
-                                        @method('DELETE') {{-- Penting! Memberitahu Laravel ini adalah request DELETE --}}
-                                        <button type="submit" class="btn btn-sm btn-warning">Batalkan Partisipasi</button>
-                                    </form>
-                                @else
-                                    {{-- JIKA BELUM IKUT: Tampilkan form dengan tombol "Ikuti Program" --}}
-                                    <form action="{{ route('program.ajukan', $program->program_id) }}" method="POST"
-                                        class="d-inline-block mb-1"
-                                        onsubmit="return confirm('Anda yakin ingin mengikuti program ini?');">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success">Ikuti Program</button>
-                                    </form>
+                                @if (Auth::user())
+                                    @if (Auth::user()->programBantuans->contains($program->program_id))
+                                        {{-- JIKA SUDAH IKUT: Tombol "Batalkan Partisipasi" --}}
+                                        <form action="{{ route('kelola-program.batalkan', $program->program_id) }}"
+                                            method="POST" class="d-inline-block mb-1"
+                                            onsubmit="return confirm('Anda yakin ingin membatalkan partisipasi di program ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-warning">Batalkan
+                                                Partisipasi</button>
+                                        </form>
+                                    @else
+                                        {{-- JIKA BELUM IKUT: Tombol "Ikuti Program" --}}
+                                        <form action="{{ route('kelola-program.ajukan', $program->program_id) }}"
+                                            method="POST" class="d-inline-block mb-1"
+                                            onsubmit="return confirm('Anda yakin ingin mengikuti program ini?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success">Ikuti Program</button>
+                                        </form>
+                                    @endif
                                 @endif
 
                             </div>
-                            {{-- =================== AKHIR PERUBAHAN =================== --}}
-
                         </div>
                     </div>
                 @empty

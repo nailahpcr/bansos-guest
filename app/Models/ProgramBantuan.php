@@ -10,48 +10,42 @@ class ProgramBantuan extends Model
     use HasFactory;
 
     /**
-     * Nama tabel database yang terkait dengan model ini.
-     *
+     * Nama tabel yang terkait dengan model.
      * @var string
      */
     protected $table = 'program_bantuan';
 
     /**
-     * Primary key yang terkait dengan tabel.
-     *
+     * Kunci utama tabel.
      * @var string
      */
     protected $primaryKey = 'program_id';
-
+    
     /**
-     * Atribut yang boleh diisi secara massal.
-     *
-     * @var array
+     * Kolom yang dapat diisi secara massal.
+     * @var array<int, string>
      */
     protected $fillable = [
         'kode',
         'nama_program',
         'tahun',
-        'deskripsi',
         'anggaran',
+        'deskripsi',
     ];
-
+    
     /**
-     * Relasi many-to-many ke model Warga.
-     * (Untuk fitur "warga mengikuti program")
+     * Relasi ke tabel media.
      */
-    public function wargas()
+    public function media()
     {
-        return $this->belongsToMany(
-            Warga::class,
-            'program_bantuan_warga',
-            'program_bantuan_program_id',
-            'warga_warga_id'
-        )->withPivot('status', 'tanggal_pengajuan')->withTimestamps();
+        return $this->morphMany(MediaModel::class, null, 'ref_table', 'ref_id');
     }
-
-    public function programBantuans()
-{
-    return $this->belongsToMany(ProgramBantuan::class, 'program_bantuan_warga', 'warga_id', 'program_bantuan_id');
-}
+    
+    /**
+     * Relasi ke users (many-to-many).
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'program_participants', 'program_id', 'user_id');
+    }
 }
