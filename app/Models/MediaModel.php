@@ -23,9 +23,6 @@ class MediaModel extends Model
     
     public $timestamps = true;
     
-    /**
-     * Relasi polymorphic.
-     */
     public function mediable()
     {
         return $this->morphTo(null, 'ref_table', 'ref_id');

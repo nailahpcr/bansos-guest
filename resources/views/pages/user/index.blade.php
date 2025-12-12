@@ -3,7 +3,6 @@
 @section('title', 'Manajemen Data User')
 
 @section('content')
-
     <section id="features" class="features section">
         <div class="container">
             {{-- Section Header --}}
@@ -28,7 +27,6 @@
                     </div>
 
                     {{-- SEARCH FORM --}}
-                    {{-- Form ini akan mengirimkan request GET untuk mencari data --}}
                     <form action="{{ route('user.index') }}" method="GET" class="mb-3">
                         <div class="row align-items-center">
                             {{-- Search Bar --}}
@@ -58,7 +56,6 @@
                         </div>
                     </form>
                     {{-- END SEARCH FORM --}}
-
                 </div>
             </div>
 
@@ -85,110 +82,209 @@
                     <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay=".{{ ($loop->iteration % 4) + 1 }}s">
                         <div class="card shadow-sm h-100">
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ $user->name }}</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">{{ $user->email }}</h6>
-                                <p class="card-text mb-2">Role: <strong>{{ ucfirst($user->role ?? 'N/A') }}</strong></p>
-                                {{-- Nama & Email di sebelah kanan --}}
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title fw-bold mb-0" style="font-size: 1.1rem;">{{ $user->name }}</h5>
-                                    <h6 class="card-subtitle text-muted" style="font-size: 0.85rem;">
-                                        <i class="fas fa-envelope me-1"></i> {{ $user->email }}
-                                    </h6>
+                                {{-- Header Card --}}
+                                <div class="d-flex align-items-start mb-3">
+                                    {{-- Avatar / Initial --}}
+                                    <div class="avatar-circle me-3">
+                                        <span class="avatar-text">
+                                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                                        </span>
+                                    </div>
+                                    {{-- User Info --}}
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-0 fw-bold">{{ $user->name }}</h5>
+                                        <p class="card-subtitle mb-1 text-muted small">
+                                            <i class="fas fa-envelope me-1"></i> {{ $user->email }}
+                                        </p>
+                                        <span class="badge bg-{{ $user->role == 'admin' ? 'danger' : 'primary' }}">
+                                            <i class="fas fa-user-tag me-1"></i> {{ ucfirst($user->role ?? 'N/A') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <hr class="my-2">
+
+                                {{-- User Details --}}
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-calendar-alt me-2 text-success"></i>
+                                        <span><strong>Bergabung:</strong> {{ $user->created_at->format('d M Y') }}</span>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="fas fa-key me-2 text-warning"></i>
+                                            <span><strong>Password Hash:</strong></span>
+                                        </div>
+                                        {{-- Password Hash --}}
+                                        <div class="bg-light rounded p-2 border">
+                                            <code class="text-dark d-block small" style="word-break: break-all;">
+                                                {{ Str::limit($user->password, 30) }}
+                                            </code>
+                                            <small class="text-muted d-block mt-1">
+                                                <i class="fas fa-info-circle me-1"></i> Hash dikunci dengan bcrypt
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Tombol Aksi --}}
+                                <div class="mt-auto pt-2">
+                                    <div class="btn-group w-100" role="group">
+                                        <a href="{{ route('user.edit', $user->id) }}" class="btn btn-outline-warning">
+                                            <i class="fas fa-edit me-1"></i> Edit
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ $user->id }}">
+                                            <i class="fas fa-trash me-1"></i> Hapus
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            {{-- END: PERUBAHAN TATA LETAK PROFIL --}}
+                        </div>
+                    </div>
 
-                            <hr class="my-2">
-
-                            {{-- Tanggal Bergabung (Dengan Ikon Kalender) --}}
-                            <p class="card-text mb-2 pt-2">
-                                <i class="fas fa-calendar-alt me-2 text-success"></i>
-                                <strong>Bergabung:</strong> {{ $user->created_at->format('d M Y') }}
-                            </p>
-
-                            {{-- Password Hash (Dengan Ikon Kunci) --}}
-                            <div class="mb-3">
-                                <div class="d-flex align-items-center mb-1">
-                                    <i class="fas fa-key me-2 text-warning"></i>
-                                    <strong>Password Hashed:</strong>
+                    {{-- Delete Confirmation Modal --}}
+                    <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1"
+                        aria-labelledby="deleteModalLabel{{ $user->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel{{ $user->id }}">
+                                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                                        Konfirmasi Hapus User
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                                 </div>
-                                {{-- Box kode hash agar terlihat rapi --}}
-                                <div class="bg-light rounded p-2 border" style="background-color: #f8f9fa;">
-                                    <code class="text-dark d-block" style="word-break: break-all; font-size: 0.85rem;">
-                                        {{ Str::limit($user->password, 25) }}
-                                    </code>
+                                <div class="modal-body">
+                                    <div class="alert alert-warning mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-user-circle fa-2x me-3"></i>
+                                            <div>
+                                                <h6 class="fw-bold mb-1">{{ $user->name }}</h6>
+                                                <p class="mb-0">{{ $user->email }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-danger">
+                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                        Data yang dihapus tidak dapat dikembalikan!
+                                    </p>
                                 </div>
-                            </div>
-
-                            {{-- Tombol Aksi (Group Style) --}}
-                            <div class="mt-auto">
-                                <div class="btn-group w-100" role="group">
-                                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning">
-                                        <i class="fas fa-edit me-1"></i> Edit
-                                    </a>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal{{ $user->id }}">
-                                        <i class="fas fa-trash me-1"></i> Hapus
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-1"></i> Batal
                                     </button>
+                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fas fa-trash me-1"></i> Ya, Hapus
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-            </div>
-
-            {{-- Delete Confirmation Modal --}}
-            <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1"
-                aria-labelledby="deleteModalLabel{{ $user->id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel{{ $user->id }}">
-                                Konfirmasi Hapus Data User
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Apakah Anda yakin ingin menghapus user berikut?</p>
-                            <div class="alert alert-warning">
-                                <strong>Nama:</strong> {{ $user->name }}<br>
-                                <strong>Email:</strong> {{ $user->email }}
+                @empty
+                    <div class="col-12">
+                        <div class="card border-dashed text-center py-5">
+                            <div class="card-body">
+                                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                <h5 class="card-title">Belum ada data user</h5>
+                                <p class="card-text text-muted">Silakan tambah user baru untuk mulai</p>
+                                <a href="{{ route('user.create') }}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-plus me-1"></i> Tambah User Pertama
+                                </a>
                             </div>
-                            <p class="text-danger"><small>Data yang dihapus tidak dapat dikembalikan!</small></p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-1"></i> Batal
-                            </button>
-                            <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-trash me-1"></i> Ya, Hapus
-                                </button>
-                            </form>
                         </div>
                     </div>
-                </div>
+                @endforelse
             </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-secondary text-center wow fadeInUp" data-wow-delay=".2s">
-                    <p class="mb-0">Belum ada data user yang ditemukan.</p>
-                </div>
-            </div>
-            @endforelse
-        </div>
 
-        {{-- Pagination --}}
-        <div class="row mt-4">
-            <div class="col-12 d-flex justify-content-center wow fadeInUp" data-wow-delay="1s">
-                {{-- Pastikan pagination menyertakan parameter pencarian yang ada --}}
-                {!! $users->appends(request()->query())->links() !!}
-            </div>
-        </div>
-
+            {{-- Pagination --}}
+            @if($users->hasPages())
+                <div class="row mt-4">
+                    <div class="col-12 d-flex justify-content-center wow fadeInUp" data-wow-delay="1s">
+                        {{ $users->appends(request()->query())->links() }}
+                    </div>
+                </div>
+            @endif
         </div>
     </section>
+
+    <style>
+        .avatar-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-text {
+            line-height: 1;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #0d6efd;
+        }
+
+        .card-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+            font-weight: 500;
+        }
+
+        .border-dashed {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+        }
+
+        .btn-group .btn-outline-warning:hover {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-group .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .avatar-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
 @endsection

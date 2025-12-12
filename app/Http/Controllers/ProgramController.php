@@ -14,12 +14,12 @@ class ProgramController extends Controller
     {
         $programs = ProgramBantuan::latest()->paginate(9);
 
-        return view('home', compact('programs'));
+        return view('pages.home', compact('programs'));
     }
 
     public function showPublic(ProgramBantuan $program)
     {
-        $media = MediaModel::where('ref_table', 'program_bantuan')
+        $media = MediaModel::where('ref_table', 'App\Models\ProgramBantuan')
                              ->where('ref_id', $program->program_id)
                              ->get();
         return view('pages.program.show', compact('program', 'media'));
@@ -53,7 +53,7 @@ class ProgramController extends Controller
 
     public function show(ProgramBantuan $program)
     {
-        $media = MediaModel::where('ref_table', 'program_bantuan')
+        $media = MediaModel::where('ref_table', 'App\Models\ProgramBantuan')
                              ->where('ref_id', $program->program_id)
                              ->get();
         return view('pages.program.show', compact('program', 'media'));
@@ -80,13 +80,13 @@ class ProgramController extends Controller
 
     public function destroy(ProgramBantuan $program)
     {
-        $mediaToDelete = MediaModel::where('ref_table', 'program_bantuan')
+        $mediaToDelete = MediaModel::where('ref_table', 'App\Models\ProgramBantuan')
                                    ->where('ref_id', $program->program_id)
                                    ->get();
                                    
         foreach ($mediaToDelete as $media) {
-            // Hapus file fisik dari storage
-            Storage::delete('uploads/program_bantuan/' . $media->file_name); 
+            // Hapus file fisik
+            Storage::delete('public/uploads/program_bantuan/' . $media->file_name); 
             $media->delete(); // Hapus entri dari tabel media
         }
 
@@ -97,13 +97,13 @@ class ProgramController extends Controller
     public function uploadMedia(Request $request, ProgramBantuan $program)
     {
         $request->validate([
-            'file_program' => 'required|file|max:10240', // 10MB
+            'file_program' => 'required|image|max:10240', // 10MB, images only
             'caption' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('file_program')) {
             $file = $request->file('file_program');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9\-_.]/', '_', $file->getClientOriginalName());
             $filePath = 'uploads/program_bantuan/';
         
             // Simpan file
@@ -111,7 +111,7 @@ class ProgramController extends Controller
 
             // Simpan ke database
             MediaModel::create([
-                'ref_table' => 'program_bantuan',
+                'ref_table' => 'App\Models\ProgramBantuan',
                 'ref_id' => $program->program_id,
                 'file_name' => $fileName,
                 'caption' => $request->caption,
@@ -120,10 +120,10 @@ class ProgramController extends Controller
             ]);
 
             return redirect()->route('kelola-program.show', $program->program_id)
-                             ->with('success', 'File berhasil diunggah.');
+                             ->with('success', 'Gambar berhasil diunggah.');
         }
         
-        return back()->with('error', 'Gagal mengunggah file.');
+        return back()->with('error', 'Gagal mengunggah gambar.');
     }
 
     public function deleteMedia($media_id)
@@ -132,7 +132,7 @@ class ProgramController extends Controller
         $program_id = $media->ref_id;
         
         // Hapus file fisik
-        Storage::delete('uploads/program_bantuan/' . $media->file_name);
+        Storage::delete('public/uploads/program_bantuan/' . $media->file_name);
         
         // Hapus entri dari tabel media
         $media->delete();
@@ -151,7 +151,7 @@ class ProgramController extends Controller
                          ->with('success', 'Dokumen berhasil dihapus.');
     }
 
-    public function ajukanProgram($program_id)
+    public function ajukanProgram(ProgramBantuan $program)
     {
         $user = Auth::user();
         $user->programBantuans()->attach($program->program_id);

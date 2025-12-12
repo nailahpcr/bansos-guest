@@ -43,7 +43,22 @@
                     <div class="col-lg-4 col-md-6 col-12">
                         {{-- Ini adalah style 'single-feature' yang Anda gunakan di home --}}
                         <div class="single-feature wow fadeInUp" data-wow-delay=".2s">
-                            <i class="lni lni-package"></i>
+                            @php
+                                $imageMedia = $program->media->filter(function ($item) {
+                                    return Str::startsWith($item->mime_type, 'image/');
+                                });
+                            @endphp
+                            @if ($imageMedia->isNotEmpty())
+                                @php $firstImage = $imageMedia->first(); @endphp
+                                <img src="{{ asset('storage/uploads/program_bantuan/' . $firstImage->file_name) }}"
+                                    alt="{{ $firstImage->caption ?: $program->nama_program }}"
+                                    style="width: 100%; height: 150px; object-fit: cover; margin-bottom: 10px;">
+                            @else
+                                <div
+                                    style="width: 100%; height: 150px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border: 1px solid #dee2e6;">
+                                    <i class="lni lni-image" style="font-size: 3rem; color: #6c757d;"></i>
+                                </div>
+                            @endif
 
                             <h3>{{ $program->nama_program }}</h3>
                             <p class="mb-2"><strong>Kode:</strong> {{ $program->kode }} | <strong>Tahun:</strong>
@@ -54,40 +69,43 @@
 
                             <div class="action-buttons mt-3">
 
-                                {{-- Tombol Detail (untuk melihat dokumen dan fitur unggah) --}}
+                                {{-- Tombol Detail --}}
                                 <a href="{{ route('kelola-program.show', $program) }}"
-                                    class="btn btn-sm btn-success text-white d-inline-block mb-1">Detail & Dokumen</a>
+                                    class="btn btn-sm btn-success text-white mb-1">
+                                    Detail 
+                                </a>
 
-                                {{-- Tombol Edit (Link Biasa) --}}
+                                {{-- Tombol Edit (Gunakan SPAN agar tidak bentrok) --}}
                                 <a href="{{ route('kelola-program.edit', $program->program_id) }}"
-                                    class="btn btn-sm btn-info text-white d-inline-block mb-1">Edit</a>
+                                    class="btn btn-sm btn-info text-white mb-1">
+                                    <span class="fas fa-pencil-alt"></span> Edit
+                                </a>
 
-                                {{-- Tombol Hapus (Form Terpisah) --}}
+                                {{-- Tombol Hapus --}}
                                 <form action="{{ route('kelola-program.destroy', $program->program_id) }}" method="POST"
                                     class="d-inline-block mb-1"
                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <span class="fas fa-trash"></span> Hapus
+                                    </button>
                                 </form>
 
-                                {{-- Tombol Kondisional (Ikuti / Batalkan) --}}
+                                {{-- Tombol Partisipasi --}}
                                 @if (Auth::user())
                                     @if (Auth::user()->programBantuans->contains($program->program_id))
-                                        {{-- JIKA SUDAH IKUT: Tombol "Batalkan Partisipasi" --}}
                                         <form action="{{ route('kelola-program.batalkan', $program->program_id) }}"
                                             method="POST" class="d-inline-block mb-1"
-                                            onsubmit="return confirm('Anda yakin ingin membatalkan partisipasi di program ini?');">
+                                            onsubmit="return confirm('Batalkan partisipasi?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-warning">Batalkan
-                                                Partisipasi</button>
+                                            <button type="submit" class="btn btn-sm btn-warning">Batalkan Program</button>
                                         </form>
                                     @else
-                                        {{-- JIKA BELUM IKUT: Tombol "Ikuti Program" --}}
                                         <form action="{{ route('kelola-program.ajukan', $program->program_id) }}"
                                             method="POST" class="d-inline-block mb-1"
-                                            onsubmit="return confirm('Anda yakin ingin mengikuti program ini?');">
+                                            onsubmit="return confirm('Ikuti program ini?');">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-success">Ikuti Program</button>
                                         </form>

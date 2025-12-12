@@ -115,7 +115,7 @@
                                     </form>
                                 @else
                                     {{-- JIKA BELUM IKUT: Tampilkan form dengan tombol "Ikuti Program" --}}
-                                    <form action="{{ route('program.ajukan', $program->program_id) }}" method="POST"
+                                    <form action="{{ route('kelola-program.ajukan', $program->program_id) }}" method="POST"
                                         class="d-inline-block mb-1"
                                         onsubmit="return confirm('Anda yakin ingin mengikuti program ini?');">
                                         @csrf
