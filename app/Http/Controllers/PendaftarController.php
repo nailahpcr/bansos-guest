@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Pendaftar;
 use App\Models\ProgramBantuan;
 use App\Models\Warga;
+use App\Models\PendaftarFile;
+use Illuminate\Support\Facades\Storage;
 
 class PendaftarController extends Controller
 {
@@ -79,6 +81,9 @@ class PendaftarController extends Controller
             'program_id' => 'required|exists:program_bantuan,program_id',
             'warga_id'   => 'required|exists:warga,warga_id',
             'status'     => 'required|in:Pending,Verifikasi,Ditolak', 
+            'keterangan' => 'nullable|string|max:500',
+            'files.*'    => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
+
         ]);
 
         $cek = Pendaftar::where('program_id', $request->program_id)
@@ -96,6 +101,20 @@ class PendaftarController extends Controller
             'status' => $request->status,
             'keterangan' => $request->keterangan,
         ]);
+        // Upload multiple files 
+         if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('pendaftar_files', 'public');
+                
+                PendaftarFile::create([
+                    'pendaftar_id' => $pendaftar->id,
+                    'filename' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                ]);
+            }
+        }
 
         return redirect()->route('pendaftar.index')->with('success', 'Pendaftaran berhasil ditambahkan!');
     }
@@ -128,10 +147,12 @@ class PendaftarController extends Controller
     {
         $pendaftar = Pendaftar::findOrFail($id); 
 
-        $request->validate([
+        $validated =$request->validate([
             'program_id' => 'required|exists:program_bantuan,program_id', 
             'warga_id'   => 'required|exists:warga,warga_id', 
             'status'     => 'required|in:Pending,Verifikasi,Ditolak', 
+            'keterangan' => 'nullable|string|max:500',
+            'files.*' => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
         ]);
 
         $pendaftar->update([
@@ -141,7 +162,22 @@ class PendaftarController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('pendaftar.index')->with('success', 'Data pendaftaran berhasil diperbarui!');
+    if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('pendaftar_files', 'public');
+                
+                PendaftarFile::create([
+                    'pendaftar_id' => $pendaftar->pendaftar_id,
+                    'filename' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                ]);
+            }
+        }
+
+        return redirect()->route('pendaftar.index')
+            ->with('success', 'Pendaftar berhasil diperbarui.');
     }
 
 
@@ -155,4 +191,18 @@ class PendaftarController extends Controller
 
         return redirect()->route('pendaftar.index')->with('success', 'Data pendaftaran berhasil dihapus!');
     }
+
+      public function destroyFile($id)
+    {
+        $file = PendaftarFile::findOrFail($id);
+        
+        // Hapus file dari storage
+        Storage::disk('public')->delete($file->path);
+        
+        // Hapus record dari database
+        $file->delete();
+
+        return back()->with('success', 'File berhasil dihapus.');
+    }
+    
 }

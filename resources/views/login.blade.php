@@ -42,8 +42,20 @@
             {{-- SECTION TITLE --}}
             <div class="row">
                 <div class="col-12">
-                    <div class="section-title">
-                        <h3 class="wow zoomIn" data-wow-delay=".2s">Akses Terbatas</h3>
+                    <div class="section-title text-center"> {{-- Tambahkan text-center untuk memastikan logo di tengah --}}
+                        
+                        {{-- --- BAGIAN LOGO DIMULAI --- --}}
+                        <div class="wow zoomIn mb-3" data-wow-delay=".2s">
+                            {{-- Ganti path gambar di bawah ini sesuai lokasi logo Anda --}}
+                            {{-- Contoh: asset('assets/img/logo-sekolah.png') --}}
+                            <img src="{{ asset('assets/images/logo/logo2-.png') }}" 
+                                 alt="Logo Aplikasi" 
+                                 class="img-fluid" 
+                                 style="max-height: 100px; width: auto;"> 
+                        </div>
+                        {{-- --- BAGIAN LOGO BERAKHIR --- --}}
+
+                        <h3 class="wow zoomIn" data-wow-delay=".2s"></h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Selamat Datang Kembali</h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s">Silakan masuk menggunakan email dan password Anda
                             untuk mengelola data.</p>
@@ -53,7 +65,8 @@
 
             {{-- FORM LOGIN --}}
             <div class="row justify-content-center">
-                <div class="col-lg-12 col-md-20 col-20  ">
+                {{-- Perbaikan: col-md-20 tidak ada di bootstrap (max 12), saya ubah jadi col-md-8 agar rapi --}}
+                <div class="col-lg-10 col-md-12 col-12"> 
                     <div class="card shadow-sm wow fadeInUp" data-wow-delay=".8s">
                         <div class="card-body p-4 p-md-5">
 
@@ -120,8 +133,9 @@
                                 </div>
                                 {{-- Link ke Halaman Registrasi --}}
                                 <div class="text-center mt-3">
-                                    <p class="mb-0">Belum punya akun? <a href="{{ route('register') }}">Daftar di
-                                            sini</a></p>
+                                    <p class="mb-0">Belum punya akun? 
+                                        <a href="{{ route('register') }}">Daftar di sini</a>
+                                    </p>
                                 </div>
 
                             </form>

@@ -17,18 +17,27 @@ class Pendaftar extends Model
         'warga_id',
         'tanggal_daftar',
         'status',
-        'keterangan'
+        'keterangan',
     ];
 
-    // Relasi: Satu pendaftaran dimiliki oleh satu program
+    protected $casts = [
+        'tanggal_daftar' => 'datetime',
+    ];
+
     public function program()
     {
         return $this->belongsTo(ProgramBantuan::class, 'program_id', 'program_id');
     }
 
-    // Relasi: Satu pendaftaran dimiliki oleh satu warga
     public function warga()
     {
         return $this->belongsTo(Warga::class, 'warga_id', 'warga_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(PendaftarFile::class, 'pendaftar_id', 'pendaftar_id');
+    }
+
+    // Hapus method isImage dan pendaftar() yang tidak perlu
 }

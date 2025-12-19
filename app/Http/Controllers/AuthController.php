@@ -9,21 +9,10 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use App\Models\Warga;
 
+
 class AuthController extends Controller
 {
-    /**
-     * Menampilkan halaman/form login.
-     * Kita akan gunakan method create() untuk menampilkan form "pembuatan sesi login".
-     */
-    public function create()
-    {
 
-        return view('pages.auth.login');
-    }
-
-    /**
-     * Menangani dan memvalidasi percobaan login.
-     */
     public function store(Request $request)
     {
         $credentials = $request->validate([
@@ -42,10 +31,6 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    /**
-     * Menghapus sesi autentikasi (logout).
-     * Kita akan gunakan method destroy() untuk "menghancurkan" sesi login.
-     */
     public function destroy(Request $request)
     {
         Auth::logout();
@@ -56,7 +41,11 @@ class AuthController extends Controller
     }
 
     public function register(){
-        return view('pages.auth.register');
+        return view('register');
+    }
+
+    public function create(){
+        return view('login');
     }
 
     public function daftar(Request $request)
@@ -86,36 +75,14 @@ class AuthController extends Controller
         return redirect()->route('home');
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        if (Auth::check())
+            return redirect()->route('dashboard');
+        else{
+            return view('auth.login');
+        }
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-}
+};

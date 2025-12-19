@@ -16,14 +16,21 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = User::query();
-        $search = $request->input('search');
-        if ($search) {
-            $query->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%');
+
+
+       if ($request->has('role') && $request->role != '') {
+            $query->where('role', $request->role);
         }
+
+        if ($request->has('cari') && $request->cari != '') {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->cari . '%')
+                  ->orWhere('email', 'like', '%' . $request->cari . '%');
+            });
         $users = $query->latest()->paginate(10);
         return view('pages.user.index', compact('users'));
     }
+}
 
     /**
      * Show the form for creating a new resource.
@@ -66,7 +73,8 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Password di-HASH
+            'password' => Hash::make($request->password), 
+            'role' => $request->role ?? 'user',
         ]);
 
         // 4. Redirect Sukses

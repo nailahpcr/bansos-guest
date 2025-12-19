@@ -19,15 +19,58 @@
                 </div>
             </div>
 
-            {{-- TOMBOL TAMBAH PROGRAM --}}
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <a class="btn btn-primary wow fadeInUp" data-wow-delay=".8s"
-                        href="{{ route('kelola-program.create') }}">
-                        <i class="fas fa-plus me-1"></i> Tambah Program Baru
-                    </a>
+            {{-- TOOLBAR: BUTTON & SEARCH PROGRAM --}}
+            <div class="row mb-4 wow fadeInUp" data-wow-delay=".5s">
+                <div class="col-lg-12">
+                    <div class="card border-0 shadow-sm p-3 rounded-4">
+                        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center gap-3">
+
+                            {{-- Tombol Tambah Program --}}
+                            <a class="btn btn-primary px-4 rounded-pill fw-bold"
+                                href="{{ route('kelola-program.create') }}">
+                                <i class="fas fa-plus-circle me-2"></i> Tambah Program
+                            </a>
+
+                            {{-- Form Pencarian & Filter --}}
+                            <form action="{{ route('kelola-program.index') }}" method="GET"
+                                class="d-flex flex-column flex-md-row gap-2 w-100 w-lg-auto">
+
+                                {{-- Dropdown Filter Tahun --}}
+                                <select name="tahun" class="form-select rounded-pill" style="min-width: 160px;"
+                                    onchange="this.form.submit()">
+                                    <option value="">Semua Tahun</option>
+                                    {{-- Loop Tahun yang tersedia dari Controller --}}
+                                    @foreach ($available_years as $year)
+                                        <option value="{{ $year }}"
+                                            {{ request('tahun') == $year ? 'selected' : '' }}>
+                                            Tahun {{ $year }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                {{-- Input Search Nama Program --}}
+                                <div class="input-group">
+                                    <input type="text" name="q" class="form-control rounded-start-pill ps-3"
+                                        placeholder="Cari Nama Program..." value="{{ request('q') }}">
+                                    <button class="btn btn-primary rounded-end-pill px-4" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+
+                                {{-- Tombol Reset (Muncul jika ada filter aktif) --}}
+                                @if (request('q') || request('tahun'))
+                                    <a href="{{ route('kelola-program.index') }}"
+                                        class="btn btn-outline-danger rounded-pill" title="Reset Filter">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </a>
+                                @endif
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
+
 
             {{-- PESAN SUKSES --}}
             @if (session('success'))
@@ -67,12 +110,12 @@
                             <p><strong>Anggaran:</strong> Rp {{ number_format($program->anggaran, 0, ',', '.') }}</p>
 
 
-                            <div class="action-buttons mt-3">
+                            <div class="d-flex flex-wrap gap-1 mt-3">
 
                                 {{-- Tombol Detail --}}
                                 <a href="{{ route('kelola-program.show', $program) }}"
                                     class="btn btn-sm btn-success text-white mb-1">
-                                    Detail 
+                                    <span class="fas fa-list-alt"></span> Detail
                                 </a>
 
                                 {{-- Tombol Edit (Gunakan SPAN agar tidak bentrok) --}}

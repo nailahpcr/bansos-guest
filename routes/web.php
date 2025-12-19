@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaController;
 use App\Http\Controllers\PendaftarController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VerifikasiController;
+use App\Http\Controllers\PenerimaBantuanController;
+use App\Http\Controllers\RiwayatPenyaluranController;
 
 // ========================================================
 // 1. ROUTE PUBLIK (Tidak perlu Auth)
@@ -63,4 +66,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('warga', WargaController::class);
     Route::resource('user', UserController::class)->parameters(['user' => 'users']);
     Route::resource('pendaftar', PendaftarController::class);
+
+    Route::get('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+    Route::delete('/pendaftar/files/{file}', [PendaftarController::class, 'destroyFile'])->name('pendaftar.files.destroy');
+
+//     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+// Route::post('/register', [RegisterController::class, 'register']);
 });
+
+Route::resource('verifikasi', VerifikasiController::class);
+Route::resource('penerima', PenerimaBantuanController::class);
+Route::resource('riwayat', RiwayatPenyaluranController::class);

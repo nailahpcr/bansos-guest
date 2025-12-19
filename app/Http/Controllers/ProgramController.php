@@ -12,7 +12,8 @@ class ProgramController extends Controller
 
     public function indexPublic()
     {
-        $programs = ProgramBantuan::latest()->paginate(9);
+        $programs = ProgramBantuan::latest()->paginate(6
+    );
 
         return view('pages.home', compact('programs'));
     }
@@ -25,12 +26,34 @@ class ProgramController extends Controller
         return view('pages.program.show', compact('program', 'media'));
     }
 
-    public function index()
-    {
-        $programs = ProgramBantuan::latest()->paginate(10);
-    
-        return view('pages.program.index', compact('programs'));
+   public function index(Request $request)
+{
+    // 1. Ambil daftar tahun yang unik dari database untuk isi Dropdown
+    // (Misal: ada data 2023, 2024, 2025 -> maka dropdown isinya itu saja)
+    $available_years = ProgramBantuan::select('tahun')
+                        ->distinct()
+                        ->orderBy('tahun', 'desc')
+                        ->pluck('tahun');
+
+    // 2. Mulai Query Utama
+    $query = ProgramBantuan::latest();
+
+    // 3. Filter berdasarkan Tahun (jika dipilih)
+    if ($request->filled('tahun')) {
+        $query->where('tahun', $request->tahun);
     }
+
+    // 4. Filter berdasarkan Pencarian Nama Program (jika diketik)
+    if ($request->filled('q')) {
+        $query->where('nama_program', 'like', '%' . $request->q . '%');
+    }
+
+    // 5. Eksekusi Pagination
+    $programs = $query->paginate(9)->withQueryString();
+
+    // 6. Kirim data programs DAN available_years ke View
+    return view('pages.program.index', compact('programs', 'available_years'));
+}
 
     public function create()
     {

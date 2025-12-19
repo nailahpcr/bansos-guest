@@ -42,7 +42,6 @@
                     <div class="section-title">
                         <h3 class="wow zoomIn" data-wow-delay=".2s">Buat Akun Baru</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Selamat Bergabung</h2>
-                        {{-- DIUBAH: Teks lebih umum --}}
                         <p class="wow fadeInUp" data-wow-delay=".6s">Daftarkan akun Anda untuk mendapatkan akses ke
                             sistem.</p>
                     </div>
@@ -61,7 +60,6 @@
 
             {{-- FORM REGISTRASI --}}
             <div class="row justify-content-center">
-                {{-- DIUBAH: Dibuat lebih lebar untuk menampung form --}}
                 <div class="col-lg-8 col-md-10 col-12">
                     <div class="card shadow-sm wow fadeInUp" data-wow-delay=".8s">
                         <div class="card-body p-4 p-md-5">
@@ -78,10 +76,6 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
-                                {{-- =================================== --}}
-                                {{--           FIELD BARU DIMULAI        --}}
-                                {{-- =================================== --}}
 
                                 {{-- Field No. KTP --}}
                                 <div class="mb-3">
@@ -161,11 +155,6 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
-                                {{-- =================================== --}}
-                                {{--          FIELD BARU BERAKHIR        --}}
-                                {{-- =================================== --}}
-
 
                                 {{-- Field Email --}}
                                 <div class="mb-3">

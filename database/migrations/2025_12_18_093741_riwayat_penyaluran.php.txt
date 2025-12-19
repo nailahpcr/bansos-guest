@@ -1,0 +1,54 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('riwayat_penyalurans', function (Blueprint $table) {
+            // 1. Primary Key
+            $table->id('penyaluran_id');
+
+            // 2. Foreign Keys (Siapkan kolomnya dulu)
+            $table->unsignedBigInteger('program_id');
+            $table->unsignedBigInteger('penerima_id');
+
+            // 3. Data Lainnya
+            $table->string('tahap_ke');
+            $table->date('tanggal_penyaluran');
+            $table->decimal('nilai_bantuan', 15, 2);
+            $table->string('bukti_penyaluran')->nullable();
+            $table->timestamps();
+
+            // 4. Hubungkan Relasi (Constraint)
+            
+            // Relasi ke Program
+            // Pastikan tabel 'program_bantuans' punya kolom 'program_id' (atau 'id')
+            $table->foreign('program_id')
+                  ->references('program_id') // Ganti jadi 'id' jika di tabel program pakai $table->id();
+                  ->on('program_bantuan')
+                  ->onDelete('cascade');
+
+            // Relasi ke Penerima
+            // Berdasarkan screenshot file Anda, nama tabelnya kemungkinan 'penerima_bantuans'
+            $table->foreign('penerima_id')
+                  ->references('id')         // Biasanya pakai 'id' kalau default
+                  ->on('penerima_bantuans')  // Sesuaikan nama tabel ini dgn file migrasi penerima Anda
+                  ->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('riwayat_penyalurans');
+    }
+};

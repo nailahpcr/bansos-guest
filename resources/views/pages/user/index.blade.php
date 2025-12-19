@@ -32,6 +32,7 @@
                             {{-- Search Bar --}}
                             <div class="col-md-4 col-lg-3">
                                 <div class="input-group">
+                                    
                                     <input type="text" name="search" class="form-control" id="searchInput"
                                         value="{{ request('search') }}" placeholder="Cari Nama/Email/ID User..."
                                         aria-label="Search">
