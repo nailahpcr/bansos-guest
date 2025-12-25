@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\RiwayatPenyaluran;
 use App\Models\ProgramBantuan;
-use App\Models\Pendaftar; 
+use App\Models\PendaftarBantuan; 
+use App\Models\PenerimaBantuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,7 +27,9 @@ class RiwayatPenyaluranController extends Controller
     {
         // Ambil data untuk dropdown
         $programs = ProgramBantuan::all();
-        $penerimas = Pendaftar::all(); // Atau filter yang statusnya 'diterima'
+        $penerimas = PenerimaBantuan::with(['warga'])->get();
+        // dd($penerimas);
+        
         return view('pages.riwayat.create', compact('programs', 'penerimas'));
     }
 
@@ -39,18 +42,18 @@ class RiwayatPenyaluranController extends Controller
             'program_id' => 'required',
             'penerima_id' => 'required',
             'tahap_ke' => 'required|string',
-            'tanggal_penyaluran' => 'required|date',
-            'nilai_bantuan' => 'required|numeric',
-            'bukti_penyaluran' => 'nullable|image|max:2048', // Max 2MB
+            'tanggal' => 'required|date',
+            'nilai' => 'required|numeric',
+            'file' => 'nullable|image|max:2048', // Max 2MB
         ]);
 
         $data = $request->all();
+        // dd( $data);
 
         // Upload Foto
-        if ($request->hasFile('bukti_penyaluran')) {
-            $data['bukti_penyaluran'] = $request->file('bukti_penyaluran')->store('bukti-penyaluran', 'public');
+        if ($request->hasFile('file')) {
+            $data['file'] = $request->file('file')->store('bukti-penyaluran', 'public');
         }
-
         RiwayatPenyaluran::create($data);
 
         return redirect()->route('riwayat.index')->with('success', 'Data penyaluran berhasil disimpan.');
@@ -71,7 +74,7 @@ class RiwayatPenyaluranController extends Controller
     {
     $riwayat = RiwayatPenyaluran::findOrFail($id);
         $programs = ProgramBantuan::all();
-        $penerimas = Pendaftar::all();
+        $penerimas = PenerimaBantuan::with(['warga'])->get();
         return view('pages.riwayat.edit', compact('riwayat', 'programs', 'penerimas'));
     }
 
@@ -86,19 +89,19 @@ class RiwayatPenyaluranController extends Controller
             'program_id' => 'required',
             'penerima_id' => 'required',
             'tahap_ke' => 'required',
-            'tanggal_penyaluran' => 'required|date',
-            'nilai_bantuan' => 'required|numeric',
-            'bukti_penyaluran' => 'nullable|image|max:2048',
+            'tanggal' => 'required|date',
+            'nilai' => 'required|numeric',
+            'file' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->all();
-
-        if ($request->hasFile('bukti_penyaluran')) {
+        // dd($data);
+        if ($request->hasFile('file')) {
             // Hapus foto lama jika ada
-            if ($riwayat->bukti_penyaluran) {
-                Storage::disk('public')->delete($riwayat->bukti_penyaluran);
+            if ($riwayat->file) {
+                Storage::disk('public')->delete($riwayat->file);
             }
-            $data['bukti_penyaluran'] = $request->file('bukti_penyaluran')->store('bukti-penyaluran', 'public');
+            $data['file'] = $request->file('file')->store('bukti-penyaluran', 'public');
         }
 
         $riwayat->update($data);

@@ -1,179 +1,254 @@
 @extends('layout.guest.app')
 
+@section('title', 'Buat Akun Baru')
+
 @section('content')
-    <section id="features" class="features section">
-        <div class="container">
-            {{-- SECTION TITLE (disesuaikan untuk halaman Registrasi) --}}
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-title">
-                        <h3 class="wow zoomIn" data-wow-delay=".2s">Buat Akun Baru</h3>
-                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Selamat Bergabung</h2>
-                        {{-- DIUBAH: Teks lebih umum --}}
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Daftarkan akun Anda untuk mendapatkan akses ke
-                            sistem.</p>
-                    </div>
-                </div>
-            </div>
-            @if ($errors->any())
-                <div class="alert alert-danger mb-4">
-                    <strong>Oops! Terjadi kesalahan:</strong>
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+<style>
+    /* 1. Background Halaman dengan Gradasi Pink Lembut (Disamakan dengan Program) */
+    .register-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
 
-            {{-- FORM REGISTRASI --}}
-            <div class="row justify-content-center">
-                {{-- DIUBAH: Dibuat lebih lebar untuk menampung form --}}
-                <div class="col-lg-8 col-md-10 col-12">
-                    <div class="card shadow-sm wow fadeInUp" data-wow-delay=".8s">
-                        <div class="card-body p-4 p-md-5">
-                            <form method="POST" action="{{ route('warga.store') }}">
-                                @csrf
+    /* 2. Card dengan warna Putih Transparan & Glassmorphism */
+    .custom-card-register {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        border-radius: 30px; /* Diubah dari 25px ke 30px agar sama */
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        transition: transform 0.3s ease;
+    }
 
-                                {{-- Field Nama --}}
-                                <div class="mb-3">
-                                    <label for="nama" class="form-label"><strong>Nama Lengkap:</strong></label>
-                                    <input type="text" name="nama" id="nama"
-                                        class="form-control @error('nama') is-invalid @enderror"
-                                        value="{{ old('nama') }}" required autofocus>
-                                    @error('nama')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+    .custom-card-register:hover {
+        transform: translateY(-5px);
+    }
 
-                                {{-- =================================== --}}
-                                {{--           FIELD BARU DIMULAI        --}}
-                                {{-- =================================== --}}
+    /* Style Label & Ikon */
+    .form-label {
+        font-weight: 700;
+        color: #4a4a4a;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-                                {{-- Field No. KTP --}}
-                                <div class="mb-3">
-                                    <label for="no_ktp" class="form-label"><strong>No. KTP:</strong></label>
-                                    <input type="text" name="no_ktp" id="no_ktp"
-                                        class="form-control @error('no_ktp') is-invalid @enderror"
-                                        value="{{ old('no_ktp') }}" required>
-                                    @error('no_ktp')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+    .form-label i {
+        color: #FF6B81;
+        background: rgba(255, 107, 129, 0.1);
+        padding: 8px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        width: 35px;
+        text-align: center;
+    }
 
-                                <div class="row">
-                                    {{-- Field Jenis Kelamin --}}
-                                    <div class="col-md-6 mb-3">
-                                        <label for="jenis_kelamin" class="form-label"><strong>Jenis
-                                                Kelamin:</strong></label>
-                                        <select name="jenis_kelamin" id="jenis_kelamin"
-                                            class="form-select @error('jenis_kelamin') is-invalid @enderror" required>
-                                            <option value="">Pilih...</option>
-                                            <option value="Laki-laki"
-                                                {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki
-                                            </option>
-                                            <option value="Perempuan"
-                                                {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan
-                                            </option>
-                                        </select>
-                                        @error('jenis_kelamin')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+    /* Input & Select Styling */
+    .form-control,
+    .form-select {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background-color: rgba(255, 255, 255, 0.8);
+        height: 52px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
 
-                                    {{-- Field Agama --}}
-                                    <div class="col-md-6 mb-3">
-                                        <label for="agama" class="form-label"><strong>Agama:</strong></label>
-                                        <select name="agama" id="agama"
-                                            class="form-select @error('agama') is-invalid @enderror" required>
-                                            <option value="">Pilih...</option>
-                                            <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>
-                                                Islam</option>
-                                            <option value="Kristen Protestan"
-                                                {{ old('agama') == 'Kristen Protestan' ? 'selected' : '' }}>Kristen
-                                                Protestan</option>
-                                            <option value="Katolik" {{ old('agama') == 'Katolik' ? 'selected' : '' }}>
-                                                Katolik</option>
-                                            <option value="Hindu" {{ old('agama') == 'Hindu' ? 'selected' : '' }}>
-                                                Hindu</option>
-                                            <option value="Buddha" {{ old('agama') == 'Buddha' ? 'selected' : '' }}>
-                                                Buddha</option>
-                                            <option value="Khonghucu"
-                                                {{ old('agama') == 'Khonghucu' ? 'selected' : '' }}>Khonghucu</option>
-                                        </select>
-                                        @error('agama')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #FF6B81;
+        box-shadow: 0 0 0 4px rgba(255, 107, 129, 0.1);
+        background-color: #fff;
+        outline: none;
+    }
 
-                                {{-- Field Pekerjaan (Opsional) --}}
-                                <div class="mb-3">
-                                    <label for="pekerjaan" class="form-label"><strong>Pekerjaan:</strong></label>
-                                    <input type="text" name="pekerjaan" id="pekerjaan"
-                                        class="form-control @error('pekerjaan') is-invalid @enderror"
-                                        value="{{ old('pekerjaan') }}">
-                                    @error('pekerjaan')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+    /* Tombol Daftar dengan Gradasi Pink (Disamakan dengan Program) */
+    .btn-register {
+        background: linear-gradient(45deg, #FF6B81, #ee4e66);
+        border: none;
+        color: white;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-                                {{-- Field Telepon (Opsional) --}}
-                                <div class="mb-3">
-                                    <label for="telp" class="form-label"><strong>No. Telepon:</strong></label>
-                                    <input type="text" name="telp" id="telp"
-                                        class="form-control @error('telp') is-invalid @enderror"
-                                        value="{{ old('telp') }}">
-                                    @error('telp')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+    .btn-register:hover {
+        box-shadow: 0 8px 20px rgba(255, 107, 129, 0.4);
+        transform: scale(1.02);
+        color: white;
+    }
 
-                                {{-- =================================== --}}
-                                {{--          FIELD BARU BERAKHIR        --}}
-                                {{-- =================================== --}}
+    /* Penyesuaian Header agar Kontras dengan Background Gradasi */
+    .section-title h2 {
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
+    .section-title p {
+        color: rgba(255, 255, 255, 0.9);
+    }
 
-                                {{-- Field Email --}}
-                                <div class="mb-3">
-                                    <label for="email" class="form-label"><strong>Alamat Email:</strong></label>
-                                    <input type="email" name="email" id="email"
-                                        class="form-control @error('email') is-invalid @enderror"
-                                        value="{{ old('email') }}" required>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+    .alert-danger {
+        border-radius: 15px;
+        border: none;
+        background-color: rgba(255, 71, 87, 0.1);
+        color: #ff4757;
+    }
+</style>
 
-                                {{-- Field Password --}}
-                                <div class="mb-3">
-                                    <label for="password" class="form-label"><strong>Password:</strong></label>
-                                    <input type="password" name="password" id="password"
-                                        class="form-control @error('password') is-invalid @enderror" required>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                {{-- Field Konfirmasi Password --}}
-                                <div class="mb-4">
-                                    <label for="password_confirmation" class="form-label"><strong>Konfirmasi
-                                            Password:</strong></label>
-                                    <input type="password" name="password_confirmation" id="password_confirmation"
-                                        class="form-control" required>
-                                </div>
-
-                                {{-- Tombol Aksi --}}
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-lg">Daftar</button>
-                                </div>
-
-                                
-                            </form>
-                        </div>
-                    </div>
+<section id="features" class="features register-section">
+    <div class="container">
+        {{-- Header Halaman --}}
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-title">
+                    <span class="badge rounded-pill px-3 py-2 mb-3" style="background: rgba(255, 107, 129, 0.1); color: #FF6B81;">
+                        <i class="fas fa-user-plus me-1"></i> Pendaftaran Warga
+                    </span>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Selamat Bergabung</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">Daftarkan akun Anda untuk mendapatkan akses layanan sistem.</p>
                 </div>
             </div>
         </div>
-    </section>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-md-11">
+                <div class="custom-card-register wow fadeInUp" data-wow-delay=".8s">
+                    
+                    @if ($errors->any())
+                        <div class="alert alert-danger p-3 mb-4">
+                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Oops! Terjadi kesalahan:</strong>
+                            <ul class="mb-0 mt-2 list-unstyled">
+                                @foreach ($errors->all() as $error)
+                                    <li>- {{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('warga.store') }}">
+                        @csrf
+
+                        {{-- Baris 1: Nama & NIK --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="nama" class="form-label">
+                                    <i class="fas fa-user"></i> Nama Lengkap
+                                </label>
+                                <input type="text" name="nama" id="nama"
+                                    class="form-control @error('nama') is-invalid @enderror"
+                                    value="{{ old('nama') }}" required placeholder="Nama sesuai KTP">
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="no_ktp" class="form-label">
+                                    <i class="fas fa-id-card"></i> No. KTP (NIK)
+                                </label>
+                                <input type="text" name="no_ktp" id="no_ktp"
+                                    class="form-control @error('no_ktp') is-invalid @enderror"
+                                    value="{{ old('no_ktp') }}" required placeholder="16 Digit NIK">
+                            </div>
+                        </div>
+
+                        {{-- Baris 2: Gender & Agama --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="jenis_kelamin" class="form-label">
+                                    <i class="fas fa-venus-mars"></i> Jenis Kelamin
+                                </label>
+                                <select name="jenis_kelamin" id="jenis_kelamin"
+                                    class="form-select @error('jenis_kelamin') is-invalid @enderror" required>
+                                    <option value="">Pilih...</option>
+                                    <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="agama" class="form-label">
+                                    <i class="fas fa-pray"></i> Agama
+                                </label>
+                                <select name="agama" id="agama"
+                                    class="form-select @error('agama') is-invalid @enderror" required>
+                                    <option value="">Pilih...</option>
+                                    <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                    <option value="Kristen Protestan" {{ old('agama') == 'Kristen Protestan' ? 'selected' : '' }}>Kristen Protestan</option>
+                                    <option value="Katolik" {{ old('agama') == 'Katolik' ? 'selected' : '' }}>Katolik</option>
+                                    <option value="Hindu" {{ old('agama') == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                    <option value="Buddha" {{ old('agama') == 'Buddha' ? 'selected' : '' }}>Buddha</option>
+                                    <option value="Khonghucu" {{ old('agama') == 'Khonghucu' ? 'selected' : '' }}>Khonghucu</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Baris 3: Pekerjaan & Telepon --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="pekerjaan" class="form-label">
+                                    <i class="fas fa-briefcase"></i> Pekerjaan
+                                </label>
+                                <input type="text" name="pekerjaan" id="pekerjaan"
+                                    class="form-control @error('pekerjaan') is-invalid @enderror"
+                                    value="{{ old('pekerjaan') }}" placeholder="Contoh: Wiraswasta">
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="telp" class="form-label">
+                                    <i class="fas fa-phone-alt"></i> No. Telepon
+                                </label>
+                                <input type="text" name="telp" id="telp"
+                                    class="form-control @error('telp') is-invalid @enderror"
+                                    value="{{ old('telp') }}" placeholder="08xxxxxx">
+                            </div>
+                        </div>
+
+                        {{-- Baris 4: Email --}}
+                        <div class="mb-4">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i> Alamat Email
+                            </label>
+                            <input type="email" name="email" id="email"
+                                class="form-control @error('email') is-invalid @enderror"
+                                value="{{ old('email') }}" required placeholder="email@contoh.com">
+                        </div>
+
+                        {{-- Baris 5: Password --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i> Password
+                                </label>
+                                <input type="password" name="password" id="password"
+                                    class="form-control @error('password') is-invalid @enderror" required placeholder="Minimal 8 karakter">
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label for="password_confirmation" class="form-label">
+                                    <i class="fas fa-shield-alt"></i> Konfirmasi Password
+                                </label>
+                                <input type="password" name="password_confirmation" id="password_confirmation"
+                                    class="form-control" required placeholder="Ulangi password">
+                            </div>
+                        </div>
+
+                        {{-- Tombol Daftar --}}
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-register shadow">
+                                <i class="fas fa-user-check me-2"></i> Daftar Sekarang
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @endsection

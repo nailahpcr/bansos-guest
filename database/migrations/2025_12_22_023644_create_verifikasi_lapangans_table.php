@@ -16,7 +16,7 @@ return new class extends Migration
                 $table->id('verifikasi_id');
 
                 $table->foreignId('pendaftar_id')
-                  ->constrained('pendaftar_bantuan', 'pendaftar_id')
+                  ->constrained('pendaftar_bantuans', 'pendaftar_id')
                   ->onDelete('cascade');
                 
                 $table->string('petugas');

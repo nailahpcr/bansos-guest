@@ -64,11 +64,11 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label"><strong>Status Awal:</strong></label>
-                                        <select name="status" class="form-select">
-                                            <option value="Pending" {{ old('status', 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="Verifikasi" {{ old('status') == 'Verifikasi' ? 'selected' : '' }}>Verifikasi</option>
-                                            <option value="Diterima" {{ old('status') == 'Diterima' ? 'selected' : '' }}>Diterima</option>
-                                            <option value="Ditolak" {{ old('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                        <select name="status_seleksi" class="form-select">
+                                            <option value="Pending" {{ old('status_seleksi', 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="Verifikasi" {{ old('status_seleksi') == 'Verifikasi' ? 'selected' : '' }}>Verifikasi</option>
+                                            <option value="Diterima" {{ old('status_seleksi') == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                                            <option value="Ditolak" {{ old('status_seleksi') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">

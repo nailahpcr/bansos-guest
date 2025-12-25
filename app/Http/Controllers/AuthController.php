@@ -5,52 +5,60 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash; 
-use Illuminate\Validation\Rules;      
-use Illuminate\Validation\ValidationException;
 use App\Models\Warga;
+use App\Models\User;
+use App\Http\Middleware\CheckIsLogin;
 
 
 class AuthController extends Controller
 {
-
-    public function store(Request $request)
+  
+    public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
             $request->session()->regenerate();
+            session(['last_login' => now()->format('d M Y, H:i')]);
 
-            return redirect()->route('warga.index');
+            // REDIRECT BERDASARKAN ROLE
+            if ($user->role === 'admin') {
+                return redirect()->route('home-admin')->with('success', 'Selamat Datang Admin!');
+            }
+
+            return redirect()->route('home')->with('success', 'Login berhasil!');
+        } else {
+            return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
         }
-
-        return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan salah.',
-        ])->onlyInput('email');
     }
 
     public function destroy(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 
-    public function register(){
-        return view('register');
+    public function register()
+    {
+        return view('auth.register');
     }
 
-    public function create(){
-        return view('login');
+    public function create()
+    {
+        return view('auth.login');
     }
 
     public function daftar(Request $request)
     {
-        // 1. Validasi SEMUA input dari form register
         $data = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'no_ktp' => ['required', 'string', 'size:16', 'unique:warga,no_ktp'],
@@ -62,27 +70,31 @@ class AuthController extends Controller
             'telp' => ['nullable', 'string', 'max:15'],
         ]);
 
-        // 2. Hash password SEBELUM disimpan
         $data['password'] = Hash::make($data['password']);
-
-        // 3. Buat warga baru menggunakan array $data yang sudah divalidasi
+        
+        // Simpan data ke tabel warga
         $warga = Warga::create($data);
 
-        // 4. Login-kan warga yang baru mendaftar
-        Auth::login($warga);
+        // Simpan data ke tabel users
+        $user = User::create([
+            'name'     => $data['nama'],
+            'email'    => $data['email'],
+            'password' => $data['password'], 
+            'role'     => 'admin' // Pastikan ini benar admin atau warga sesuai kebutuhan
+        ]);
 
-        // 5. Arahkan ke dashboard warga
-        return redirect()->route('home');
+        // PERBAIKAN: Login menggunakan objek $user, bukan $warga
+        Auth::login($user);
+
+        // Redirect ke dashboard karena rolenya admin
+        return redirect()->route('home')->with('success', 'Registrasi berhasil!');
     }
 
-
-    public function index()
+   public function index()
     {
-        if (Auth::check())
-            return redirect()->route('dashboard');
-        else{
-            return view('auth.login');
+        if (Auth::check()) {
+        return redirect()->route('warga.index');
         }
+        return view('auth.login');
     }
-
-};
+}

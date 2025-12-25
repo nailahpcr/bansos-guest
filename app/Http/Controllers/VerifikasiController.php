@@ -4,91 +4,118 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VerifikasiLapangan;
-use App\Models\Pendaftar;
+use App\Models\PendaftarBantuan;
 use Illuminate\Support\Facades\Storage;
 
 class VerifikasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-       $verifikasi = \App\Models\VerifikasiLapangan::with(['pendaftar.warga', 'pendaftar.program'])
-                    ->latest()
-                    ->paginate(9); // Wajib paginate agar link() jalan
+    public function index(Request $request)
+{
+    // Gunakan query builder agar bisa ditambah filter
+    $query = VerifikasiLapangan::with(['pendaftar.warga', 'pendaftar.program']);
 
-    return view('pages.verifikasi.index', compact('verifikasi'));
+    // 1. Filter Pencarian Nama Petugas atau Catatan
+    if ($request->filled('q')) {
+        $query->where(function($q) use ($request) {
+            $q->where('petugas', 'like', '%' . $request->q . '%')
+              ->orWhere('catatan', 'like', '%' . $request->q . '%');
+        });
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // 2. Filter Skor (Sesuaikan dengan dropdown di Blade)
+    if ($request->filled('skor')) {
+        if ($request->skor == 'layak') {
+            $query->where('skor', '>=', 70);
+        } elseif ($request->skor == 'kurang') {
+            $query->where('skor', '<', 70);
+        }
+    }
+
+    $verifikasi = $query->latest()->paginate(9)->withQueryString();
+
+    return view('pages.verifikasi.index', compact('verifikasi'));
+}
+
     public function create()
     {
-        $pendaftar = Pendaftar::all();
+        $pendaftar = PendaftarBantuan::all();
         return view('pages.verifikasi.create', compact('pendaftar'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'pendaftar_id' => 'required|exists:pendaftar_bantuan,pendaftar_id',
+            'pendaftar_id' => 'required|exists:pendaftar_bantuans,id',
             'petugas'      => 'required|string',
             'tanggal'      => 'required|date',
             'skor'         => 'required|numeric',
-            'foto_bukti'   => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validasi foto
+            'file'   => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $verifikasi = VerifikasiLapangan::create($request->all());
-
-       $data = $request->except('foto_bukti');
-    $verifikasi = VerifikasiLapangan::create($data);
-
-    // 2. Logika Upload Foto (Menggunakan fitur bawaan Laravel)
-    if ($request->hasFile('foto_bukti')) {
-        // Simpan file ke folder storage/app/public/verifikasi_bukti
-        $path = $request->file('foto_bukti')->store('verifikasi_bukti', 'public');
-        
-        // Update kolom foto_bukti di database dengan lokasi file
-        $verifikasi->update(['foto_bukti' => $path]);
-    }
+        // Simpan data (Hanya satu kali create)
+        $verifikasi = VerifikasiLapangan::create($request->except('file'));
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('verifikasi_bukti', 'public');
+            $verifikasi->update(['file' => $path]);
+        }
 
         return redirect()->route('verifikasi.index')->with('success', 'Data berhasil disimpan');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $verifikasi = VerifikasiLapangan::with(['pendaftar.warga', 'pendaftar.program'])
+                        ->findOrFail($id);
+
+        return view('pages.verifikasi.show', compact('verifikasi'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $verifikasi = VerifikasiLapangan::findOrFail($id);
+        $pendaftar = PendaftarBantuan::all();
+        
+        return view('pages.verifikasi.edit', compact('verifikasi', 'pendaftar'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $verifikasi = VerifikasiLapangan::findOrFail($id);
+
+        $validated = $request->validate([
+            'pendaftar_id' => 'required|exists:pendaftar_bantuans,pendaftar_id',
+            'petugas'      => 'required|string',
+            'tanggal'      => 'required|date',
+            'skor'         => 'required|numeric',
+            'file'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $verifikasi->update($request->except('file'));
+
+        if ($request->hasFile('file')) {
+            // Hapus foto lama jika ada
+            if ($verifikasi->file) {
+                Storage::disk('public')->delete($verifikasi->file);
+            }
+            
+            $path = $request->file('file')->store('verifikasi_bukti', 'public');
+            $verifikasi->update(['file' => $path]);
+        }
+
+        return redirect()->route('verifikasi.index')->with('success', 'Data berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $verifikasi = VerifikasiLapangan::findOrFail($id);
+
+        // Hapus file foto dari storage
+        if ($verifikasi->file) {
+            Storage::disk('public')->delete($verifikasi->file);
+        }
+
+        $verifikasi->delete();
+
+        return redirect()->route('verifikasi.index')->with('success', 'Data berhasil dihapus');
     }
 }

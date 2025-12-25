@@ -7,19 +7,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PenerimaBantuan extends Model
 {
-    use HasFactory;
-
-    protected $table = 'penerima_bantuan';
+    protected $table = 'penerima_bantuans';
     protected $primaryKey = 'penerima_id'; 
-    protected $guarded = [];
 
-    public function warga()
-    {
-        return $this->belongsTo(Warga::class, 'warga_id', 'warga_id'); 
-    }
+    protected $fillable = [
+        'program_id',
+        'warga_id',
+        'keterangan',
+    ];
 
-    public function program()
+    public function warga() 
+{
+    // Menghubungkan warga_id di tabel penerima ke warga_id di tabel wargas
+    return $this->belongsTo(Warga::class, 'warga_id', 'warga_id');
+}
+
+public function program() 
+{
+    return $this->belongsTo(ProgramBantuan::class, 'program_id', 'program_id');
+}
+    
+
+    public function pendaftar() {
+    return $this->belongsTo(PendaftarBantuan::class, 'pendaftar_id');
+}
+
+    public function riwayatPenyaluran()
     {
-        return $this->belongsTo(ProgramBantuan::class, 'program_id', 'program_id'); 
+        return $this->hasMany(RiwayatPenyaluran::class, 'penerima_id');
     }
 }

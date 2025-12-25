@@ -9,7 +9,7 @@ use App\Models\ProgramBantuan;
 use App\Models\Warga;
 use Faker\Factory as Faker;
 
-class PendaftarDummy extends Seeder
+class PendaftarBantuan extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,7 +18,6 @@ class PendaftarDummy extends Seeder
      */
     public function run(): void
     {
-        // Panggil Faker dengan lokal Indonesia
         $faker = Faker::create('id_ID');
         
         // Ambil program_id dan warga_id yang sudah ada
@@ -31,7 +30,7 @@ class PendaftarDummy extends Seeder
             return;
         }
 
-        $statuses = ['Pending', 'Verifikasi', 'Ditolak'];
+        $statuses = ['Pending', 'Verifikasi', 'Ditolak', 'Diterima'];
         
         // Ulangi untuk membuat 100 data pendaftaran
         for ($i = 0; $i < 100; $i++) {
@@ -41,7 +40,7 @@ class PendaftarDummy extends Seeder
             $randomStatus = $faker->randomElement($statuses);
 
             // Cek duplikasi untuk menghormati UNIQUE constraint di migration
-            $isDuplicate = DB::table('pendaftar_bantuan')
+            $isDuplicate = DB::table('pendaftar_bantuans')
                            ->where('program_id', $randomProgramId)
                            ->where('warga_id', $randomWargaId)
                            ->exists();
@@ -52,11 +51,11 @@ class PendaftarDummy extends Seeder
             }
             
             // Perintah untuk MENGISI DATA (INSERT)
-            DB::table('pendaftar_bantuan')->insert([
+            DB::table('pendaftar_bantuans')->insert([
                 'program_id' => $randomProgramId,
                 'warga_id' => $randomWargaId,
                 'tanggal_daftar' => $faker->dateTimeBetween('-1 year', 'now'), 
-                'status' => $randomStatus,
+                'status_seleksi' => $randomStatus,
                 'keterangan' => ($randomStatus === 'Ditolak') 
                                  ? $faker->sentence(5) 
                                  : null, 

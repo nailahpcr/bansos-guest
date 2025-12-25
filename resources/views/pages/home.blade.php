@@ -3,232 +3,177 @@
 @section('title', 'Bantuan Sosial & Bina Desa')
 
 @section('content')
-
-    <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-            crossorigin="anonymous" referrerpolicy="no-referrer" />
-    </head>
-
-    {{-- Bagian Hero --}}
+    {{-- Hero Section --}}
     <section id="home" class="hero-area">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-5 col-md-12 col-12">
                     <div class="hero-content">
-                        <h1 class="wow fadeInLeft" data-wow-delay=".4s">Bantuan Sosial dan
-                            Pemanfaatan.</h1>
-                        <p class="wow fadeInLeft" data-wow-delay=".6s">Kami berkomitmen untuk membangun masyarakat desa
-                            yang
-                            mandiri, sejahtera, dan berdaya saing melalui program-program yang tepat sasaran dan
-                            berkelanjutan.</p>
+                        <h1 class="wow fadeInLeft" data-wow-delay=".4s">Bantuan Sosial & Pemberdayaan Desa.</h1>
+                        <p class="wow fadeInLeft" data-wow-delay=".6s">Membangun masyarakat desa yang mandiri dan sejahtera melalui penyaluran bantuan yang transparan, tepat sasaran, dan berkelanjutan.</p>
                         <div class="button wow fadeInLeft" data-wow-delay=".8s">
-                            <a href="#features" class="btn">Lihat Program Kami</a>
+                            <a href="#features" class="btn shadow-lg">Eksplorasi Program <i class="lni lni-chevron-right ms-2"></i></a>
                         </div>
                     </div>
                 </div>
 
-                {{-- BAGIAN SLIDESHOW (CAROUSEL) --}}
                 <div class="col-lg-7 col-md-12 col-12">
-                    {{-- Tambahkan Style Khusus untuk Carousel ini agar rapi --}}
-                    <style>
-                        .hero-carousel-img {
-                            width: 100%;
-                            height: 450px;
-                            /* Atur tinggi sesuai keinginan */
-                            object-fit: cover;
-                            /* Agar gambar tidak gepeng */
-                            border-radius: 15px;
-                            /* Opsional: memberi lengkungan di sudut */
-                        }
-                    </style>
-
                     <div class="hero-image wow fadeInRight" data-wow-delay=".4s">
-
-                        {{-- Mulai Carousel --}}
-                        {{-- data-bs-ride="carousel" berfungsi untuk auto-play --}}
-                        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-
-                            {{-- Indikator (Titik-titik di bawah gambar) --}}
+                        <div id="heroCarousel" class="carousel slide shadow-lg" data-bs-ride="carousel" style="border-radius: 20px; overflow: hidden;">
                             <div class="carousel-indicators">
-                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
-                                    aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"
-                                    aria-label="Slide 2"></button>
-                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"
-                                    aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
                             </div>
 
-                            {{-- Gambar Slide --}}
                             <div class="carousel-inner">
-
-                                {{-- Slide 1 (Active) --}}
-                                <div class="carousel-item active" data-bs-interval="3000"> {{-- 3000 = 3 detik --}}
-                                    <img src="{{ asset('assets/images/about/bantuan1.jpg') }}"
-                                        class="d-block w-100 hero-carousel-img" alt="Bantuan Sosial">
+                                <div class="carousel-item active" data-bs-interval="4000">
+                                    <img src="{{ asset('assets/images/about/program8.jpg') }}" class="d-block w-100 hero-carousel-img" alt="Bantuan Sosial">
+                                    <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); border-radius: 10px;">
+                                        <h5>Penyaluran Tepat Sasaran</h5>
+                                        <p>Memastikan setiap bantuan sampai ke tangan yang berhak.</p>
+                                    </div>
                                 </div>
-
-                                {{-- Slide 2 --}}
-                                <div class="carousel-item" data-bs-interval="3000">
-                                    {{-- Ganti dengan gambar kedua Anda --}}
-                                    <img src="{{ asset('assets/images/about/bantuan2.jpg') }}"
-                                        class="d-block w-100 hero-carousel-img" alt="Kegiatan Desa">
+                                <div class="carousel-item" data-bs-interval="4000">
+                                    <img src="{{ asset('assets/images/about/bantuan1.jpg') }}" class="d-block w-100 hero-carousel-img" alt="Kegiatan Desa">
                                 </div>
-
-                                {{-- Slide 3 --}}
-                                <div class="carousel-item" data-bs-interval="3000">
-                                    {{-- Ganti dengan gambar ketiga Anda --}}
-                                    <img src="{{ asset('assets/images/about/bantuan3.jpg') }}"
-                                        class="d-block w-100 hero-carousel-img" alt="Pemberdayaan">
+                                <div class="carousel-item" data-bs-interval="4000">
+                                    <img src="{{ asset('assets/images/about/bantuan2.jpg') }}" class="d-block w-100 hero-carousel-img" alt="Pemberdayaan">
                                 </div>
                             </div>
-
-                            {{-- Tombol Panah Kiri --}}
-                            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            {{-- Tombol Panah Kanan --}}
-                            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
                         </div>
-                        {{-- Akhir Carousel --}}
-
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="features" class="features section">
-        {{-- ... (Konten fitur Anda tetap sama) ... --}}
-    </section>
-
-    {{-- Bagian Fitur / Program Unggulan --}}
+    {{-- Program Unggulan Section --}}
     <section id="features" class="features section">
         <div class="container">
-
-            {{-- SECTION TITLE --}}
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen Program</h3>
-                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Kelola Program Bantuan</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Di halaman ini, Anda dapat membuat,
-                            mengubah, dan menghapus program bantuan.</p>
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Daftar Bantuan</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Program Unggulan Kami</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Sistem transparansi bantuan untuk meningkatkan kesejahteraan warga desa.</p>
                     </div>
                 </div>
             </div>
 
-            {{-- TOMBOL TAMBAH PROGRAM --}}
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <a class="btn btn-primary wow fadeInUp" data-wow-delay=".8s"
-                        href="{{ route('kelola-program.create') }}">
-                        <i class="fas fa-plus me-1"></i> Tambah Program Baru
-                    </a>
-                </div>
-            </div>
-
-            {{-- PESAN SUKSES --}}
-            @if (session('success'))
-                <div class="alert alert-success wow fadeInUp" data-wow-delay=".7s">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            {{-- DAFTAR PROGRAM (GRID KARTU) --}}
-            <div class="row">
-
-                @forelse ($programs as $program)
-                    <div class="col-lg-4 col-md-6 col-12">
-                        {{-- Ini adalah style 'single-feature' yang Anda gunakan di home --}}
-                        <div class="single-feature wow fadeInUp" data-wow-delay=".2s">
-                            <i class="lni lni-package"></i>
-
-                            <h3>{{ $program->nama_program }}</h3>
-                            <p class="mb-2"><strong>Kode:</strong> {{ $program->kode }} | <strong>Tahun:</strong>
-                                {{ $program->tahun }}</p>
-                            <p>{{ Str::limit($program->deskripsi, 100) }}</p>
-                            <p><strong>Anggaran:</strong> Rp {{ number_format($program->anggaran, 0, ',', '.') }}</p>
-
-
-                            <div class="action-buttons mt-3">
-
-                                {{-- Tombol Edit (Link Biasa) --}}
-                                <a href="{{ route('kelola-program.edit', $program->program_id) }}"
-                                    class="btn btn-sm btn-info text-white d-inline-block mb-1">Edit</a>
-
-                                {{-- Tombol Hapus (Form Terpisah) --}}
-                                <form action="{{ route('kelola-program.destroy', $program->program_id) }}" method="POST"
-                                    class="d-inline-block mb-1"
-                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                </form>
-
-                                {{-- Tombol Kondisional (Ikuti / Batalkan) --}}
-                                {{-- Cek apakah Warga yang login sudah mengikuti program ini --}}
-                                @if (Auth::user() && Auth::user()->programBantuans->contains($program->program_id))
-                                    {{-- JIKA SUDAH IKUT: Tampilkan form dengan tombol "Batalkan Partisipasi" --}}
-                                    <form action="{{ route('kelola-program.batalkan', $program->program_id) }}"
-                                        method="POST" class="d-inline-block mb-1"
-                                        onsubmit="return confirm('Anda yakin ingin membatalkan partisipasi di program ini?');">
-                                        @csrf
-                                        @method('DELETE') {{-- Penting! Memberitahu Laravel ini adalah request DELETE --}}
-                                        <button type="submit" class="btn btn-sm btn-warning">Batalkan
-                                            Partisipasi</button>
-                                    </form>
+            <div class="row g-4">
+                @forelse($programs as $program)
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay=".{{ $loop->iteration * 2 }}s">
+                        <div class="card h-100 border-0 shadow-sm custom-program-card">
+                            {{-- Image Wrapper --}}
+                            <div class="program-img-container">
+                                @if ($program->file && in_array(pathinfo($program->file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'webp']))
+                                    <img src="{{ asset('storage/' . $program->file) }}" class="card-img-top" alt="{{ $program->nama_program }}">
                                 @else
-                                    {{-- JIKA BELUM IKUT: Tampilkan form dengan tombol "Ikuti Program" --}}
-                                    <form action="{{ route('kelola-program.ajukan', $program->program_id) }}"
-                                        method="POST" class="d-inline-block mb-1"
-                                        onsubmit="return confirm('Anda yakin ingin mengikuti program ini?');">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success">Ikuti Program</button>
-                                    </form>
+                                    <div class="no-image-placeholder">
+                                        <i class="fas fa-image fa-3x opacity-25"></i>
+                                    </div>
                                 @endif
-
+                                <div class="program-tag">Tahun {{ $program->tahun }}</div>
                             </div>
-                            {{-- =================== AKHIR PERUBAHAN =================== --}}
 
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-2">
+                                    <a href="{{ route('program.public.show', $program->program_id) }}" class="text-dark text-decoration-none hover-primary">
+                                        {{ $program->nama_program }}
+                                    </a>
+                                </h5>
+                                <p class="text-muted small mb-4">{{ Str::limit($program->deskripsi, 90) }}</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4">
+                                    <span class="small text-muted font-weight-bold">Anggaran:</span>
+                                    <span class="fw-bold text-success">Rp {{ number_format($program->anggaran, 0, ',', '.') }}</span>
+                                </div>
+
+                                <a href="{{ route('program.public.show', $program->program_id) }}" class="btn btn-primary-soft w-100 fw-bold">
+                                    Lihat Detail <i class="lni lni-arrow-right ms-2"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-12">
-                        <div class="alert alert-warning text-center wow fadeInUp">
-                            Belum ada program yang Anda buat. Silakan klik tombol "Tambah Program Baru".
-                        </div>
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">Belum ada program bantuan yang tersedia.</p>
                     </div>
                 @endforelse
-
             </div>
 
-            {{-- Link Pagination --}}
-            <div class="mt-4 d-flex justify-content-center">
-                {!! $programs->links() !!}
+            {{-- Pagination --}}
+            <div class="row mt-5">
+                <div class="col-12 d-flex justify-content-center">
+                    {{ $programs->links() }}
+                </div>
             </div>
         </div>
     </section>
 
-    {{-- Bagian Call to Action / Ajakan Kolaborasi --}}
+    {{-- Call to Action --}}
     <section class="section call-action">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2 col-md-12 col-12">
-                    <div class="cta-content">
-                        <h2 class="wow fadeInUp" data-wow-delay=".2s">Jadilah Bagian Dari Perubahan Positif di Desa</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".4s">Setiap kontribusi Anda, besar maupun kecil, akan
-                            sangat
-                            berarti bagi pembangunan dan kesejahteraan masyarakat. Mari bergerak bersama kami.</p>
+                    <div class="cta-content text-center">
+                        <h2 class="wow fadeInUp" data-wow-delay=".2s">Jadilah Bagian Dari Perubahan Positif</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".4s">Setiap program dirancang untuk memberikan dampak nyata. Mari bersama-sama membangun desa yang lebih baik.</p>
+                        <div class="button mt-4 wow fadeInUp" data-wow-delay=".6s">
+                            <a href="#home" class="btn btn-outline-light px-5 py-3 rounded-pill">Kembali ke Atas</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <style>
+        /* Hero Carousel */
+        .hero-carousel-img { height: 480px; object-fit: cover; }
+        
+        /* Program Card Styles */
+        .custom-program-card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .custom-program-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        }
+        .program-img-container {
+            position: relative;
+            height: 200px;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+        .program-img-container img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .no-image-placeholder {
+            height: 100%; display: flex; align-items: center; justify-content: center; color: #ccc;
+        }
+        .program-tag {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(13, 110, 253, 0.9); color: white;
+            padding: 5px 15px; border-radius: 30px; font-size: 12px; font-weight: bold;
+        }
+        .hover-primary:hover { color: #0d6efd !important; }
+        
+        /* Soft Button Style */
+        .btn-primary-soft {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+        .btn-primary-soft:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
 @endsection

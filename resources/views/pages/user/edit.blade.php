@@ -34,8 +34,7 @@
                             @endif
 
                             {{-- Form Start --}}
-                            {{-- Pastikan parameter route sesuai dengan controller Anda ($users atau $user) --}}
-                            <form action="{{ route('user.update', $users->id) }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 
@@ -44,16 +43,29 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="name" class="form-label">Nama Lengkap</label>
                                         <input type="text" class="form-control" id="name" name="name"
-                                            value="{{ old('name', $users->name) }}" required>
+                                            value="{{ old('name', $user->name) }}" required>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" class="form-control" id="email" name="email"
-                                            value="{{ old('email', $users->email) }}" required>
+                                            value="{{ old('email', $user->email) }}" required>
                                     </div>
                                 </div>
 
+                                {{-- TAMBAHAN BARIS ROLE --}}
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="role" class="form-label">Role / Hak Akses</label>
+                                        <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
+                                            <option value="user" {{ (old('role') ?? $user->role) == 'user' ? 'selected' : '' }}>User (Warga)</option>
+                                            <option value="admin" {{ (old('role') ?? $user->role) == 'admin' ? 'selected' : '' }}>Admin (Petugas)</option>
+                                        </select>
+                                        @error('role')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
 
                                 {{-- Divider untuk Password --}}
                                 <div class="alert alert-light border mt-2 mb-3">
@@ -78,7 +90,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Tombol Aksi (Style Warga) --}}
+                                {{-- Tombol Aksi --}}
                                 <div class="d-flex justify-content-between mt-4">
                                     <a href="{{ route('user.index') }}" class="btn btn-secondary">
                                         <i class="fas fa-arrow-left me-1"></i> Kembali
@@ -96,14 +108,3 @@
         </div>
     </section>
 @endsection
-
-@push('scripts')
-<script>
-    document.getElementById('edit_profile_picture')?.addEventListener('change', function (e) {
-        const [file] = this.files;
-        if (file) {
-            document.getElementById('editPreview').src = URL.createObjectURL(file);
-        }
-    });
-</script>
-@endpush

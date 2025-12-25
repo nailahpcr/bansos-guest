@@ -50,27 +50,19 @@ class Warga extends Authenticatable
     ];
 
 
-    /**
-     * Relasi untuk program bantuan yang diikuti oleh warga.
-     */
-    public function programBantuans(): BelongsToMany
+    public function programBantuan(): BelongsToMany
     {
-        return $this->belongsToMany(ProgramBantuan::class, 'program_bantuan_warga', 'warga_warga_id', 'program_bantuan_program_id')
-                    ->withPivot('status', 'tanggal_pengajuan') 
-                    ->withTimestamps(); 
+        return $this->belongsToMany(ProgramBantuan::class, 'pendaftar_bantuans', 'warga_id', 'program_id')
+                    ->withPivot('status_seleksi');
     }
 
     public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
-        // Iterasi melalui setiap kolom yang diizinkan untuk difilter
         foreach ($filterableColumns as $column) {
-            // Cek apakah request memiliki nilai untuk kolom saat ini
             if ($request->filled($column)) {
-                // Tambahkan kondisi WHERE ke query
                 $query->where($column, $request->input($column));
             }
         }
-        
         return $query;
     }
 }

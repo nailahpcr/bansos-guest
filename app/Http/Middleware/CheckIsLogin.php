@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CheckIsLogin
 {
@@ -13,8 +14,13 @@ class CheckIsLogin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
-    {
-        return $next($request);
+    public function handle(Request $request, Closure $next): Response 
+{
+    // Cek apakah user sudah login secara umum
+    if (!Auth::check()) {
+        return redirect()->route('login');
     }
+
+    return $next($request);
+}
 }

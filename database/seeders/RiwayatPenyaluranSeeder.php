@@ -13,8 +13,8 @@ class RiwayatPenyaluranSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         // Ambil ID Program dan ID Penerima yang tersedia
-        $programIds = DB::table('program_bantuan')->pluck('program_id')->toArray();
-        $penerimaIds = DB::table('penerima_bantuan')->pluck('id')->toArray();
+        $programIds = DB::table('program_bantuans')->pluck('program_id')->toArray();
+        $penerimaIds = DB::table('penerima_bantuans')->pluck('id')->toArray();
 
         // Cek ketersediaan data relasi
         if (empty($programIds) || empty($penerimaIds)) {
@@ -39,6 +39,6 @@ class RiwayatPenyaluranSeeder extends Seeder
         }
 
         // Eksekusi insert 100 data sekaligus (1 Query)
-        DB::table('riwayat_penyalurans')->insert($data);
+        DB::table('riwayat_penyaluran_bantuans')->insert($data);
     }
 }

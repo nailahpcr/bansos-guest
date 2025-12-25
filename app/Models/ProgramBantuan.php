@@ -4,48 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProgramBantuan extends Model
 {
     use HasFactory;
 
-    /**
-     * Nama tabel yang terkait dengan model.
-     * @var string
-     */
     protected $table = 'program_bantuan';
-
-    /**
-     * Kunci utama tabel.
-     * @var string
-     */
     protected $primaryKey = 'program_id';
     
-    /**
-     * Kolom yang dapat diisi secara massal.
-     * @var array<int, string>
-     */
     protected $fillable = [
         'kode',
         'nama_program',
         'tahun',
         'anggaran',
         'deskripsi',
+        'file',
     ];
-    
-    /**
-     * Relasi ke tabel media.
-     */
-    public function media()
-    {
-        return $this->morphMany(MediaModel::class, null, 'ref_table', 'ref_id');
-    }
-    
-    /**
-     * Relasi ke users (many-to-many).
-     */
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'program_participants', 'program_id', 'user_id');
+    }
+
+    public function warga(): BelongsToMany
+    {
+        return $this->belongsToMany(Warga::class, 'pendaftar_bantuan', 'program_id', 'warga_id')
+                    ->withPivot('status');
     }
 }

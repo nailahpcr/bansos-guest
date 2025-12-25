@@ -43,4 +43,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function programBantuan()
+{
+    return $this->belongsToMany(
+        ProgramBantuan::class, 
+        'pendaftar_bantuans', 
+        'warga_id',           
+        'program_id',
+        'id',
+        'program_id'
+    )->withPivot('pendaftar_id','status_seleksi', 'file', 'tanggal_daftar');
 }
+}           
+

@@ -13,24 +13,24 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+   public function index(Request $request)
     {
         $query = User::query();
 
-
-       if ($request->has('role') && $request->role != '') {
+        if ($request->has('role') && $request->role != '') {
             $query->where('role', $request->role);
         }
 
         if ($request->has('cari') && $request->cari != '') {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->cari . '%')
-                  ->orWhere('email', 'like', '%' . $request->cari . '%');
+                ->orWhere('email', 'like', '%' . $request->cari . '%');
             });
+        } 
         $users = $query->latest()->paginate(10);
+
         return view('pages.user.index', compact('users'));
     }
-}
 
     /**
      * Show the form for creating a new resource.
@@ -47,38 +47,34 @@ class UserController extends Controller
     {
         // 1. Definisikan dan Jalankan Validasi
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            // Kita bisa menggunakan Rules\Password::defaults() untuk keamanan yang lebih baik
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => ['required', 'string', 'min:3', 'confirmed'], 
+            'role'     => 'required|in:admin,user', // Tambahkan validasi role
         ], [
-            // Pesan Validasi Khusus (Sudah Sangat Baik)
-            'name.required' => 'Nama tidak boleh kosong',
-            'email.required' => 'Email tidak boleh kosong',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
+            'name.required'     => 'Nama tidak boleh kosong',
+            'email.required'    => 'Email tidak boleh kosong',
+            'email.email'       => 'Format email tidak valid',
+            'email.unique'      => 'Email sudah terdaftar',
             'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 3 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak sesuai',
+            'password.min'      => 'Password minimal 3 karakter',
+            'password.confirmed'=> 'Konfirmasi password tidak sesuai',
+            'role.required'     => 'Role harus dipilih',
+            'role.in'           => 'Pilihan role tidak valid',
         ]);
 
-        // 2. Cek Kegagalan Validasi
         if ($validator->fails()) {
-            return redirect()->back()
-                             ->withErrors($validator) // Mengirim error kembali ke view
-                             ->withInput(); // Mengirim input lama kembali
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // 3. Simpan Data dengan Hash Password
+        // 2. Simpan Data
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password), 
-            'role' => $request->role ?? 'user',
+            'role'     => $request->role, // Mengambil dari input form
         ]);
 
-        // 4. Redirect Sukses
-        // Menggunakan 'users.index' yang sesuai dengan Resource Route
         return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan!'); 
     }
 
@@ -86,34 +82,36 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $users)
+   public function edit(User $user)
     {
-        return view('pages.user.edit', compact('users'));
+        return view('pages.user.edit', ['user' => $user]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $users)
+    public function update(Request $request, User $user)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $users->id],
-            // Password tidak wajib diisi saat update
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'role'     => ['required', 'in:admin,user'], // Tambahkan validasi role saat update
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'role.required' => 'Role tidak boleh kosong',
+            'role.in'       => 'Pilihan role tidak valid',
         ]);
 
-        $userData = $request->only('name', 'email');
+        // Masukkan name, email, dan role ke dalam array update
+        $userData = $request->only('name', 'email', 'role');
 
-        // Hanya update password jika diisi
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($request->password);
         }
 
         $users->update($userData);
 
-        return redirect()->route('user.index')
-                         ->with('success', 'Data pengguna berhasil diperbarui.');
+        return redirect()->route('user.index')->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
     /**

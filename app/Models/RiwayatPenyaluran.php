@@ -9,7 +9,7 @@ class RiwayatPenyaluran extends Model
 {
     use HasFactory;
 
-    protected $table = 'riwayat_penyalurans';
+    protected $table = 'riwayat_penyaluran_bantuans';
     protected $primaryKey = 'penyaluran_id';
     
     protected $fillable = [
@@ -17,20 +17,23 @@ class RiwayatPenyaluran extends Model
         'penerima_id',
         'tahap_ke',
         'tanggal_penyaluran',
-        'nilai_bantuan',
-        'bukti_penyaluran',
+        'tanggal',
+        'nilai',
+        'file',
     ];
 
-    // Relasi ke Program
     public function program()
     {
         return $this->belongsTo(ProgramBantuan::class, 'program_id', 'program_id');
     }
 
-    // Relasi ke Penerima (Pendaftar)
     public function penerima()
     {
-        // Sesuaikan nama model Pendaftar/Warga Anda
-        return $this->belongsTo(Pendaftar::class, 'penerima_id', 'pendaftar_id');
+        return $this->belongsTo(PenerimaBantuan::class, 'penerima_id', 'penerima_id');
     }
+    public function pendaftar()
+{
+    // Pastikan pendaftar_id adalah foreign key di tabel riwayat_penyalurans
+    return $this->belongsTo(PendaftarBantuan::class, 'pendaftar_id');
+}
 }

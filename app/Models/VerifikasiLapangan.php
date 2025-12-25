@@ -18,10 +18,20 @@ class VerifikasiLapangan extends Model
         'tanggal',
         'catatan',
         'skor',
+        'file',
+    ];
+
+    protected $casts = [
+        'file' => 'array',
     ];
 
     public function pendaftar()
     {
-        return $this->belongsTo(Pendaftar::class, 'pendaftar_id', 'pendaftar_id');
+        return $this->belongsTo(PendaftarBantuan::class, 'pendaftar_id');
     }
+
+    public function files() {
+        
+    return $this->hasMany(VerifikasiLapangan::class, 'verifikasi_id');
+}
 }

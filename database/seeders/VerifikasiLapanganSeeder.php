@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Faker\Factory as Faker;
 
 class VerifikasiLapanganSeeder extends Seeder
@@ -12,31 +13,73 @@ class VerifikasiLapanganSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // Ambil semua ID dari tabel pendaftar_bantuan untuk relasi
-        $pendaftarIds = DB::table('pendaftar_bantuan')->pluck('pendaftar_id')->toArray(); 
+        // 1. RESET TABEL
+        Schema::disableForeignKeyConstraints();
+        DB::table('verifikasi_lapangans')->truncate();
+        Schema::enableForeignKeyConstraints();
 
-        // Jika pendaftar kosong, hentikan agar tidak error
-        if (empty($pendaftarIds)) {
-            $this->command->info('Tabel pendaftar_bantuan kosong. Harap isi data pendaftar dulu.');
+        $daftarPetugas = ['Budi', 'Siti', 'Agus', 'Putri', 'Hendra'];
+
+        // 2. AMBIL DATA PENDAFTAR
+        $pendaftar = DB::table('pendaftar_bantuans')->get();
+
+        if ($pendaftar->isEmpty()) {
+            $this->command->error('Tabel pendaftar_bantuans kosong!');
             return;
         }
 
-        $data = []; // Siapkan array kosong untuk menampung data
+        $data = [];
+        foreach ($pendaftar as $p) {
+            // Kita buat verifikasi untuk hampir semua pendaftar agar index tidak kosong
+            if ($faker->boolean(100)) {
+                
+                // Menentukan skor (Acak antara 50 - 95)
+                $skor = $faker->numberBetween(50, 95);
+                
+                // 3. LOGIKA CATATAN BERDASARKAN AMBANG BATAS SKOR LAYAK (70)
+                $catatan = $this->getCatatanBerdasarkanSkor($skor);
 
-        // Loop untuk membuat 100 data dummy di memori (belum masuk database)
-        for ($i = 0; $i < 100; $i++) { 
-            $data[] = [
-                'pendaftar_id' => $faker->randomElement($pendaftarIds),
-                'petugas'      => $faker->name,
-                'tanggal'      => $faker->dateTimeBetween('-1 month', 'now'),
-                'catatan'      => $faker->sentence(10),
-                'skor'         => $faker->numberBetween(40, 95),
-                'created_at'   => now(),
-                'updated_at'   => now(),
-            ];
+                $data[] = [
+                    'pendaftar_id' => $p->pendaftar_id,
+                    'petugas'      => $faker->randomElement($daftarPetugas), 
+                    'tanggal'      => $faker->dateTimeBetween('-1 month', 'now'),
+                    'catatan'      => $catatan,
+                    'skor'         => $skor,
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
+                ];
+            }
         }
 
-        // EKSEKUSI: Insert 100 data sekaligus dalam 1 Query
         DB::table('verifikasi_lapangans')->insert($data);
+        $this->command->info('Berhasil membuat data verifikasi yang selaras dengan filter skor (70).');
+    }
+
+    /**
+     * Catatan disesuaikan dengan ambang batas skor 70 (Layak/Kurang)
+     */
+    private function getCatatanBerdasarkanSkor($skor)
+    {
+        // KATEGORI SKOR LAYAK (>= 70)
+        if ($skor >= 70) {
+            $opsi = [
+                'Subjek sangat memenuhi kriteria, kondisi hunian memprihatinkan.',
+                'Penghasilan jauh di bawah rata-rata, layak diprioritaskan.',
+                'Aset pendukung tidak ditemukan, subjek masuk kategori sangat layak.',
+                'Hasil survei menunjukkan subjek benar-benar membutuhkan bantuan ini.'
+            ];
+            return $opsi[array_rand($opsi)];
+        } 
+        
+        // KATEGORI SKOR KURANG (< 70)
+        else {
+            $opsi = [
+                'Kondisi ekonomi subjek dinilai cukup mampu di lingkungan sekitar.',
+                'Subjek memiliki pekerjaan tetap dengan penghasilan stabil.',
+                'Kepemilikan aset (kendaraan/elektronik) melebihi standar penerima.',
+                'Hunian dalam kondisi baik/permanen, skor kelayakan rendah.'
+            ];
+            return $opsi[array_rand($opsi)];
+        }
     }
 }

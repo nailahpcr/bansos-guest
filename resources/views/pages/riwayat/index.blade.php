@@ -1,63 +1,168 @@
-@extends('layout.guest.app') 
+@extends('layout.guest.app')
+
+@section('title', 'Riwayat Penyaluran Bantuan')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Riwayat Penyaluran</h2>
-        <a href="{{ route('riwayat.create') }}" class="btn btn-primary rounded-pill">
-            <i class="fas fa-plus me-1"></i> Catat Penyaluran
-        </a>
-    </div>
+    <section id="features" class="features section">
+        <div class="container">
+            {{-- JUDUL HALAMAN --}}
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Monitoring Bantuan</h3>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Riwayat Penyaluran</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Pantau distribusi dan bukti penyaluran bantuan kepada warga secara transparan.</p>
+                    </div>
+                </div>
+            </div>
 
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Program</th>
-                        <th>Penerima</th>
-                        <th>Tahap</th>
-                        <th>Tanggal</th>
-                        <th>Nilai</th>
-                        <th>Bukti</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($riwayats as $item)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->program->nama_program }}</td>
-                        {{-- Sesuaikan nama kolom nama di tabel penerima --}}
-                        <td>{{ $item->penerima->nama_lengkap ?? 'N/A' }}</td> 
-                        <td>{{ $item->tahap_ke }}</td>
-                        <td>{{ date('d-m-Y', strtotime($item->tanggal_penyaluran)) }}</td>
-                        <td>Rp {{ number_format($item->nilai_bantuan, 0, ',', '.') }}</td>
-                        <td>
-                            @if($item->bukti_penyaluran)
-                                <a href="{{ asset('storage/' . $item->bukti_penyaluran) }}" target="_blank" class="btn btn-sm btn-info text-white">
-                                    <i class="fas fa-image"></i> Lihat
-                                </a>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('riwayat.edit', $item->penyaluran_id) }}" class="btn btn-sm btn-warning text-white">
-                                <i class="fas fa-pencil-alt"></i>
+            {{-- TOOLBAR: SEARCH & ADD BUTTON --}}
+            <div class="row mb-4 wow fadeInUp" data-wow-delay=".7s">
+                <div class="col-lg-12">
+                    <div class="action-bar-container">
+                        {{-- FORM SEARCH --}}
+                        <form action="{{ route('riwayat.index') }}" method="GET" class="flex-grow-1">
+                            <div class="search-combined-group shadow-sm">
+                                <input type="text" name="q" class="form-control shadow-none"
+                                    placeholder="Cari Nama Penerima atau Program..." value="{{ request('q') }}">
+                                <button type="submit" class="btn btn-inner-search">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                        {{-- TOMBOL TAMBAH --}}
+                        <a class="btn-add-warga shadow-sm" href="{{ route('riwayat.create') }}">
+                            <i class="fas fa-plus-circle me-2"></i> Catat Penyaluran
+                        </a>
+
+                        @if (request('q'))
+                            <a href="{{ route('riwayat.index') }}" class="btn btn-light border d-flex align-items-center shadow-sm"
+                                style="height:48px; border-radius:12px;" title="Reset">
+                                <i class="fas fa-sync-alt"></i>
                             </a>
-                            <form action="{{ route('riwayat.destroy', $item->penyaluran_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?');">
-                                @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            {{ $riwayats->links() }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                /* Layout & Toolbar Styles */
+                .action-bar-container { display: flex; align-items: center; gap: 15px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); padding: 15px 20px; border-radius: 20px; border: 1px solid rgba(255, 107, 129, 0.2); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
+                .search-combined-group { display: flex; flex-grow: 1; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 107, 129, 0.2); }
+                .search-combined-group .form-control { border: none; height: 48px; padding: 0 15px; }
+                .btn-inner-search { background-color: #FF6B81; color: white; border: none; padding: 0 20px; transition: 0.3s; }
+                .btn-add-warga { background-color: #2ecc71; color: white; height: 48px; display: flex; align-items: center; padding: 0 20px; border-radius: 12px; font-weight: 600; text-decoration: none; transition: 0.3s; white-space: nowrap; }
+                
+                /* Riwayat Card Styling */
+                .riwayat-card { transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 15px; overflow: hidden; }
+                .riwayat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important; }
+                
+                /* Image Wrapper Style (Sama dengan Program) */
+                .riwayat-image-wrapper { width: 100%; height: 180px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 1px solid #eee; }
+                .riwayat-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+                
+                .badge-step { background: rgba(13, 110, 253, 0.1); color: #0d6efd; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 0.7rem; }
+
+                @media (max-width: 991px) {
+                    .action-bar-container { flex-direction: column; align-items: stretch; }
+                    .search-combined-group { flex-direction: column; border: none; gap: 10px; }
+                    .search-combined-group .form-control, .btn-inner-search { border-radius: 10px !important; border: 1px solid rgba(255, 107, 129, 0.2); }
+                }
+            </style>
+
+            <hr class="opacity-25 mb-4">
+
+            {{-- DAFTAR RIWAYAT (1 BARIS = 3 CARD DENGAN col-lg-4) --}}
+            <div class="row g-4">
+                @forelse ($riwayats as $item)
+                    <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay=".2s">
+                        <div class="card shadow-sm h-100 border-0 riwayat-card">
+                            
+                            {{-- IMAGE / BUKTI --}}
+                            <div class="riwayat-image-wrapper">
+                                @if($item->file)
+                                    @php
+                                        $extension = pathinfo($item->file, PATHINFO_EXTENSION);
+                                        $isImage = in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                    @endphp
+                                    @if($isImage)
+                                        <img src="{{ asset('storage/' . $item->file) }}" alt="Bukti Penyaluran">
+                                    @else
+                                        <div class="text-center">
+                                            <i class="fas fa-file-alt fa-3x text-muted opacity-25"></i>
+                                            <p class="mb-0 text-muted mt-2" style="font-size: 0.7rem;">File Dokumen</p>
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="text-center">
+                                        <i class="fas fa-image fa-3x text-muted opacity-25"></i>
+                                        <p class="mb-0 text-muted mt-2" style="font-size: 0.7rem;">Tidak ada foto</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="card-body d-flex flex-column p-4">
+                                {{-- INFO ATAS --}}
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge-step text-uppercase">Tahap {{ $item->tahap_ke }}</span>
+                                    <small class="text-muted"><i class="far fa-calendar-alt"></i> {{ date('d/m/Y', strtotime($item->tanggal)) }}</small>
+                                </div>
+
+                                <h5 class="fw-bold text-dark mb-1 text-truncate" title="{{ $item->program->nama_program ?? 'Program' }}">
+                                    {{ $item->program->nama_program ?? 'Program Bantuan' }}
+                                </h5>
+                                <p class="text-primary mb-3" style="font-size: 0.85rem;">
+                                    <i class="fas fa-user-circle me-1"></i> {{ $item->penerima->nama_lengkap ?? 'N/A' }}
+                                </p>
+
+                                <hr class="opacity-50 mt-0">
+
+                                <div class="mb-4">
+                                    <small class="text-muted d-block mb-1">Nilai Bantuan:</small>
+                                    <span class="fw-bold text-success" style="font-size: 1.1rem;">Rp {{ number_format($item->nilai, 0, ',', '.') }}</span>
+                                </div>
+
+                                {{-- TOMBOL AKSI (STYLE PROGRAM) --}}
+                                <div class="mt-auto">
+                                    <div class="btn-group w-100 gap-2">
+                                        <a href="{{ route('riwayat.show', $item->penyaluran_id) }}" 
+                                           class="btn border-0 rounded-3"
+                                           style="background-color: rgba(13, 202, 240, 0.15); color: #0dcaf0;" title="Lihat Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('riwayat.edit', $item->penyaluran_id) }}" 
+                                           class="btn border-0 rounded-3"
+                                           style="background-color: rgba(255, 193, 7, 0.15); color: #ffc107;" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('riwayat.destroy', $item->penyaluran_id) }}" method="POST" class="d-inline flex-grow-1">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn border-0 rounded-3 w-100" 
+                                                    style="background-color: rgba(220, 53, 69, 0.15); color: #dc3545;"
+                                                    onclick="return confirm('Hapus riwayat ini?')" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-info-circle fa-3x text-muted opacity-25 mb-3"></i>
+                        <p class="text-muted">Data penyaluran tidak ditemukan.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            {{-- PAGINATION --}}
+            <div class="row mt-5">
+                <div class="col-12 d-flex justify-content-center">
+                    {!! $riwayats->appends(request()->except('page'))->links() !!}
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
 @endsection

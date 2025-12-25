@@ -1,59 +1,39 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\ProgramBantuan; 
-use App\Models\MediaModel;
+use App\Models\ProgramBantuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+
+
 class ProgramController extends Controller
 {
-
-    public function indexPublic()
+    // ==========================================
+    // 1. FUNGSI KHUSUS ADMIN (Kelola Program)
+    // ==========================================
+    public function indexAdmin(Request $request)
     {
-        $programs = ProgramBantuan::latest()->paginate(6
-    );
+        $available_years = ProgramBantuan::select('tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun');
+        $query = ProgramBantuan::latest();
 
-        return view('pages.home', compact('programs'));
+        if ($request->filled('tahun')) {
+            $query->where('tahun', $request->tahun);
+        }
+
+        if ($request->filled('q')) {
+            $query->where('nama_program', 'like', '%' . $request->q . '%');
+        }
+
+        $programs = $query->paginate(9)->withQueryString();
+
+        return view('pages.program.index', compact('programs', 'available_years'));
     }
-
-    public function showPublic(ProgramBantuan $program)
-    {
-        $media = MediaModel::where('ref_table', 'App\Models\ProgramBantuan')
-                             ->where('ref_id', $program->program_id)
-                             ->get();
-        return view('pages.program.show', compact('program', 'media'));
-    }
-
-   public function index(Request $request)
-{
-    // 1. Ambil daftar tahun yang unik dari database untuk isi Dropdown
-    // (Misal: ada data 2023, 2024, 2025 -> maka dropdown isinya itu saja)
-    $available_years = ProgramBantuan::select('tahun')
-                        ->distinct()
-                        ->orderBy('tahun', 'desc')
-                        ->pluck('tahun');
-
-    // 2. Mulai Query Utama
-    $query = ProgramBantuan::latest();
-
-    // 3. Filter berdasarkan Tahun (jika dipilih)
-    if ($request->filled('tahun')) {
-        $query->where('tahun', $request->tahun);
-    }
-
-    // 4. Filter berdasarkan Pencarian Nama Program (jika diketik)
-    if ($request->filled('q')) {
-        $query->where('nama_program', 'like', '%' . $request->q . '%');
-    }
-
-    // 5. Eksekusi Pagination
-    $programs = $query->paginate(9)->withQueryString();
-
-    // 6. Kirim data programs DAN available_years ke View
-    return view('pages.program.index', compact('programs', 'available_years'));
-}
 
     public function create()
     {
@@ -62,24 +42,31 @@ class ProgramController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'kode'         => 'required|unique:program_bantuan',
+        $validatedData = $request->validate([
+            'kode'         => 'required|unique:program_bantuan,kode',
             'nama_program' => 'required',
             'tahun'        => 'required|integer',
             'anggaran'     => 'required|numeric',
             'deskripsi'    => 'nullable|string',
+            'file'         => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        ProgramBantuan::create($request->all());
-        return redirect()->route('kelola-program.index')->with('success', 'Program baru berhasil dibuat.');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            $path = $file->store('program_bantuan', 'public');
+
+            $validatedData['file'] = $path;
+        }
+
+        ProgramBantuan::create($validatedData);
+
+        return redirect()->route('kelola-program.index')->with('success', 'Program berhasil dibuat.');
     }
 
     public function show(ProgramBantuan $program)
     {
-        $media = MediaModel::where('ref_table', 'App\Models\ProgramBantuan')
-                             ->where('ref_id', $program->program_id)
-                             ->get();
-        return view('pages.program.show', compact('program', 'media'));
+        return view('pages.program.show', compact('program'));
     }
 
     public function edit(ProgramBantuan $program)
@@ -88,107 +75,114 @@ class ProgramController extends Controller
     }
 
     public function update(Request $request, ProgramBantuan $program)
-    {
-        $validatedData = $request->validate([
-            'kode'         => 'required|unique:program_bantuan,kode,' . $program->program_id . ',program_id',
-            'nama_program' => 'required',
-            'tahun'        => 'required|integer',
-            'anggaran'     => 'required|numeric',
-            'deskripsi'    => 'nullable|string',
-        ]);
+{
+    $validatedData = $request->validate([
+        'kode'         => 'required|unique:program_bantuan,kode,' . $program->program_id . ',program_id',
+        'nama_program' => 'required',
+        'tahun'        => 'required|integer',
+        'anggaran'     => 'required|numeric',
+        'deskripsi'    => 'nullable|string',
+        'file'         => 'nullable|file|mimes:jpg,png,pdf,docx|max:10240', // Sesuaikan mimes & max size
+    ]);
 
-        $program->update($validatedData);
-        return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
+    // 1. Logika hapus file jika flag 'hapus_file' dikirim dari View
+    if ($request->hapus_file == '1') {
+        if ($program->file) {
+            Storage::disk('public')->delete($program->file);
+            $program->file = null;
+            $program->save(); 
+        }
     }
 
+    // 2. Logika jika ada file baru yang diunggah
+    if ($request->hasFile('file')) {
+        if ($program->file && Storage::disk('public')->exists($program->file)) {
+            Storage::disk('public')->delete($program->file);
+        }
+
+        $validatedData['file'] = $request->file('file')->store('program_bantuan', 'public');
+    } else {
+        unset($validatedData['file']);
+    }
+
+    // 3. Update semua data teks
+    $program->update($validatedData);
+
+    // Jika dipanggil dari halaman Detail (Show), sebaiknya kembali ke detail, bukan index
+    if ($request->has('hapus_file') || $request->hasFile('file')) {
+        return back()->with('success', 'Lampiran berhasil diperbarui.');
+    }
+
+    return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
+}
     public function destroy(ProgramBantuan $program)
     {
-        $mediaToDelete = MediaModel::where('ref_table', 'App\Models\ProgramBantuan')
-                                   ->where('ref_id', $program->program_id)
-                                   ->get();
-                                   
-        foreach ($mediaToDelete as $media) {
-            // Hapus file fisik
-            Storage::delete('public/uploads/program_bantuan/' . $media->file_name); 
-            $media->delete(); // Hapus entri dari tabel media
+        // 1. Cek apakah kolom file memiliki isi
+        if ($program->file) {
+            // 2. Cek apakah file benar-benar ada di disk public sebelum dihapus
+            if (Storage::disk('public')->exists($program->file)) {
+                Storage::disk('public')->delete($program->file);
+            }
         }
-
+        // 3. Hapus data dari database
         $program->delete();
-        return redirect()->route('kelola-program.index')->with('success', 'Program berhasil dihapus.');
+
+        return redirect()->route('kelola-program.index')
+            ->with('success', 'Program dan lampiran terkait berhasil dihapus.');
     }
 
-    public function uploadMedia(Request $request, ProgramBantuan $program)
+
+    // ==========================================
+    // 2. FUNGSI KHUSUS WARGA (Program-Warga)
+    // ==========================================
+    public function indexWarga(Request $request)
     {
-        $request->validate([
-            'file_program' => 'required|image|max:10240', // 10MB, images only
-            'caption' => 'nullable|string|max:255',
+        $query = ProgramBantuan::latest();
+
+        // Warga mungkin hanya melihat program yang sedang aktif/tahun berjalan
+        if ($request->filled('q')) {
+            $query->where('nama_program', 'like', '%' . $request->q . '%');
+        }
+
+        $programs = $query->paginate(9);
+        return view('pages.program.index', compact('programs'));
+    }
+
+    public function showWarga(ProgramBantuan $program)
+    {
+        return view('pages.program.show', compact('program'));
+    }
+
+    public function ajukanProgram(ProgramBantuan $program, Request $request)
+    {
+        $user = Auth::user(); // Pastikan user ini memiliki relasi ke tabel pendaftar
+        $filePath = null;
+
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('pendaftaran_berkas', 'public');
+        }
+
+        // Menggunakan attach untuk mengisi tabel pendaftar_bantuans
+        // Pastikan di model User/Warga nama relasinya adalah 'programBantuan'
+        $user->programBantuan()->attach($program->program_id, [
+            'tanggal_daftar' => now(),
+            'status_seleksi' => 'Pending', // Sesuaikan dengan nama kolom di pendaftar_bantuans
+            'file'           => $filePath,
         ]);
 
-        if ($request->hasFile('file_program')) {
-            $file = $request->file('file_program');
-            $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9\-_.]/', '_', $file->getClientOriginalName());
-            $filePath = 'uploads/program_bantuan/';
-        
-            // Simpan file
-            $file->storeAs($filePath, $fileName, 'public');
-
-            // Simpan ke database
-            MediaModel::create([
-                'ref_table' => 'App\Models\ProgramBantuan',
-                'ref_id' => $program->program_id,
-                'file_name' => $fileName,
-                'caption' => $request->caption,
-                'mime_type' => $file->getMimeType(),
-                'sort_order' => 0,
-            ]);
-
-            return redirect()->route('kelola-program.show', $program->program_id)
-                             ->with('success', 'Gambar berhasil diunggah.');
-        }
-        
-        return back()->with('error', 'Gagal mengunggah gambar.');
-    }
-
-    public function deleteMedia($media_id)
-    {
-        $media = MediaModel::findOrFail($media_id);
-        $program_id = $media->ref_id;
-        
-        // Hapus file fisik
-        Storage::delete('public/uploads/program_bantuan/' . $media->file_name);
-        
-        // Hapus entri dari tabel media
-        $media->delete();
-        
-        // Tentukan redirect berdasarkan route sebelumnya
-        $previousUrl = url()->previous();
-        
-        // Jika datang dari route admin, redirect ke admin
-        if (str_contains($previousUrl, '/kelola-program/')) {
-            return redirect()->route('kelola-program.show', $program_id)
-                             ->with('success', 'Dokumen berhasil dihapus.');
-        }
-
-        // Redirect ke program.show (public route) 
-        return redirect()->route('program.show', $program_id)
-                         ->with('success', 'Dokumen berhasil dihapus.');
-    }
-
-    public function ajukanProgram(ProgramBantuan $program)
-    {
-        $user = Auth::user();
-        $user->programBantuans()->attach($program->program_id);
-
-        return redirect()->route('kelola-program.index')->with('success', 'Anda berhasil mengikuti program ' . $program->nama_program);
+        return redirect()->route('kelola-program.index')
+            ->with('success', 'Anda berhasil mendaftar pada program ' . $program->nama_program);
     }
 
     public function batalkanProgram(ProgramBantuan $program)
     {
         $user = Auth::user();
-        $user->programBantuans()->detach($program);
 
-        return redirect()->route('kelola-program.index')->with('success', 'Partisipasi Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
+        // Detach akan menghapus baris di tabel pendaftar_bantuans 
+        // berdasarkan program_id dan user_id/nik
+        $user->programBantuan()->detach($program->program_id);
+
+        return redirect()->route('kelola-program.index')
+            ->with('success', 'Pendaftaran Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
     }
-
-
 }

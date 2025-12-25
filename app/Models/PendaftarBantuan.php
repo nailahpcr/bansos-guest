@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Pendaftar extends Model
+class PendaftarBantuan extends Model
 {
     use HasFactory;
 
-    protected $table = 'pendaftar_bantuan';
+    protected $table = 'pendaftar_bantuans';    
     protected $primaryKey = 'pendaftar_id';
     
     protected $fillable = [
         'program_id',
         'warga_id',
         'tanggal_daftar',
-        'status',
+        'status_seleksi',
         'keterangan',
+        'file',
     ];
 
     protected $casts = [
@@ -26,7 +27,7 @@ class Pendaftar extends Model
 
     public function program()
     {
-        return $this->belongsTo(ProgramBantuan::class, 'program_id', 'program_id');
+        return $this->belongsTo(ProgramBantuan::class, 'program_id');
     }
 
     public function warga()
@@ -34,10 +35,26 @@ class Pendaftar extends Model
         return $this->belongsTo(Warga::class, 'warga_id', 'warga_id');
     }
 
+
+   public function verifikasiLapangan()
+    {
+        return $this->hasOne(VerifikasiLapangan::class, 'pendaftar_id');
+    }
+
+    // app/Models/PendaftarBantuan.php
+
     public function files()
     {
+        // Ini menghubungkan pendaftar ke banyak file
         return $this->hasMany(PendaftarFile::class, 'pendaftar_id', 'pendaftar_id');
     }
 
-    // Hapus method isImage dan pendaftar() yang tidak perlu
+    public function user()
+{
+    // Pastikan foreign key di tabel pendaftar_bantuans adalah user_id
+    return $this->belongsTo(User::class, 'user_id', 'id');
 }
+
+}
+
+

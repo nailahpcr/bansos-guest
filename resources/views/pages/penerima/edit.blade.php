@@ -3,85 +3,186 @@
 @section('title', 'Edit Penerima Bantuan')
 
 @section('content')
+<style>
+    /* Konsistensi tema dengan Edit Warga */
+    .edit-section {
+        padding: 80px 0;
+        background-color: #fcfcfc;
+    }
 
-    <section class="section">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    
-                    {{-- KARTU FORM EDIT --}}
-                    <div class="card shadow-sm border-0 wow fadeInUp" data-wow-delay=".2s">
-                        
-                        {{-- Header Kartu --}}
-                        <div class="card-header bg-primary text-white py-3">
-                            <h5 class="mb-0" style="font-weight: 600;">
-                                <i class="fas fa-edit me-2"></i> Edit Data Penerima
-                            </h5>
-                        </div>
+    .section-title h2 {
+        color: #2d3436;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
 
-                        {{-- Body Kartu --}}
-                        <div class="card-body p-4">
-                            
-                            {{-- Perhatikan route update membutuhkan ID --}}
-                            <form action="{{ route('penerima.update', $item->penerima_id) }}" method="POST">
-                                @csrf
-                                @method('PUT') {{-- Wajib untuk method Update --}}
+    /* Glassmorphism Card Style */
+    .custom-card-edit {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 107, 129, 0.2);
+        box-shadow: 0 20px 40px rgba(255, 107, 129, 0.1);
+        padding: 40px;
+    }
 
-                                {{-- 1. DROPDOWN WARGA --}}
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Nama Warga</label>
-                                    <select name="warga_id" class="form-control form-select">
-                                        <option value="">-- Pilih Warga --</option>
-                                        @foreach($warga as $w)
-                                            <option value="{{ $w->id }}" 
-                                                {{-- Logika Selected: Jika ID warga di data ini == ID di loop --}}
-                                                {{ $item->warga_id == $w->id ? 'selected' : '' }}>
-                                                {{ $w->nama }} (NIK: {{ $w->nik }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+    /* Style Label dengan Ikon */
+    .form-label {
+        font-weight: 600;
+        color: #4a4a4a;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-                                {{-- 2. DROPDOWN PROGRAM --}}
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Program Bantuan</label>
-                                    <select name="program_id" class="form-control form-select">
-                                        <option value="">-- Pilih Program --</option>
-                                        @foreach($program as $p)
-                                            <option value="{{ $p->program_id }}" 
-                                                {{-- Logika Selected --}}
-                                                {{ $item->program_id == $p->program_id ? 'selected' : '' }}>
-                                                {{ $p->nama_program }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+    .form-label i {
+        color: #FF6B81; /* Warna ikon pink sesuai tema warga */
+        font-size: 1.1rem;
+        width: 25px;
+        text-align: center;
+    }
 
-                                {{-- 3. INPUT KETERANGAN --}}
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold">Keterangan</label>
-                                    <textarea name="keterangan" class="form-control" rows="4" 
-                                        placeholder="Tambahkan catatan...">{{ old('keterangan', $item->keterangan) }}</textarea>
-                                </div>
+    /* Input, Select & Textarea Styling */
+    .form-control, .form-select {
+        border: 1px solid rgba(255, 107, 129, 0.2);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background-color: #fff;
+    }
 
-                                {{-- 4. TOMBOL AKSI --}}
-                                <div class="d-flex justify-content-between align-items-center mt-4">
-                                    <a href="{{ route('penerima.index') }}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-arrow-left me-1"></i> Batal
-                                    </a>
-                                    
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="fas fa-save me-1"></i> Simpan Perubahan
-                                    </button>
-                                </div>
+    .form-control { height: 52px; }
+    textarea.form-control { height: auto; }
 
-                            </form>
-                        </div>
-                    </div>
+    .form-control:focus, .form-select:focus {
+        border-color: #FF6B81;
+        box-shadow: 0 0 0 4px rgba(255, 107, 129, 0.1);
+        outline: none;
+    }
 
+    /* Button Styling */
+    .btn-save-changes {
+        background-color: #FF6B81;
+        border: none;
+        color: white;
+        padding: 12px 35px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-save-changes:hover {
+        background-color: #ee4e66;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 107, 129, 0.3);
+        color: white;
+    }
+
+    .btn-back {
+        background-color: #f1f2f6;
+        color: #57606f;
+        border: 1px solid rgba(0,0,0,0.05);
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .btn-back:hover {
+        background-color: #dfe4ea;
+        color: #2d3436;
+    }
+</style>
+
+<section class="features edit-section">
+    <div class="container">
+        {{-- Judul Halaman --}}
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-title">
+                    <span class="badge rounded-pill px-3 py-2 mb-3" style="background: rgba(255, 107, 129, 0.1); color: #FF6B81;">
+                        <i class="fas fa-hand-holding-heart me-1"></i> Update Data Penerima
+                    </span>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Edit Penerima Bantuan</h2>
+                    <p class="wow fadeInUp" data-wow-delay=".6s">Sesuaikan alokasi program bantuan untuk warga yang bersangkutan.</p>
                 </div>
             </div>
         </div>
-    </section>
 
+        <div class="row justify-content-center wow fadeInUp" data-wow-delay=".7s">
+            <div class="col-lg-8">
+                <div class="custom-card-edit">
+                    
+                    {{-- Alert Error --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-0 rounded-4 p-3 mb-4" style="background-color: rgba(255, 71, 87, 0.1); color: #ff4757;">
+                            <ul class="mb-0 list-unstyled">
+                                @foreach ($errors->all() as $error)
+                                    <li><i class="fas fa-exclamation-triangle me-2"></i>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('penerima.update', $item->penerima_id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="row">
+                            {{-- Pilih Warga --}}
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-user"></i> Nama Warga
+                                </label>
+                                <select name="warga_id" class="form-select" required>
+                                    <option value="">-- Pilih Warga --</option>
+                                    @foreach($warga as $w)
+                                        <option value="{{ $w->id }}" 
+                                            {{ $item->warga_id == $w->id ? 'selected' : '' }}>
+                                            {{ $w->nama }} (NIK: {{ $w->nik }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            {{-- Pilih Program --}}
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-gift"></i> Program Bantuan
+                                </label>
+                                <select name="program_id" class="form-select" required>
+                                    <option value="">-- Pilih Program --</option>
+                                    @foreach($program as $p)
+                                        <option value="{{ $p->program_id }}" 
+                                            {{ $item->program_id == $p->program_id ? 'selected' : '' }}>
+                                            {{ $p->nama_program }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            {{-- Keterangan --}}
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-comment-alt"></i> Keterangan
+                                </label>
+                                <textarea name="keterangan" class="form-control" rows="4" 
+                                    placeholder="Tambahkan catatan atau alasan bantuan...">{{ old('keterangan', $item->keterangan) }}</textarea>
+                            </div>
+                        </div>
+
+                        {{-- Action Buttons --}}
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <a href="{{ route('penerima.index') }}" class="btn btn-back shadow-sm">
+                                <i class="fas fa-arrow-left me-2"></i> Batal
+                            </a>
+                            <button type="submit" class="btn btn-save-changes shadow">
+                                <i class="fas fa-check-circle me-2"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @endsection

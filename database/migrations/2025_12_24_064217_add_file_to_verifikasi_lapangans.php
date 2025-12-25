@@ -9,11 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up(): void 
     {
-        Schema::table('users', function (Blueprint $table) {
-        $table->string('role')->after('password');
-    });
+        Schema::table('verifikasi_lapangans', function (Blueprint $table) {
+            $table->string('file')->nullable()->after('catatan');
+        });
     }
 
     /**
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('role');
-    });
+        Schema::table('verifikasi_lapangans', function (Blueprint $table) {
+            $table->dropColumn('file');
+        });
     }
 };

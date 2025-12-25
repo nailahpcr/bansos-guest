@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // PENTING: Gunakan nama 'program_bantuan' (singular)
         Schema::create('program_bantuan', function (Blueprint $table) {
             $table->id('program_id');
             $table->string('kode', 50)->unique();
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('program_bantuan');
+        Schema::dropIfExists('program_bantuans');
     }
 };

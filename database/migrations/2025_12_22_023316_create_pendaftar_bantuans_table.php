@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pendaftar_bantuan', function (Blueprint $table) {
+        Schema::create('pendaftar_bantuans', function (Blueprint $table) {
             $table->id('pendaftar_id');
             $table->foreignId('program_id')->constrained('program_bantuan', 'program_id')->onDelete('cascade');
             $table->foreignId('warga_id')->constrained('warga', 'warga_id')->onDelete('cascade');
             $table->datetime('tanggal_daftar');
-            $table->string('status');
+            $table->string('status_seleksi')->default('Pending'); // Possible values: Pending, Verifikasi, Ditolak, Diterima
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pendaftar_bantuan');
+        Schema::dropIfExists('pendaftar_bantuans');
     }
 };
