@@ -97,7 +97,7 @@
 
         .header .btn-outline-custom:hover {
             background-color: rgba(245, 60, 94, 0.05);
-            color: #F53C5E;
+            color: #f53d5f;
         }
 
         /* 5. Profile User */

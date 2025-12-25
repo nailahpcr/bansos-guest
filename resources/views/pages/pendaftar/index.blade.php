@@ -10,9 +10,10 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen Pendaftar</h3>
+                        <h3 class="wow zoomIn text-white" data-wow-delay=".2s">Manajemen Pendaftar</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Daftar Pendaftar Bantuan</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Kelola dan tinjau status pendaftaran warga pada program
+                        <p class="wow fadeInUp text-white" data-wow-delay=".6s">Kelola dan tinjau status pendaftaran warga
+                            pada program
                             bantuan.</p>
                     </div>
                 </div>
@@ -70,199 +71,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- CSS CUSTOM (Sama dengan Program) --}}
-            <style>
-                .action-bar-container {
-                    display: flex;
-                    align-items: center;
-                    gap: 15px;
-                    background: rgba(255, 255, 255, 0.8);
-                    backdrop-filter: blur(15px);
-                    padding: 15px 20px;
-                    border-radius: 20px;
-                    border: 1px solid rgba(255, 107, 129, 0.2);
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-                }
-
-                .search-combined-group {
-                    display: flex;
-                    flex-grow: 1;
-                    border-radius: 12px;
-                    overflow: hidden;
-                    border: 1px solid rgba(255, 107, 129, 0.2);
-                }
-
-                .search-combined-group .form-select,
-                .search-combined-group .form-control {
-                    border: none;
-                    height: 48px;
-                    padding: 0 15px;
-                }
-
-                .search-combined-group .form-select {
-                    max-width: 160px;
-                    border-right: 1px solid rgba(255, 107, 129, 0.1);
-                    background-color: #fff;
-                    font-weight: 500;
-                }
-
-                .btn-group .btn {
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 10px;
-                }
-
-                .btn-group .btn:hover {
-                    transform: translateY(-2px);
-                    filter: brightness(0.9);
-                    /* Sedikit menggelap saat di-hover agar kontras */
-                }
-
-                .btn-inner-search {
-                    background-color: #FF6B81;
-                    color: white;
-                    border: none;
-                    padding: 0 20px;
-                    transition: 0.3s;
-                }
-
-                .btn-inner-search:hover {
-                    background-color: #ee4e66;
-                    color: white;
-                }
-
-                .btn-add-warga {
-                    background-color: #2ecc71;
-                    color: white;
-                    height: 48px;
-                    display: flex;
-                    align-items: center;
-                    padding: 0 20px;
-                    border-radius: 12px;
-                    font-weight: 600;
-                    text-decoration: none;
-                    transition: all 0.3s ease;
-                    white-space: nowrap;
-                }
-
-                .btn-add-warga:hover {
-                    background-color: #27ae60;
-                    color: white;
-                    transform: translateY(-2px);
-                    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-                }
-
-                .stat-card {
-                    transition: all 0.3s ease-in-out;
-                }
-
-                .stat-card:hover {
-                    transform: translateY(-8px);
-                    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
-                }
-
-                .bg-decoration {
-                    position: absolute;
-                    bottom: -20px;
-                    right: -20px;
-                    width: 100px;
-                    height: 100px;
-                    background: #0d6efd;
-                    border-radius: 50%;
-                    opacity: 0.05;
-                    z-index: 1;
-                }
-
-                /* Styling Wrapper Gambar Pendaftar */
-                .applicant-image-wrapper {
-                    width: 100%;
-                    height: 200px;
-                    /* Menjaga tinggi tetap sama untuk semua card */
-                    background-color: #f8f9fa;
-                    /* Warna background jika gambar tidak ada */
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    overflow: hidden;
-                    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-                }
-
-                .applicant-image-wrapper img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    /* Gambar akan memenuhi area tanpa merubah aspek rasio */
-                    transition: transform 0.5s ease;
-                }
-
-                /* Efek Zoom saat card di-hover */
-                .applicant-card:hover .applicant-image-wrapper img {
-                    transform: scale(1.1);
-                }
-
-                /* Perbaikan untuk badge agar terlihat melayang di atas gambar (Opsional) */
-                .applicant-card {
-                    position: relative;
-                }
-
-                <style>.file-list-index {
-                    max-height: 80px;
-                    /* Batasi tinggi agar card tidak terlalu panjang */
-                    overflow-y: auto;
-                    /* Munculkan scroll jika file sangat banyak */
-                }
-
-                .file-list-index::-webkit-scrollbar {
-                    width: 4px;
-                }
-
-                .file-list-index::-webkit-scrollbar-thumb {
-                    background: #ccc;
-                    border-radius: 4px;
-                }
-
-                .text-truncate {
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-
-                /* Styling Badge Status agar lebih menonjol */
-                .status-badge {
-                    padding: 6px 12px;
-                    border-radius: 8px;
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
-
-                /* Warna spesifik untuk tiap status */
-                .bg-pending {
-                    background-color: #ff9f43 !important;
-                    /* Orange */
-                    color: white;
-                }
-
-                .bg-disetujui {
-                    background-color: #2ecc71 !important;
-                    /* Hijau */
-                    color: white;
-                }
-
-                .bg-ditolak {
-                    background-color: #ff6b6b !important;
-                    /* Merah */
-                    color: white;
-                }
-            </style>
-
-            <hr>
 
             {{-- NOTIFIKASI --}}
             @if (session('success'))
@@ -489,4 +297,193 @@
             </div>
         </div>
     </section>
+
+    <style>
+        /* 1. Background Halaman: Gradasi Pink ke Putih (Seragam) */
+        body {
+            background: linear-gradient(180deg, #ff5876 0%, #ffffff 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        .features.section {
+            background: transparent;
+        }
+
+        /* 2. Action Bar & Search Group (Efek Glassmorphism) */
+        .action-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-combined-group {
+            display: flex;
+            flex-grow: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            background: #fff;
+        }
+
+        .search-combined-group .form-select,
+        .search-combined-group .form-control {
+            border: none;
+            height: 48px;
+            box-shadow: none !important;
+        }
+
+        .search-combined-group .form-select {
+            max-width: 160px;
+            border-right: 1px solid #eee;
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+
+        /* 3. Button Search & Add (Warna Pink & Hijau Konsisten) */
+        .btn-inner-search {
+            background-color: #FF6B81;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            transition: 0.3s;
+        }
+
+        .btn-inner-search:hover {
+            background-color: #ee4e66;
+            color: white;
+        }
+
+        .btn-add-warga {
+            background-color: #2ecc71;
+            color: white;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-add-warga:hover {
+            background-color: #27ae60;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        /* 4. Applicant Cards (Identik dengan Citizen Card) */
+        .applicant-card {
+            background: #ffffff;
+            border: none !important;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .applicant-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Styling Gambar Pendaftar */
+        .applicant-image-wrapper {
+            width: 100%;
+            height: 200px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .applicant-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .applicant-card:hover .applicant-image-wrapper img {
+            transform: scale(1.1);
+        }
+
+        /* 5. Status Badge Modern */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            /* Lebih membulat agar modern */
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bg-pending {
+            background-color: #fff3cd !important;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .bg-disetujui {
+            background-color: #d4edda !important;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .bg-ditolak {
+            background-color: #f8d7da !important;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* 6. File List & Scrollbar */
+        .file-list-index {
+            max-height: 80px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .file-list-index::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .file-list-index::-webkit-scrollbar-thumb {
+            background: #ffbdc9;
+            border-radius: 4px;
+        }
+
+        /* 7. Responsive Data */
+        @media (max-width: 991px) {
+            .action-bar-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-combined-group {
+                flex-direction: column;
+                border: none;
+                gap: 10px;
+            }
+
+            .search-combined-group .form-select,
+            .search-combined-group .form-control {
+                max-width: 100%;
+                border-radius: 10px !important;
+                border: 1px solid #eee;
+            }
+        }
+    </style>
+
 @endsection

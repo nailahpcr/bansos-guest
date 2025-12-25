@@ -9,54 +9,53 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen User</h3>
+                        <h3 class="wow zoomIn text-white" data-wow-delay=".2s">Manajemen User</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Daftar Data Pengguna</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Kelola data pengguna yang terdaftar dalam sistem.</p>
+                        <p class="wow fadeInUp text-white" data-wow-delay=".6s">Kelola data pengguna yang terdaftar dalam
+                            sistem.</p>
                     </div>
                 </div>
             </div>
 
             {{-- Filter, Search, & Add Button --}}
             <div class="row mb-4 wow fadeInUp" data-wow-delay=".7s">
-                <div class="col-lg-12">
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-                        <h3 class="mb-2 mb-md-0">Daftar User</h3>
-                        <a class="btn btn-success" href="{{ route('user.create') }}">
-                            <i class="fas fa-plus me-1"></i> Tambah User
-                        </a>
-                    </div>
+                <div class="col-12">
+                    <div class="action-bar-container shadow-sm">
+                        {{-- Form Search & Filter --}}
+                        <form action="{{ route('user.index') }}" method="GET" class="flex-grow-1">
+                            <div class="search-combined-group">
+                                {{-- Filter Role --}}
+                                <select name="role" class="form-select shadow-none">
+                                    <option value="" {{ request('role') == '' ? 'selected' : '' }}>Semua Role</option>
+                                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
+                                </select>
 
-                    {{-- SEARCH FORM --}}
-                    <form action="{{ route('user.index') }}" method="GET" class="mb-3">
-                        <div class="row align-items-center">
-                            {{-- Search Bar --}}
-                            <div class="col-md-4 col-lg-3">
-                                <div class="input-group">
-                                    
-                                    <input type="text" name="search" class="form-control" id="searchInput"
-                                        value="{{ request('search') }}" placeholder="Cari Nama/Email/ID User..."
-                                        aria-label="Search">
-                                    <button type="submit" class="input-group-text" id="basic-addon2">
-                                        {{-- Ikon Search SVG --}}
-                                        <svg class="icon icon-xxs" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </button>
-                                </div>
+                                {{-- Input Search --}}
+                                <input type="text" name="search" class="form-control shadow-none"
+                                    placeholder="Cari Nama atau Email..." value="{{ request('search') }}">
+
+                                {{-- Tombol Submit di dalam input group --}}
+                                <button type="submit" class="btn btn-inner-search">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
+                        </form>
 
-                            {{-- Tombol Reset Search (Opsional) --}}
-                            @if (request('search'))
-                                <div class="col-auto mt-2 mt-md-0">
-                                    <a href="{{ route('user.index') }}" class="btn btn-outline-secondary">Reset</a>
-                                </div>
+                        {{-- Tombol Tambah & Reset --}}
+                        <div class="d-flex gap-2">
+                            <a class="btn-add-warga" href="{{ route('user.create') }}">
+                                <i class="fas fa-plus-circle me-2"></i> Tambah User
+                            </a>
+
+                            @if (request('search') || request('role'))
+                                <a href="{{ route('user.index') }}"
+                                    class="btn btn-light border d-flex align-items-center justify-content-center btn-reset-custom">
+                                    <i class="fas fa-sync-alt text-muted"></i>
+                                </a>
                             @endif
                         </div>
-                    </form>
-                    {{-- END SEARCH FORM --}}
+                    </div>
                 </div>
             </div>
 
@@ -177,7 +176,8 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                         <i class="fas fa-times me-1"></i> Batal
                                     </button>
-                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                        class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">
@@ -205,7 +205,7 @@
             </div>
 
             {{-- Pagination --}}
-            @if($users->hasPages())
+            @if ($users->hasPages())
                 <div class="row mt-4">
                     <div class="col-12 d-flex justify-content-center wow fadeInUp" data-wow-delay="1s">
                         {{ $users->appends(request()->query())->links() }}
@@ -216,76 +216,196 @@
     </section>
 
     <style>
-        .avatar-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* 1. Background Halaman: Gradasi Pink ke Putih */
+        body {
+            background: linear-gradient(180deg, #ff5876 0%, #ffffff 100%);
+            min-height: 100vh;
         }
 
-        .avatar-text {
-            line-height: 1;
+        .features.section {
+            background: transparent;
+            /* Memastikan background section tidak menutupi gradasi body */
+        }
+
+        .avatar-circle {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--gradient-pink) !important;
+            /* Memastikan background berwarna */
+
+            /* Teknik Flexbox untuk memusatkan huruf tepat di tengah */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            /* Styling Teks */
+            color: #d13434 !important;
+            /* Warna huruf putih terang */
+            font-weight: 700;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+
+            /* Efek Bayangan agar lebih pop-out */
+            box-shadow: 0 4px 10px rgba(255, 88, 118, 0.3);
+            flex-shrink: 0;
         }
 
         .card {
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
+            border: none;
+            border-radius: 15px;
             transition: all 0.3s ease;
+            background: #ffffff;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border-color: #0d6efd;
+            transform: translateY(-7px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08) !important;
         }
 
-        .card-title {
-            color: #2c3e50;
-            font-weight: 600;
+
+        /* 2. Action Bar & Search Group */
+        .action-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #ffffff;
+            padding: 15px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 129, 0.1);
         }
 
-        .card-subtitle {
-            font-size: 0.85rem;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            padding: 0.35em 0.65em;
-            font-weight: 500;
-        }
-
-        .border-dashed {
-            border: 2px dashed #dee2e6;
+        .search-combined-group {
+            display: flex;
+            flex-grow: 1;
             border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
         }
 
-        .btn-group .btn-outline-warning:hover {
-            background-color: #ffc107;
-            color: #000;
+        .search-combined-group .form-select,
+        .search-combined-group .form-control {
+            border: none;
+            height: 48px;
         }
 
-        .btn-group .btn-outline-danger:hover {
-            background-color: #dc3545;
+        .search-combined-group .form-select {
+            max-width: 160px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #eee;
+        }
+
+        .btn-inner-search {
+            background: #FF6B81;
+            color: #fff;
+            padding: 0 20px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-inner-search:hover {
+            background: #ee4e66;
             color: #fff;
         }
 
-        @media (max-width: 768px) {
-            .avatar-circle {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
+        /* 3. Action Buttons */
+        .btn-add-warga {
+            background: #2ecc71;
+            color: #fff;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-add-warga:hover {
+            background: #27ae60;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* 4. Statistics Cards */
+        .stat-card {
+            transition: 0.3s;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .bg-decoration {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: currentColor;
+            border-radius: 50%;
+            opacity: 0.05;
+            z-index: 1;
+        }
+
+        /* 5. Citizen Cards */
+        .citizen-card {
+            transition: 0.3s;
+            border-radius: 15px;
+        }
+
+        .citizen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .btn-light-info {
+            background: rgba(13, 202, 240, 0.1);
+            color: #0dcaf0;
+            border: none;
+        }
+
+        .btn-light-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: none;
+        }
+
+        .btn-light-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: none;
+        }
+
+        /* 6. Responsive Data */
+        @media (max-width: 991px) {
+            .action-bar-container {
+                flex-direction: column;
+                align-items: stretch;
             }
 
-            .card-title {
-                font-size: 1rem;
+            .search-combined-group {
+                flex-direction: column;
+                border: none;
+                gap: 10px;
+            }
+
+            .search-combined-group .form-select,
+            .search-combined-group .form-control {
+                max-width: 100%;
+                border-radius: 10px !important;
+                border: 1px solid #eee;
+            }
+
+            .btn-add-warga {
+                justify-content: center;
             }
         }
     </style>
+    
 @endsection

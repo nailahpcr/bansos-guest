@@ -45,7 +45,7 @@ class VerifikasiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'pendaftar_id' => 'required|exists:pendaftar_bantuans,id',
+            'pendaftar_id' => 'required|exists:pendaftar_bantuans',
             'petugas'      => 'required|string',
             'tanggal'      => 'required|date',
             'skor'         => 'required|numeric',

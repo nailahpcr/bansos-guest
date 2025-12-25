@@ -27,7 +27,7 @@ class UserController extends Controller
                 ->orWhere('email', 'like', '%' . $request->cari . '%');
             });
         } 
-        $users = $query->latest()->paginate(10);
+        $users = $query->latest()->paginate(9);
 
         return view('pages.user.index', compact('users'));
     }
@@ -109,7 +109,7 @@ class UserController extends Controller
             $userData['password'] = Hash::make($request->password);
         }
 
-        $users->update($userData);
+        $user->update($userData);
 
         return redirect()->route('user.index')->with('success', 'Data pengguna berhasil diperbarui.');
     }

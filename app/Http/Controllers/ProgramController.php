@@ -164,7 +164,7 @@ class ProgramController extends Controller
 
         // Menggunakan attach untuk mengisi tabel pendaftar_bantuans
         // Pastikan di model User/Warga nama relasinya adalah 'programBantuan'
-        $user->programBantuan()->attach($program->program_id, [
+        $user->ProgramBantuan()->attach($program->program_id, [
             'tanggal_daftar' => now(),
             'status_seleksi' => 'Pending', // Sesuaikan dengan nama kolom di pendaftar_bantuans
             'file'           => $filePath,
@@ -180,7 +180,7 @@ class ProgramController extends Controller
 
         // Detach akan menghapus baris di tabel pendaftar_bantuans 
         // berdasarkan program_id dan user_id/nik
-        $user->programBantuan()->detach($program->program_id);
+        $user->ProgramBantuan()->detach($program->program_id);
 
         return redirect()->route('kelola-program.index')
             ->with('success', 'Pendaftaran Anda pada program "' . $program->nama_program . '" telah dibatalkan.');

@@ -10,9 +10,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="section-title">
-                        <h3 class="wow zoomIn" data-wow-delay=".2s">Distribusi Bantuan</h3>
+                        <h3 class="wow zoomIn text-white" data-wow-delay=".2s">Distribusi Bantuan</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Daftar Penerima Bantuan</h2>
-                        <p class="wow fadeInUp" data-wow-delay=".6s">Daftar warga yang telah disetujui menerima bantuan
+                        <p class="wow fadeInUp text-white" data-wow-delay=".6s">Daftar warga yang telah disetujui menerima bantuan
                             sosial.</p>
                     </div>
                 </div>
@@ -183,13 +183,25 @@
         </div>
     </section>
 
-    {{-- REUSE CSS STYLE --}}
     <style>
+        /* 1. Background Halaman: Gradasi Pink ke Putih (Konsisten) */
+        body {
+            background: linear-gradient(180deg, #ff5876 0%, #ffffff 100%);
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
+
+        /* Memastikan section transparan agar background body terlihat */
+        .features.section {
+            background: transparent;
+        }
+
+        /* 2. Action Bar: Glassmorphism Efek Pink */
         .action-bar-container {
             display: flex;
             align-items: center;
             gap: 15px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(15px);
             padding: 15px 20px;
             border-radius: 20px;
@@ -197,22 +209,27 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
+        /* 3. Search Group */
         .search-combined-group {
             display: flex;
             flex-grow: 1;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(255, 107, 129, 0.2);
+            background: #fff;
         }
 
         .search-combined-group .form-control {
             border: none;
             height: 48px;
             padding: 0 15px;
+            box-shadow: none !important;
         }
 
+        /* 4. Buttons (Search & Add) */
         .btn-inner-search {
             background-color: #FF6B81;
+            /* Pink sesuai tema */
             color: white;
             border: none;
             padding: 0 20px;
@@ -226,6 +243,7 @@
 
         .btn-add-warga {
             background-color: #2ecc71;
+            /* Hijau Konsisten untuk Tombol Tambah */
             color: white;
             height: 48px;
             display: flex;
@@ -245,30 +263,58 @@
             box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
         }
 
+        /* 5. Citizen Card (Kartu Penerima) */
         .citizen-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #ffffff;
+            border: none !important;
+            border-radius: 20px !important;
+            /* Sudut lebih lembut */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .citizen-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
         }
 
+        /* 6. Action Buttons inside Card */
         .btn-group .btn {
             font-weight: 600;
             font-size: 0.85rem;
             transition: all 0.2s;
+            border-radius: 8px !important;
         }
 
         .btn-group .btn:hover {
-            filter: brightness(0.9);
+            filter: brightness(0.95);
             transform: translateY(-2px);
         }
 
+        /* 7. Responsive Mobile */
         @media (max-width: 991px) {
             .action-bar-container {
                 flex-direction: column;
                 align-items: stretch;
+                background: rgba(255, 255, 255, 0.95);
+            }
+
+            .search-combined-group {
+                flex-direction: column;
+                border: none;
+                gap: 10px;
+                background: transparent;
+            }
+
+            .search-combined-group .form-control,
+            .btn-inner-search {
+                max-width: 100%;
+                border-radius: 10px !important;
+                border: 1px solid rgba(255, 107, 129, 0.2);
+            }
+
+            .btn-inner-search {
+                padding: 12px;
             }
 
             .btn-add-warga {
