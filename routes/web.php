@@ -73,6 +73,9 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
         Route::delete('/pendaftar/files/{file}', [PendaftarController::class, 'destroyFile'])->name('pendaftar.files.destroy');
+        Route::delete('/pendaftar/file/{id}', [PendaftarController::class, 'destroyFile'])->name('pendaftar.files.destroy');
+        Route::delete('/verifikasi/file/{id}', [VerifikasiController::class, 'destroyFile'])->name('verifikasi.files.destroy');    
+        Route::delete('kelola-program/{id}/delete-file', [ProgramController::class, 'deleteFile'])->name('kelola-program.delete-file');
     }); // <--- FIX: Kurung penutup grup admin
 
     // Route Resource Umum (Bisa diakses Admin & Warga asal Login)

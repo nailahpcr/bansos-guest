@@ -10,8 +10,8 @@ class VerifikasiLapangan extends Model
 {
     use HasFactory;
 
-    protected $table = 'verifikasi_lapangans';
-    protected $primaryKey = 'verifikasi_id';
+   protected $table = 'verifikasi_lapangans';
+protected $primaryKey = 'verifikasi_id';
     protected $fillable = [
         'pendaftar_id',
         'petugas',
@@ -32,6 +32,6 @@ class VerifikasiLapangan extends Model
 
     public function files() {
         
-    return $this->hasMany(VerifikasiLapangan::class, 'verifikasi_id');
+    return $this->hasMany(VerifikasiLapangan::class, 'verifikasi_id', 'id');
 }
 }

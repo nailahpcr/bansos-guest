@@ -16,9 +16,8 @@ class Warga extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'warga';
-    protected $primaryKey = 'warga_id';
-
+protected $table = 'warga';
+protected $primaryKey = 'warga_id'; // Sesuai image_a06a84
     /**
     * Atribut yang boleh diisi.
     */
@@ -47,6 +46,7 @@ class Warga extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed', 
+        'created_at' => 'datetime',
     ];
 
 

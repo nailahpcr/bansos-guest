@@ -7,12 +7,11 @@
         <div class="container">
             {{-- Section Header --}}
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 text-center mb-5">
                     <div class="section-title">
-                        <h3 class="wow zoomIn text-white" data-wow-delay=".2s">Manajemen User</h3>
+                        <h3 class="wow zoomIn" data-wow-delay=".2s">Manajemen User</h3>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s">Daftar Data Pengguna</h2>
-                        <p class="wow fadeInUp text-white" data-wow-delay=".6s">Kelola data pengguna yang terdaftar dalam
-                            sistem.</p>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">Kelola data pengguna yang terdaftar dalam sistem.</p>
                     </div>
                 </div>
             </div>
@@ -216,6 +215,79 @@
     </section>
 
     <style>
+        /* --- Styling Judul yang Serasi dengan Tema Pink --- */
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* H3 - Subtitle Atas */
+        .section-title h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            /* Glow tipis agar teks putih "angkat" dari background pink */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        /* H2 - Judul Utama (Daftar Program Bantuan) */
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 15px;
+            /* Efek Glow Putih yang Soft */
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4),
+                0 0 30px rgba(255, 88, 118, 0.2);
+            letter-spacing: -0.5px;
+        }
+
+        /* Garis Dekoratif di bawah H2 */
+        .section-title h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 5px;
+            background: #ffffff;
+            margin: 15px auto 0;
+            border-radius: 50px;
+            /* Glow pada garis dekoratif */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+
+        /* P - Deskripsi di bawah judul */
+        .section-title p {
+            font-size: 1.1rem;
+            color: #ffffff !important;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 20px auto 0;
+            opacity: 0.9;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Efek Animasi Glow Tambahan (Opsional) */
+        .section-title h2 {
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+
+            to {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.6),
+                    0 0 30px rgba(211, 73, 94, 0.3);
+            }
+        }
+
         /* 1. Background Halaman: Gradasi Pink ke Putih */
         body {
             background: linear-gradient(180deg, #ff5876 0%, #ffffff 100%);
@@ -407,5 +479,5 @@
             }
         }
     </style>
-    
+
 @endsection

@@ -24,6 +24,7 @@
             filter: blur(80px);
             pointer-events: none;
         }
+
         .blob-1 {
             top: 10%;
             left: -100px;
@@ -32,6 +33,7 @@
             background: rgba(255, 107, 129, 0.08);
             animation: float 15s infinite alternate;
         }
+
         .blob-2 {
             bottom: 20%;
             right: -100px;
@@ -42,8 +44,13 @@
         }
 
         @keyframes float {
-            from { transform: translate(0, 0); }
-            to { transform: translate(30px, 50px); }
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(30px, 50px);
+            }
         }
 
         /* Hero Section */
@@ -113,12 +120,15 @@
             transform: rotate(10deg) scale(1.1);
         }
 
-        .line-height-lg { line-height: 1.8; }
-        
+        .line-height-lg {
+            line-height: 1.8;
+        }
+
         .img-frame {
             position: relative;
             display: inline-block;
         }
+
         .img-frame::before {
             content: '';
             position: absolute;
@@ -129,6 +139,15 @@
             border: 3px dashed #FF6B81;
             border-radius: 20px;
             z-index: 0;
+        }
+
+        .fst-italic {
+            font-weight: 300;
+            color: #636e72 !important;
+        }
+
+        .opacity-90 {
+            opacity: 0.9;
         }
     </style>
 
@@ -159,12 +178,13 @@
         </section>
 
         <div class="container py-5" style="position: relative; z-index: 1;">
-            
+
             {{-- KENAPA SI-BANSOS ADA --}}
             <div class="row align-items-center mb-5 py-5">
                 <div class="col-lg-6 mb-5 mb-lg-0 wow fadeInLeft">
                     <div class="img-frame">
-                        <img src="{{ asset('assets/images/about/about1.jpg') }}" class="img-fluid rounded-4 shadow-lg position-relative" style="z-index: 1;" alt="Komitmen Kami">
+                        <img src="{{ asset('assets/images/about/about1.jpg') }}"
+                            class="img-fluid rounded-4 shadow-lg position-relative" style="z-index: 1;" alt="Komitmen Kami">
                     </div>
                 </div>
                 <div class="col-lg-6 ps-lg-5 wow fadeInRight">
@@ -203,6 +223,55 @@
                 </div>
             </div>
 
+            {{-- SAMBUTAN KEPALA DESA --}}
+            <div class="row align-items-center mb-5 py-5 flex-row-reverse">
+                <div class="col-lg-5 mb-5 mb-lg-0 wow fadeInRight">
+                    <div class="img-frame">
+                        {{-- Ganti src dengan foto asli Kepala Desa jika sudah ada --}}
+                        <img src="https://ui-avatars.com/api/?name=Ahmad+Subarjo&background=FF6B81&color=fff&size=500"
+                            class="img-fluid rounded-4 shadow-lg position-relative"
+                            style="z-index: 1; width: 100%; height: 450px; object-fit: cover;" alt="Kepala Desa">
+                    </div>
+                </div>
+                <div class="col-lg-7 pe-lg-5 wow fadeInLeft">
+                    <span class="text-uppercase fw-bold mb-2 d-inline-block"
+                        style="color: #FF6B81; font-size: 0.8rem; letter-spacing: 2px;">
+                        Sambutan Kepala Desa
+                    </span>
+                    <h2 class="fw-bold mb-4" style="color: #2d3436;">Mewujudkan Desa Mandiri Melalui Digitalisasi</h2>
+
+                    <div class="position-relative">
+                        <i class="fas fa-quote-left position-absolute"
+                            style="font-size: 3rem; color: rgba(255, 107, 129, 0.1); top: -20px; left: -10px;"></i>
+                        <p class="line-height-lg mb-4 text-muted fst-italic ps-4"
+                            style="font-size: 1.1rem; border-left: 3px solid #FF6B81;">
+                            "Kehadiran SI-BANSOS adalah komitmen kami untuk memastikan tidak ada lagi warga yang tertinggal
+                            informasi. Transparansi bukan sekadar janji, tapi kami wujudkan melalui sistem yang bisa
+                            dipantau langsung oleh masyarakat. Mari bersama-sama membangun desa yang lebih terbuka dan
+                            sejahtera."
+                        </p>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5 class="fw-bold mb-0" style="color: #2d3436;">H. Ahmad Subarjo, S.Sos</h5>
+                        <p class="text-muted">Kepala Desa Makmur Sejahtera</p>
+                    </div>
+
+                    <div class="d-flex gap-3 mt-4">
+                        <div class="p-3 bg-white shadow-sm rounded-3 border-start border-4"
+                            style="border-color: #FF6B81 !important;">
+                            <h4 class="fw-bold mb-0" style="color: #FF6B81;">5+</h4>
+                            <small class="text-muted">Tahun Mengabdi</small>
+                        </div>
+                        <div class="p-3 bg-white shadow-sm rounded-3 border-start border-4"
+                            style="border-color: #FF6B81 !important;">
+                            <h4 class="fw-bold mb-0" style="color: #FF6B81;">24/7</h4>
+                            <small class="text-muted">Layanan Digital</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- CARA KERJA SISTEM --}}
             <div class="text-center mb-5 pt-5">
                 <span class="text-uppercase fw-bold px-3 py-1 rounded-pill mb-2 d-inline-block"
@@ -222,7 +291,8 @@
                         </div>
                         <h5 class="fw-bold mb-3" style="color: #FF6B81;">Manajemen Program</h5>
                         <p class="text-muted mb-0 px-2 small line-height-lg">
-                            Admin desa menginput program, kode, dan anggaran agar terdokumentasi secara resmi dan transparan.
+                            Admin desa menginput program, kode, dan anggaran agar terdokumentasi secara resmi dan
+                            transparan.
                         </p>
                     </div>
                 </div>
@@ -235,7 +305,8 @@
                         </div>
                         <h5 class="fw-bold mb-3" style="color: #FF6B81;">Pendaftaran Warga</h5>
                         <p class="text-muted mb-0 px-2 small line-height-lg">
-                            Warga memilih program yang sesuai dan mengirim berkas pendaftaran dengan mudah melalui akun mereka.
+                            Warga memilih program yang sesuai dan mengirim berkas pendaftaran dengan mudah melalui akun
+                            mereka.
                         </p>
                     </div>
                 </div>
@@ -248,7 +319,8 @@
                         </div>
                         <h5 class="fw-bold mb-3" style="color: #FF6B81;">Laporan Penyaluran</h5>
                         <p class="text-muted mb-0 px-2 small line-height-lg">
-                            Setiap bantuan tercatat secara otomatis, memudahkan warga memantau riwayat penerimaan secara akurat.
+                            Setiap bantuan tercatat secara otomatis, memudahkan warga memantau riwayat penerimaan secara
+                            akurat.
                         </p>
                     </div>
                 </div>
@@ -259,7 +331,8 @@
                 <div class="row align-items-center text-white text-center text-lg-start">
                     <div class="col-lg-8">
                         <h2 class="fw-bold mb-3">Siap Menjadi Bagian dari Perubahan?</h2>
-                        <p class="opacity-90 mb-4 mb-lg-0">Daftarkan akun Anda, lengkapi data profil, dan mulailah berpartisipasi dalam program pembangunan desa kami.</p>
+                        <p class="opacity-90 mb-4 mb-lg-0">Daftarkan akun Anda, lengkapi data profil, dan mulailah
+                            berpartisipasi dalam program pembangunan desa kami.</p>
                     </div>
                     <div class="col-lg-4 text-lg-end">
                         <a href="{{ url('/') }}" class="btn btn-lg px-5 rounded-pill fw-bold shadow-sm"

@@ -15,18 +15,19 @@ class WargaDummy extends Seeder
 
         for ($i = 0; $i < 100; $i++) {
             $ktp = $faker->unique()->numerify('################'); // 16 digit KTP
-            
+
             DB::table('warga')->insert([
                 'no_ktp'         => $ktp,
                 'nama'           => $faker->name,
                 'email'          => $faker->unique()->safeEmail,
                 'email_verified_at' => now(),
                 // Password unik: "warga_" diikuti 4 digit terakhir KTP
-                'password'       => Hash::make('warga_' . substr($ktp, -4)), 
+                'password'       => Hash::make('warga_' . substr($ktp, -4)),
                 'jenis_kelamin'  => $faker->randomElement(['Laki-laki', 'Perempuan']),
                 'agama'          => $faker->randomElement(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Khonghucu']),
                 'pekerjaan'      => $faker->jobTitle,
-                'telp' => $faker->phoneNumber,
+                // Menggunakan numerify agar panjangnya pasti 12 digit (aman untuk limit 15)
+                'telp' => $faker->numerify('08##########'),
                 'updated_at'     => now(),
             ]);
         }

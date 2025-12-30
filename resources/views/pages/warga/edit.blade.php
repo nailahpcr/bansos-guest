@@ -4,10 +4,12 @@
 
 @section('content')
 <style>
-    /* Konsistensi tema dengan Index */
+    /* Background Konsisten dengan Edit Program */
     .edit-section {
         padding: 80px 0;
-        background-color: #fcfcfc;
+        background: linear-gradient(to bottom, #FFD1DC 0%, #B2E2F2 100%);
+        min-height: 100vh;
+        background-attachment: fixed;
     }
 
     .section-title h2 {
@@ -22,7 +24,7 @@
         backdrop-filter: blur(15px);
         border-radius: 25px;
         border: 1px solid rgba(255, 107, 129, 0.2);
-        box-shadow: 0 20px 40px rgba(255, 107, 129, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         padding: 40px;
     }
 
@@ -33,11 +35,11 @@
         margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 8px; /* Jarak antara ikon dan teks */
+        gap: 8px;
     }
 
     .form-label i {
-        color: #FF6B81; /* Warna ikon pink sesuai tema */
+        color: #FF6B81;
         font-size: 1.1rem;
         width: 25px;
         text-align: center;
@@ -58,13 +60,13 @@
         outline: none;
     }
 
-    /* Button Styling */
+    /* Button Styling (Pill-Shaped) */
     .btn-save-changes {
         background-color: #FF6B81;
         border: none;
         color: white;
         padding: 12px 35px;
-        border-radius: 12px;
+        border-radius: 50px; /* Seragam dengan Edit Program */
         font-weight: 600;
         transition: all 0.3s ease;
     }
@@ -79,22 +81,17 @@
     .btn-back {
         background-color: #f1f2f6;
         color: #57606f;
-        border: 1px solid rgba(0,0,0,0.05);
+        border-radius: 50px; /* Seragam dengan Edit Program */
         padding: 12px 25px;
-        border-radius: 12px;
         font-weight: 600;
+        border: none;
+        display: inline-block;
+        text-decoration: none;
     }
 
     .btn-back:hover {
         background-color: #dfe4ea;
         color: #2d3436;
-    }
-
-    /* Form Text (Optional info) */
-    .form-text {
-        font-size: 0.8rem;
-        color: #a0a0a0;
-        margin-left: 33px;
     }
 </style>
 
@@ -105,9 +102,9 @@
             <div class="col-12 text-center mb-5">
                 <div class="section-title">
                     <span class="badge rounded-pill px-3 py-2 mb-3" style="background: rgba(255, 107, 129, 0.1); color: #FF6B81;">
-                        <i class="fas fa-user-edit me-1"></i> Update Database
+                        <i class="fas fa-user-edit me-1"></i> edit warga
                     </span>
-                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Edit Data Warga</h2>
+                    <h2 class="wow fadeInUp" data-wow-delay=".4s">Edit Data: {{ $warga->nama }}</h2>
                     <p class="wow fadeInUp" data-wow-delay=".6s">Pastikan data warga seperti NIK dan Nama sudah sesuai dengan dokumen asli.</p>
                 </div>
             </div>

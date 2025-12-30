@@ -75,46 +75,46 @@ class ProgramController extends Controller
     }
 
     public function update(Request $request, ProgramBantuan $program)
-{
-    $validatedData = $request->validate([
-        'kode'         => 'required|unique:program_bantuan,kode,' . $program->program_id . ',program_id',
-        'nama_program' => 'required',
-        'tahun'        => 'required|integer',
-        'anggaran'     => 'required|numeric',
-        'deskripsi'    => 'nullable|string',
-        'file'         => 'nullable|file|mimes:jpg,png,pdf,docx|max:10240', // Sesuaikan mimes & max size
-    ]);
+    {
+        $validatedData = $request->validate([
+            'kode'         => 'required|unique:program_bantuan,kode,' . $program->program_id . ',program_id',
+            'nama_program' => 'required',
+            'tahun'        => 'required|integer',
+            'anggaran'     => 'required|numeric',
+            'deskripsi'    => 'nullable|string',
+            'file'         => 'nullable|file|mimes:jpg,png,pdf,docx|max:10240', // Sesuaikan mimes & max size
+        ]);
 
-    // 1. Logika hapus file jika flag 'hapus_file' dikirim dari View
-    if ($request->hapus_file == '1') {
-        if ($program->file) {
-            Storage::disk('public')->delete($program->file);
-            $program->file = null;
-            $program->save(); 
-        }
-    }
-
-    // 2. Logika jika ada file baru yang diunggah
-    if ($request->hasFile('file')) {
-        if ($program->file && Storage::disk('public')->exists($program->file)) {
-            Storage::disk('public')->delete($program->file);
+        // 1. Logika hapus file jika flag 'hapus_file' dikirim dari View
+        if ($request->hapus_file == '1') {
+            if ($program->file) {
+                Storage::disk('public')->delete($program->file);
+                $program->file = null;
+                $program->save();
+            }
         }
 
-        $validatedData['file'] = $request->file('file')->store('program_bantuan', 'public');
-    } else {
-        unset($validatedData['file']);
+        // 2. Logika jika ada file baru yang diunggah
+        if ($request->hasFile('file')) {
+            if ($program->file && Storage::disk('public')->exists($program->file)) {
+                Storage::disk('public')->delete($program->file);
+            }
+
+            $validatedData['file'] = $request->file('file')->store('program_bantuan', 'public');
+        } else {
+            unset($validatedData['file']);
+        }
+
+        // 3. Update semua data teks
+        $program->update($validatedData);
+
+        // Jika dipanggil dari halaman Detail (Show), sebaiknya kembali ke detail, bukan index
+        if ($request->has('hapus_file') || $request->hasFile('file')) {
+            return back()->with('success', 'Lampiran berhasil diperbarui.');
+        }
+
+        return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
     }
-
-    // 3. Update semua data teks
-    $program->update($validatedData);
-
-    // Jika dipanggil dari halaman Detail (Show), sebaiknya kembali ke detail, bukan index
-    if ($request->has('hapus_file') || $request->hasFile('file')) {
-        return back()->with('success', 'Lampiran berhasil diperbarui.');
-    }
-
-    return redirect()->route('kelola-program.index')->with('success', 'Program berhasil diperbarui.');
-}
     public function destroy(ProgramBantuan $program)
     {
         // 1. Cek apakah kolom file memiliki isi
@@ -184,5 +184,22 @@ class ProgramController extends Controller
 
         return redirect()->route('kelola-program.index')
             ->with('success', 'Pendaftaran Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
+    }
+
+    public function deleteFile($id)
+    {
+        $program = ProgramBantuan::findOrFail($id); // Sesuaikan dengan nama Model Anda
+
+        if ($program->file) {
+            // Hapus file fisik dari storage
+            Storage::disk('public')->delete($program->file);
+
+            // Update database agar kolom file menjadi null/kosong
+            $program->update(['file' => null]);
+
+            return redirect()->back()->with('success', 'Lampiran berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', 'File tidak ditemukan.');
     }
 }

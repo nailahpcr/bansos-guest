@@ -34,13 +34,16 @@
                             <form action="{{ route('pendaftar.index') }}" method="GET" class="flex-grow-1">
                                 <div class="search-combined-group shadow-sm">
                                     {{-- Filter Status --}}
-                                    <select name="status" class="form-select shadow-none">
+                                    <select name="status_seleksi" class="form-select shadow-none">
                                         <option value="">Semua Status</option>
-                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+                                        <option value="pending"
+                                            {{ request('status_seleksi') == 'pending' ? 'selected' : '' }}>
                                             Pending</option>
-                                        <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>
-                                            Disetujui</option>
-                                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>
+                                        <option value="diterima"
+                                            {{ request('status_seleksi') == 'diterima' ? 'selected' : '' }}>
+                                            Diterima</option>
+                                        <option value="ditolak"
+                                            {{ request('status_seleksi') == 'ditolak' ? 'selected' : '' }}>
                                             Ditolak</option>
                                     </select>
 
@@ -60,7 +63,7 @@
                             </a>
 
                             {{-- Tombol Reset --}}
-                            @if (request('q') || request('status'))
+                            @if (request('q') || request('status_seleksi'))
                                 <a href="{{ route('pendaftar.index') }}"
                                     class="btn btn-light border d-flex align-items-center shadow-sm"
                                     style="height:48px; border-radius:12px;" title="Reset Filter">
@@ -113,7 +116,8 @@
                                 <div>
                                     <div class="text-uppercase mb-1 fw-bold" style="font-size: 0.7rem; color: #2ecc71;">
                                         Status Filter</div>
-                                    <h2 class="h3 mb-0 fw-bold text-dark">{{ request('status') ?: 'Semua' }}</h2>
+                                    <h2 class="h3 mb-0 fw-bold text-dark">
+                                        {{ request('status_seleksi') ? ucfirst(request('status_seleksi')) : 'Semua' }}</h2>
                                     <small class="text-muted">Kategori terpilih</small>
                                 </div>
                             </div>
@@ -175,14 +179,16 @@
                                     {{-- Badge Status --}}
                                     @php
                                         $statusColor = [
-                                            'pending' => 'bg-pending',
-                                            'disetujui' => 'bg-disetujui',
-                                            'ditolak' => 'bg-ditolak',
+                                            'verifikasi' => 'bg-warning text-dark',
+                                            'diterima' => 'bg-success',
+                                            'ditolak' => 'bg-danger',
                                         ];
                                     @endphp
                                     <span
-                                        class="badge {{ $statusColor[$item->status_seleksi] ?? 'bg-secondary' }} text-white">
-                                        {{ ucfirst($item->status_seleksi) }}
+                                        class="badge rounded-pill {{ $item->status_seleksi == 'Diterima' ? 'bg-success' : ($item->status_seleksi == 'Ditolak' ? 'bg-danger' : 'bg-warning text-dark') }}">
+                                        <i
+                                            class="fas {{ $item->status_seleksi == 'Diterima' ? 'fa-check-circle' : ($item->status_seleksi == 'Ditolak' ? 'fa-times-circle' : 'fa-clock') }} me-1"></i>
+                                        {{ $item->status_seleksi ?? '-' }}
                                     </span>
                                 </div>
                                 <h6 class="card-subtitle mb-3 text-muted">
@@ -436,7 +442,7 @@
             border: 1px solid #ffeeba;
         }
 
-        .bg-disetujui {
+        .bg-diterima {
             background-color: #d4edda !important;
             color: #155724;
             border: 1px solid #c3e6cb;

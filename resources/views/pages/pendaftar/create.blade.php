@@ -160,7 +160,6 @@
                                 </label>
                                 <select name="status_seleksi" class="form-select">
                                     <option value="Pending" {{ old('status_seleksi', 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="Verifikasi" {{ old('status_seleksi') == 'Verifikasi' ? 'selected' : '' }}>Verifikasi</option>
                                     <option value="Diterima" {{ old('status_seleksi') == 'Diterima' ? 'selected' : '' }}>Diterima</option>
                                     <option value="Ditolak" {{ old('status_seleksi') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
                                 </select>

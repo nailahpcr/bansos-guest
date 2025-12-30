@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProgramBantuan; 
@@ -20,46 +19,59 @@ class PendaftarBantuan extends Seeder
     {
         $faker = Faker::create('id_ID');
         
-        // Ambil program_id dan warga_id yang sudah ada
         $programIds = ProgramBantuan::pluck('program_id')->toArray();
         $wargaIds = Warga::pluck('warga_id')->toArray();
         
-        // Cek jika tabel acuan kosong (kegagalan yang paling umum)
         if (empty($programIds) || empty($wargaIds)) {
-            echo "Error: Pastikan ProgramBantuan dan Warga memiliki data (Seeder terkait sudah dijalankan) sebelum menjalankan PendaftarDummy.\n";
+            echo "Error: Pastikan ProgramBantuan dan Warga memiliki data sebelum menjalankan Seeder ini.\n";
             return;
         }
 
-        $statuses = ['Pending', 'Verifikasi', 'Ditolak', 'Diterima'];
+        $statuses = ['Pending', 'Ditolak', 'Diterima'];
         
-        // Ulangi untuk membuat 100 data pendaftaran
         for ($i = 0; $i < 100; $i++) {
             
             $randomProgramId = $faker->randomElement($programIds);
             $randomWargaId = $faker->randomElement($wargaIds);
             $randomStatus = $faker->randomElement($statuses);
 
-            // Cek duplikasi untuk menghormati UNIQUE constraint di migration
+            // Cek duplikasi
             $isDuplicate = DB::table('pendaftar_bantuans')
                            ->where('program_id', $randomProgramId)
                            ->where('warga_id', $randomWargaId)
                            ->exists();
 
             if ($isDuplicate) {
-                // Lewati iterasi jika kombinasi pendaftar dan program sudah ada
                 continue; 
             }
+
+            // --- LOGIC TEKS KETERANGAN ---
+            $keterangan = null;
+
+            if ($randomStatus === 'Diterima') {
+                $keterangan = $faker->randomElement([
+                    'Dokumen lengkap dan memenuhi kriteria kelayakan bantuan.',
+                    'Lolos verifikasi faktual lapangan oleh tim desa.',
+                    'Data sinkron dengan DTKS pusat dan layak menerima manfaat.',
+                    'Memenuhi syarat prioritas bantuan sosial tahun ini.'
+                ]);
+            } elseif ($randomStatus === 'Ditolak') {
+                $keterangan = $faker->randomElement([
+                    'NIK tidak terdaftar dalam Data Terpadu Kesejahteraan Sosial (DTKS).',
+                    'Pendapatan keluarga melebihi batas maksimal kriteria bantuan.',
+                    'Terdapat ketidaksesuaian antara dokumen fisik dan data sistem.',
+                ]);
+            } else {
+                // Status Pending
+                $keterangan = 'Berkas telah diterima dan sedang dalam tahap verifikasi administrasi.';
+            }
             
-            // Perintah untuk MENGISI DATA (INSERT)
             DB::table('pendaftar_bantuans')->insert([
                 'program_id' => $randomProgramId,
                 'warga_id' => $randomWargaId,
                 'tanggal_daftar' => $faker->dateTimeBetween('-1 year', 'now'), 
                 'status_seleksi' => $randomStatus,
-                'keterangan' => ($randomStatus === 'Ditolak') 
-                                 ? $faker->sentence(5) 
-                                 : null, 
-                
+                'keterangan' => $keterangan,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

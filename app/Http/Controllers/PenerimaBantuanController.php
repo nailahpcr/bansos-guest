@@ -96,6 +96,6 @@ class PenerimaBantuanController extends Controller
         $item = PenerimaBantuan::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('pages.penerima.index')->with('success', 'Data berhasil dihapus.');
+        return redirect()->route('penerima.index')->with('success', 'Data berhasil dihapus.');
     }
 }

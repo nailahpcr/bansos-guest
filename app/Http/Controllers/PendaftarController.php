@@ -11,64 +11,53 @@ use Illuminate\Support\Facades\Storage;
 class PendaftarController extends Controller
 {
     public function index(Request $request)
-{
-    // 1. Ambil Parameter Query dari URL
-    $search = $request->query('q');
-    $status_filter = $request->query('status_seleksi');
+    {
+        // 1. Ambil Parameter Query dari URL
+        $search = $request->query('q');
+        $status = $request->query('status_seleksi');
 
-    // 2. Inisialisasi Query dengan Eager Loading (Warga & Program)
-    // Gunakan eager loading 'warga' dan 'program' untuk mencegah N+1 Query Problem
-    $query = PendaftarBantuan::with(['program', 'warga', 'files']);
+        // 2. Inisialisasi Query dengan Eager Loading (Warga & Program)
+        // Gunakan eager loading 'warga' dan 'program' untuk mencegah N+1 Query Problem
+        $query = PendaftarBantuan::with(['program', 'warga', 'files']);
 
-    // 3. Logika Pencarian (Nama, NIK, atau Nama Program)
-    if ($search) {
-        $searchTerm = strtolower($search);
-        $query->where(function ($q) use ($searchTerm) {
-            $q->whereHas('warga', function ($qWarga) use ($searchTerm) {
-                $qWarga->whereRaw('LOWER(nama) LIKE ?', ['%' . $searchTerm . '%'])
-                       ->orWhere('no_ktp', 'like', '%' . $searchTerm . '%');
-            })
-            ->orWhereHas('program', function ($qProgram) use ($searchTerm) {
-                $qProgram->whereRaw('LOWER(nama_program) LIKE ?', ['%' . $searchTerm . '%']);
+        // 3. Logika Pencarian (Nama, NIK, atau Nama Program)
+        if ($search) {
+            $searchTerm = strtolower($search);
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereHas('warga', function ($qWarga) use ($searchTerm) {
+                    $qWarga->whereRaw('LOWER(nama) LIKE ?', ['%' . $searchTerm . '%'])
+                        ->orWhere('no_ktp', 'like', '%' . $searchTerm . '%');
+                })
+                    ->orWhereHas('program', function ($qProgram) use ($searchTerm) {
+                        $qProgram->whereRaw('LOWER(nama_program) LIKE ?', ['%' . $searchTerm . '%']);
+                    });
             });
-        });
+        }
+
+        // 4. Logika Filter Status Seleksi
+        if ($request->filled('status_seleksi')) {
+            $query->where('status_seleksi', $status);
+        }
+
+        // 5. Eksekusi Pagination (9 data per halaman)
+        // Menggunakan paginate() agar method links() dan appends() tersedia di Blade
+        $pendaftar = $query->latest()->paginate(9);
+
+        // 6. Mempertahankan Query String (Search & Filter) saat pindah halaman
+        $pendaftar->appends($request->all());
+
+        // 7. Hitung Statistik (Opsional untuk Dashboard)
+        $totalPendaftar = PendaftarBantuan::count();
+        $status = $request->status ?? 'Semua';
+
+        // 9. Kirim Data ke View
+        return view('pages.pendaftar.index', compact(
+            'pendaftar',
+            'totalPendaftar',
+            'search',
+            'status'
+        ));
     }
-
-    // 4. Logika Filter Status Seleksi
-    if ($status_filter) {
-        $query->where('status_seleksi', $status_filter);
-    }
-
-    // 5. Eksekusi Pagination (9 data per halaman)
-    // Menggunakan paginate() agar method links() dan appends() tersedia di Blade
-    $pendaftar = $query->latest()->paginate(9);
-
-    // 6. Mempertahankan Query String (Search & Filter) saat pindah halaman
-    $pendaftar->appends($request->all());
-
-    // 7. Hitung Statistik (Opsional untuk Dashboard)
-    $totalPendaftar = PendaftarBantuan::count();
-    $totalLakiLaki = PendaftarBantuan::whereHas('warga', function ($q) {
-        $q->where('jenis_kelamin', 'Laki-laki');
-    })->count();
-
-    $totalPerempuan = PendaftarBantuan::whereHas('warga', function ($q) {
-        $q->where('jenis_kelamin', 'Perempuan');
-    })->count();
-
-    // 8. Daftar Status untuk Looping Dropdown di View
-    $statuses = ['Pending', 'Verifikasi', 'Ditolak', 'Diterima'];
-
-    // 9. Kirim Data ke View
-    return view('pages.pendaftar.index', compact(
-        'pendaftar',
-        'totalPendaftar',
-        'totalLakiLaki',
-        'totalPerempuan',
-        'search',
-        'statuses'
-    ));
-}
 
     public function create()
     {
@@ -132,7 +121,7 @@ class PendaftarController extends Controller
 
     public function show(string $id)
     {
-        $pendaftar = PendaftarBantuan::with(['program', 'warga',])->findOrFail($id);
+        $pendaftar = PendaftarBantuan::with(['program', 'warga', 'files'])->findOrFail($id);
         return view('pages.pendaftar.show', compact('pendaftar'));
     }
 
@@ -153,31 +142,31 @@ class PendaftarController extends Controller
     {
         $pendaftar = PendaftarBantuan::findOrFail($id);
 
-        $request->validate([
-            'program_id'     => 'required|exists:program_bantuan,program_id',
-            'warga_id'       => 'required|exists:warga,warga_id',
-            'status_seleksi' => 'required|in:Pending,Verifikasi,Ditolak,Diterima',
-            'files.*'        => 'nullable|file|max:10240|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx',
+        // 1. Update Data Utama
+        $pendaftar->update([
+            'program_id' => $request->program_id,
+            'warga_id' => $request->warga_id,
+            'status_seleksi' => $request->status_seleksi,
+            'keterangan' => $request->keterangan,
         ]);
 
-        $pendaftar->update($request->only(['program_id', 'warga_id', 'status_seleksi', 'keterangan']));
-
+        // 2. Cek jika ada file baru yang diunggah
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
-                $path = $file->store('pendaftar_berkas', 'public');
+                // Validasi file (Opsional tapi disarankan)
+                $path = $file->store('pendaftaran/berkas', 'public');
 
-                // Simpan ke database melalui relasi
+                // Simpan ke tabel files (sesuaikan nama model file Anda)
                 $pendaftar->files()->create([
-
-                    'filename'  => $file->getClientOriginalName(),
-                    'path'      => $path,
-                    'mime_type' => $file->getMimeType(),
-                    'size'      => $file->getSize(),
+                    'filename' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'size' => $file->getSize(),
+                    'ext' => $file->getClientOriginalExtension(),
                 ]);
             }
         }
 
-        return redirect()->route('pendaftar.index')->with('success', 'Data berhasil diperbarui.');
+        return redirect()->route('pendaftar.index')->with('success', 'Data dan berkas berhasil diperbarui!');
     }
 
     public function destroy($id)
@@ -196,12 +185,10 @@ class PendaftarController extends Controller
 
     public function destroyFile($id)
     {
-        $file = \App\Models\PendaftarBantuan::findOrFail($id);
+        $file = \App\Models\PendaftarFile::findOrFail($id);
 
-        if (Storage::disk('public')->exists($file->path)) {
-        Storage::disk('public')->delete($file->path);
-    }
-        $file->delete();
+        Storage::disk('public')->delete($file->path); // Hapus file fisik
+        $file->delete(); // Hapus record database
 
         return back()->with('success', 'File berhasil dihapus.');
     }

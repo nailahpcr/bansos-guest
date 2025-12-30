@@ -9,8 +9,8 @@ class PendaftarBantuan extends Model
 {
     use HasFactory;
 
-    protected $table = 'pendaftar_bantuans';    
-    protected $primaryKey = 'pendaftar_id';
+  protected $table = 'pendaftar_bantuans';
+protected $primaryKey = 'pendaftar_id'; // Sesuai image_a06dcc
     
     protected $fillable = [
         'program_id',

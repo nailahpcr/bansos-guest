@@ -240,7 +240,7 @@
                                 <div class="upload-container">
                                     <input type="file" name="file" class="form-control @error('file') is-invalid @enderror">
                                     <small class="text-muted mt-2 d-block">
-                                        <i class="fas fa-info-circle me-1"></i> Format: PDF, DOCX, JPG, PNG.
+                                        <i class="fas fa-info-circle me-1"></i> Format: JPEG, JPG, PNG.
                                     </small>
                                     @error('file.*')
                                         <div class="invalid-feedback d-block">Salah satu file tidak valid atau terlalu besar.

@@ -3,134 +3,188 @@
 @section('title', 'Edit Status Verifikasi')
 
 @section('content')
+    <style>
+        #features {
+            background: linear-gradient(to bottom, #FFD1DC 0%, #B2E2F2 100%);
+            min-height: 100vh;
+            padding: 60px 0;
+            background-attachment: fixed;
+        }
+
+        .card {
+            border-radius: 20px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .section-title h3 {
+            color: #ff5876;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #20bf6b, #0fb9b1);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+        }
+
+        .btn-secondary {
+            border-radius: 50px;
+            padding: 10px 25px;
+            background-color: #95afc0;
+            border: none;
+        }
+    </style>
 
     <section id="features" class="features section">
         <div class="container">
-            {{-- SECTION TITLE --}}
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 text-center mb-4">
                     <div class="section-title">
                         <h3 class="wow zoomIn" data-wow-delay=".2s">Formulir Verifikasi</h3>
-                        {{-- Perbaikan: Mengambil nama dari relasi pendaftar->warga --}}
-                        <h2 class="wow fadeInUp" data-wow-delay=".4s">Update Data:
-                            {{ $verifikasi->pendaftar->warga->nama ?? 'Penerima' }}</h2>
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">
+                            Edit Data: {{ $verifikasi->pendaftar?->warga?->nama ?? 'Penerima' }} </h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s">Perbarui hasil survei lapangan dan status kelayakan
-                            penerima bantuan di bawah ini.</p>
+                            penerima bantuan.</p>
                     </div>
                 </div>
             </div>
 
-            {{-- FORM EDIT DATA --}}
             <div class="row justify-content-center">
-                <div class="col-lg-8 col-md-10 col-12">
-                    <div class="card shadow-sm wow fadeInUp" data-wow-delay=".8s">
-                        <div class="card-body p-4">
+                <div class="col-lg-8">
+                    <div class="card shadow-lg wow fadeInUp" data-wow-delay=".8s">
+                        <div class="card-body p-4 p-md-5">
 
-                            {{-- Pesan Error --}}
+                            {{-- Pesan Error Validasi --}}
                             @if ($errors->any())
-                                <div class="alert alert-danger">
+                                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4">
                                     <strong>Oops!</strong> Ada masalah dengan input Anda.
-                                    <ul class="mb-0">
+                                    <ul class="mb-0 mt-2">
                                         @foreach ($errors->all() as $error)
                                             <li>{{ $error }}</li>
                                         @endforeach
                                     </ul>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                                 </div>
                             @endif
 
-                            {{-- Form Action: Pastikan menggunakan $verifikasi->id sesuai standar Laravel --}}
-                            {{-- Tambahkan enctype karena di Controller kita menangani upload foto --}}
-                            <form action="{{ route('verifikasi.update', $verifikasi) }}" method="POST"
-                                enctype="multipart/form-data"> @csrf
+                            {{-- Form Utama - Perbaikan Syntax Error pada Action --}}
+                            <form action="{{ route('verifikasi.update', ['verifikasi']) }}"
+                                method="POST" enctype="multipart/form-data">
+                                @csrf
                                 @method('PUT')
 
-                                {{-- INFORMASI PENERIMA (READ ONLY) --}}
-                                <div class="alert alert-light border mb-4">
-                                    <h6 class="text-muted mb-3"><i class="lni lni-user"></i> Informasi Penerima</h6>
-                                    <input type="hidden" name="pendaftar_id" value="{{ $verifikasi->pendaftar_id }}">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label text-muted small">NIK</label>
-                                            <input type="text" class="form-control bg-light"
-                                                value="{{ $verifikasi->pendaftar->warga->nik ?? '-' }}" disabled readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label text-muted small">Nama Lengkap</label>
-                                            <input type="text" class="form-control bg-light"
-                                                value="{{ $verifikasi->pendaftar->warga->nama ?? '-' }}" disabled readonly>
-                                        </div>
+                                {{-- INFORMASI PENERIMA --}}
+                                <div class="alert alert-info border-0 shadow-sm mb-4 d-flex align-items-center"
+                                    style="border-radius: 15px; background: rgba(178, 226, 242, 0.4);">
+                                    <i class="fas fa-id-card fa-2x me-3 text-primary"></i>
+                                    <div>
+                                        <small class="text-uppercase fw-bold text-primary" style="font-size: 0.7rem;">NIK /
+                                            Nama Penerima</small>
+                                        <p class="mb-0 fw-bold text-dark">
+                                            {{ $verifikasi->pendaftar?->warga?->nik ?? '-' }} -
+                                            {{ $verifikasi->pendaftar?->warga?->nama ?? '-' }}
+                                        </p>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    {{-- Field Petugas --}}
-                                    <div class="col-md-6 mb-3">
-                                        <label for="petugas" class="form-label"><strong>Nama Petugas:</strong></label>
+                                <input type="hidden" name="pendaftar_id" value="{{ $verifikasi->pendaftar_id }}">
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label for="petugas" class="form-label">Nama Petugas</label>
                                         <select name="petugas" id="petugas"
-                                            class="form-select @error('petugas') is-invalid @enderror" required>
+                                            class="form-select shadow-none @error('petugas') is-invalid @enderror" required>
                                             <option value="">-- Pilih Petugas --</option>
-                                            @php
-                                                $daftarPetugas = ['Budi', 'Siti', 'Agus', 'Putri', 'Hendra'];
-                                            @endphp
-                                            @foreach ($daftarPetugas as $nama)
+                                            @foreach (['Budi', 'Siti', 'Agus', 'Putri', 'Hendra'] as $nama)
                                                 <option value="{{ $nama }}"
-                                                    {{ old('petugas', $verifikasi->petugas ?? '') == $nama ? 'selected' : '' }}>
+                                                    {{ old('petugas', $verifikasi->petugas) == $nama ? 'selected' : '' }}>
                                                     {{ $nama }}
                                                 </option>
                                             @endforeach
                                         </select>
-
-                                        @error('petugas')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
                                     </div>
-
-                                    {{-- Field Tanggal Survei --}}
-                                    <div class="col-md-6 mb-3">
-                                        <label for="tanggal" class="form-label"><strong>Tanggal
-                                                Verifikasi:</strong></label>
+                                    <div class="col-md-6">
+                                        <label for="tanggal" class="form-label">Tanggal Verifikasi</label>
                                         <input type="date" name="tanggal" id="tanggal"
-                                            class="form-control @error('tanggal') is-invalid @enderror"
+                                            class="form-control shadow-none @error('tanggal') is-invalid @enderror"
                                             value="{{ old('tanggal', $verifikasi->tanggal) }}" required>
-                                        @error('tanggal')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
                                     </div>
                                 </div>
 
-                                {{-- Field Skor --}}
-                                <div class="mb-3">
-                                    <label for="skor" class="form-label"><strong>Skor Penilaian:</strong></label>
-                                    <input type="number" name="skor" id="skor"
-                                        class="form-control @error('skor') is-invalid @enderror"
-                                        value="{{ old('skor', $verifikasi->skor) }}" placeholder="Contoh: 85" required>
-                                    @error('skor')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="mb-4">
+                                    <label for="skor" class="form-label">Skor Penilaian</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0"><i
+                                                class="fas fa-star text-warning"></i></span>
+                                        <input type="number" name="skor" id="skor"
+                                            class="form-control shadow-none border-start-0 @error('skor') is-invalid @enderror"
+                                            value="{{ old('skor', $verifikasi->skor) }}" placeholder="Contoh: 85" required>
+                                    </div>
                                 </div>
 
-                                {{-- Field Foto Bukti (Tambahan karena ada di Controller) --}}
+                                {{-- LIST BERKAS SAAT INI --}}
                                 <div class="mb-3">
-                                    <label for="file" class="form-label"><strong>Foto Bukti Lapangan:</strong></label>
-                                    @if ($verifikasi->file)
-                                        <div class="mb-2">
-                                            <img src="{{ asset('storage/' . $verifikasi->file) }}" width="150"
-                                                class="img-thumbnail d-block">
-                                            <small class="text-muted">Foto saat ini (kosongkan jika tidak ingin
-                                                mengganti)</small>
+                                    <label class="form-label fw-bold">Berkas Saat Ini:</label>
+                                    @forelse($verifikasi->files as $file)
+                                        <div
+                                            class="d-flex align-items-center justify-content-between bg-light p-2 mb-2 rounded border">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                                <span class="text-truncate"
+                                                    style="max-width: 250px;">{{ $file->filename }}</span>
+                                            </div>
+                                            <div class="btn-group">
+                                                <a href="{{ asset('storage/' . $file->path) }}" target="_blank"
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    onclick="if(confirm('Hapus berkas ini?')) document.getElementById('delete-file-{{ $file->id }}').submit();">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    @endif
-                                    <input type="file" name="file" id="file"
-                                        class="form-control @error('file') is-invalid @enderror">
-                                    @error('file')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    @empty
+                                        <p class="text-muted small italic">Tidak ada berkas yang diunggah.</p>
+                                    @endforelse
                                 </div>
 
-                                {{-- Tombol Aksi --}}
-                                <div class="text-end mt-4">
-                                    <a class="btn btn-secondary" href="{{ route('verifikasi.index') }}"> Batal</a>
-                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                {{-- UPLOAD FILE BARU --}}
+                                <div class="mb-4">
+                                    <label class="form-label text-primary">Tambah Foto Bukti Baru (Multiple)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i
+                                                class="fas fa-upload text-muted"></i></span>
+                                        <input type="file" name="files[]"
+                                            class="form-control shadow-none @error('files.*') is-invalid @enderror" multiple
+                                            accept=".jpg,.jpeg,.png,.pdf">
+                                    </div>
+                                    <small class="text-muted mt-2 d-block">
+                                        <i class="fas fa-info-circle me-1"></i> Anda dapat memilih lebih dari satu foto
+                                        sekaligus.
+                                    </small>
+                                </div>
+
+                                {{-- BUTTON ACTIONS --}}
+                                <div class="d-flex justify-content-between mt-5 border-top pt-4">
+                                    <a class="btn btn-secondary px-4 fw-bold shadow-sm"
+                                        href="{{ route('verifikasi.index') }}">
+                                        <i class="fas fa-arrow-left me-2"></i> Kembali
+                                    </a>
+                                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">
+                                        <i class="fas fa-save me-2"></i> Simpan Verifikasi
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -139,5 +193,16 @@
             </div>
         </div>
     </section>
+
+    {{-- FORM HAPUS HIDDEN (Sama seperti logika di pendaftar) --}}
+    @if (isset($verifikasi->files) && $verifikasi->files->count() > 0)
+        @foreach ($verifikasi->files as $file)
+            <form id="delete-file-{{ $file->id }}" action="{{ route('verifikasi.files.destroy', $file->id) }}"
+                method="POST" style="display: none;">
+                @csrf
+                @method('DELETE')
+            </form>
+        @endforeach
+    @endif
 
 @endsection
