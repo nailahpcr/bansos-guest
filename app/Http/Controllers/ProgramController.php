@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-
-
 class ProgramController extends Controller
 {
     // ==========================================
@@ -153,53 +151,20 @@ class ProgramController extends Controller
         return view('pages.program.show', compact('program'));
     }
 
-    public function ajukanProgram(ProgramBantuan $program, Request $request)
-    {
-        $user = Auth::user(); // Pastikan user ini memiliki relasi ke tabel pendaftar
-        $filePath = null;
-
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('pendaftaran_berkas', 'public');
-        }
-
-        // Menggunakan attach untuk mengisi tabel pendaftar_bantuans
-        // Pastikan di model User/Warga nama relasinya adalah 'programBantuan'
-        $user->ProgramBantuan()->attach($program->program_id, [
-            'tanggal_daftar' => now(),
-            'status_seleksi' => 'Pending', // Sesuaikan dengan nama kolom di pendaftar_bantuans
-            'file'           => $filePath,
-        ]);
-
-        return redirect()->route('kelola-program.index')
-            ->with('success', 'Anda berhasil mendaftar pada program ' . $program->nama_program);
-    }
-
-    public function batalkanProgram(ProgramBantuan $program)
-    {
-        $user = Auth::user();
-
-        // Detach akan menghapus baris di tabel pendaftar_bantuans 
-        // berdasarkan program_id dan user_id/nik
-        $user->ProgramBantuan()->detach($program->program_id);
-
-        return redirect()->route('kelola-program.index')
-            ->with('success', 'Pendaftaran Anda pada program "' . $program->nama_program . '" telah dibatalkan.');
-    }
-
     public function deleteFile($id)
     {
-        $program = ProgramBantuan::findOrFail($id); // Sesuaikan dengan nama Model Anda
+        $program = \App\Models\ProgramBantuan::findOrFail($id);
 
-        if ($program->file) {
-            // Hapus file fisik dari storage
+        // 1. Hapus file fisik dari storage
+        if ($program->file && Storage::disk('public')->exists($program->file)) {
             Storage::disk('public')->delete($program->file);
-
-            // Update database agar kolom file menjadi null/kosong
-            $program->update(['file' => null]);
-
-            return redirect()->back()->with('success', 'Lampiran berhasil dihapus.');
         }
 
-        return redirect()->back()->with('error', 'File tidak ditemukan.');
+        // 2. Kosongkan nilai kolom file di database
+        $program->update([
+            'file' => null
+        ]);
+
+        return redirect()->back()->with('success', 'Lampiran berkas berhasil dihapus.');
     }
 }

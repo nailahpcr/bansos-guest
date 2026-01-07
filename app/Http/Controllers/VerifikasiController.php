@@ -57,7 +57,7 @@ class VerifikasiController extends Controller
             'petugas'      => 'required|string',
             'tanggal'      => 'required|date',
             'skor'         => 'required|numeric',
-            'files.*'   => 'required|image|mimes:jpeg,png,jpg,|max:2048',
+            'files.*'   => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ]);
 
         // Simpan data (Hanya satu kali create)
@@ -78,7 +78,8 @@ class VerifikasiController extends Controller
     public function show(string $id)
     {
         $verifikasi = VerifikasiLapangan::with(['pendaftar.warga', 'pendaftar.program'])
-            ->findOrFail($id);
+            ->where('verifikasi_id', $id)
+            ->firstOrFail();
 
         return view('pages.verifikasi.show', compact('verifikasi'));
     }
@@ -101,7 +102,7 @@ class VerifikasiController extends Controller
             'petugas'      => 'required|string',
             'tanggal'      => 'required|date',
             'skor'         => 'required|numeric',
-            'files.*'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'files.*'      => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ]);
 
         $verifikasi->update($request->except('files'));
@@ -122,15 +123,24 @@ class VerifikasiController extends Controller
 
     public function destroy(string $id)
     {
+        // 1. Cari data dengan relasi files
         $verifikasi = VerifikasiLapangan::with('files')->findOrFail($id);
-        // Hapus file foto dari storage
+
+        // 2. Hapus file fisik dan record di database
         foreach ($verifikasi->files as $file) {
-            Storage::disk('public')->delete($file->path);
+            // Hapus dari Storage
+            if (Storage::disk('public')->exists($file->path)) {
+                Storage::disk('public')->delete($file->path);
+            }
+
+            // PENTING: Hapus record file dari tabel 'files'
+            $file->delete();
         }
 
+        // 3. Hapus data utama verifikasi
         $verifikasi->delete();
 
-        return redirect()->route('verifikasi.index')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('verifikasi.index')->with('success', 'Data verifikasi dan lampiran berhasil dihapus');
     }
 
     public function destroyFile($id)

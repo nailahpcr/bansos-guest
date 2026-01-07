@@ -4,220 +4,305 @@
 
 @section('content')
     <style>
-        /* --- Base Setup --- */
-        body {
-            font-family: 'Inter', sans-serif;
-            color: #444;
-            overflow-x: hidden;
-            background-color: #ffffff;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-pink: #FF6B81;
+            --dark-text: #2d3436;
+            --light-bg: #fff5f6;
         }
 
-        /* --- Hero Section: Gradasi Kiri ke Kanan --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-text);
+            overflow-x: hidden;
+        }
+
+        /* --- Hero Section --- */
         .hero-area {
-            /* Gradasi dari Pink ke Putih (Kiri ke Kanan) */
-            background: linear-gradient(90deg, #ff5876 0%, #ff8e9e 50%, #ffffff 100%);
-            padding: 100px 0;
+            background: linear-gradient(135deg, #FF6B81 0%, #ff8e9e 100%);
+            padding: 120px 0 160px;
+            color: white;
             position: relative;
-            overflow: hidden;
         }
 
         .hero-content h1 {
             font-size: 3.5rem;
-            font-weight: 800;
-            color: #ffffff;
+            font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 25px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero-content p {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.95);
-            margin-bottom: 35px;
-        }
-
-        /* Fix Hover Tombol Lihat Capaian */
-        .btn-hover-custom {
-            transition: all 0.3s ease;
-        }
-
-        .btn-hover-custom:hover {
-            background-color: #ffffff !important;
-            color: #ff5876 !important;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-            border-color: transparent;
+            margin-bottom: 20px;
         }
 
         .hero-slide-img {
             height: 450px;
             object-fit: cover;
-            border: 8px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
+            border: 8px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* --- Stat Cards --- */
+        .btn-hover-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+            background-color: #fff !important;
+        }
+
+
+        /* --- Stats Section (Floating Cards) --- */
         .stat-card {
-            border-radius: 24px;
-            padding: 2rem;
+            padding: 40px 30px;
+            border-radius: 25px;
             transition: all 0.4s ease;
             border: none;
+            color: white;
+            /* Mengubah teks menjadi putih agar kontras dengan gradasi */
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
 
-        .stat-card.card-blue {
-            background: #e3f2fd;
+        /* Efek Hover: Sedikit membesar dan bayangan lebih dalam */
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .stat-card.card-green {
-            background: #e8f5e9;
+        /* Mengatur Ikon agar tetap terlihat bagus di atas gradasi */
+        .stat-card i {
+            color: rgba(255, 255, 255, 0.8) !important;
+            margin-bottom: 15px;
         }
 
-        .stat-card.card-yellow {
-            background: #fffde7;
+        /* Mengatur teks deskripsi di bawah angka */
+        .stat-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            font-size: 0.9rem;
         }
 
-        .stat-card.card-pink {
-            background: #fce4ec;
+        /* Variasi Gradasi Warna */
+        .card-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .card-green {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .card-yellow {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .card-pink {
+            background: linear-gradient(135deg, #ff6b81 0%, #ff9a9e 100%);
+        }
+
+        /* Opsional: Menambahkan pola lingkaran halus di background kartu */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: -1;
         }
 
         .stat-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05) !important;
+            border-color: var(--primary-pink);
         }
 
-        /* --- Step Cards (Alur Bantuan - Solid Background) --- */
+        /* --- Step/Alur Section (Adopted from About Card) --- */
         .step-card {
-            background: white;
+            background: rgb(255, 255, 255);
             padding: 40px 30px;
-            border-radius: 20px;
-            position: relative;
-            height: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .step-card:hover {
-            transform: translateY(-10px);
-            border-bottom: 4px solid #ff5876;
-        }
-
-        .step-num {
-            font-size: 3rem;
-            font-weight: 900;
-            color: rgba(255, 88, 118, 0.1);
-            position: absolute;
-            top: 10px;
-            right: 20px;
-        }
-
-        /* --- Kotak Saran Message Fix --- */
-        .contact-card {
-            background: white;
-            padding: 40px;
             border-radius: 25px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-        }
-
-        .success-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+            border: 1px solid rgba(255, 107, 129, 0.1);
             height: 100%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.5s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1;
         }
 
-        #saranSection:target .success-overlay {
-            opacity: 1;
-            pointer-events: auto;
+        .step-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(255, 107, 129, 0.15);
+            border-color: var(--primary-pink);
+        }
+
+        .step-num {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            font-size: 5rem;
+            font-weight: 800;
+            color: #ff6b81;
+            z-index: -1;
+        }
+
+        /* --- FAQ & Accordion --- */
+        .accordion-item {
+            border: none;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border-radius: 15px !important;
+            overflow: hidden;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: var(--light-bg);
+            color: var(--primary-pink);
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: var(--primary-pink);
+        }
+
+        /* --- Kotak Saran (Contact Card) --- */
+        .contact-card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 107, 129, 0.1);
+        }
+
+        .form-control-custom {
+            border-radius: 12px;
+            padding: 12px 20px;
+            border: 1px solid #eee;
+            background: #fdfdfd;
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 129, 0.1);
         }
 
         .btn-pink {
-            background: #ff5876;
+            background-color: var(--primary-pink);
             color: white;
             border-radius: 12px;
             padding: 12px;
             font-weight: 600;
-            border: none;
             transition: 0.3s;
+            border: none;
         }
 
         .btn-pink:hover {
-            background: #e04461;
+            background-color: #e8566d;
             color: white;
-            transform: translateY(-2px);
+            transform: scale(1.02);
         }
 
-        .section {
-            padding: 80px 0;
-        }
-
-        /* --- Styling Pesan Sukses CSS --- */
-
+        /* --- Success Message Overlay --- */
         .success-message-css {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #ffffff;
-            /* Warna background pesan sukses */
-            display: flex;
+            background: white;
+            display: none;
+            /* Default hidden */
             align-items: center;
             justify-content: center;
             z-index: 10;
-            opacity: 0;
-            /* Tersembunyi */
-            pointer-events: none;
-            transition: all 0.4s ease-in-out;
             padding: 20px;
         }
 
-        /* Logic Utama: Saat URL mengandung #success */
+        /* Logika CSS saja untuk simulasi kirim pesan via anchor #success */
         #success:target .success-message-css {
-            opacity: 1;
-            pointer-events: auto;
+            display: flex;
         }
 
-        /* Opsional: Memberi efek blur/transparan pada form di belakangnya */
         #success:target .form-saran-container,
-        #success:target h3,
-        #success:target p.text-muted {
-            opacity: 0.1;
-            filter: blur(4px);
+        #success:target .contact-card h3,
+        #success:target .contact-card p {
+            display: none;
         }
 
-        /* Efek animasi membesar pada ikon ceklis */
-        #success:target .success-message-css i {
-            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* --- Background Blobs (Like About Page) --- */
+        .custom-cta-section {
+            position: relative;
+            padding: 120px 0;
+            /* Menggunakan gambar Anda */
+            background: url('{{ asset('assets/images/about/desa (1).jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: scroll;
+            /* Gambar ikut bergerak saat scroll */
+            border-radius: 60px 60px 0 0;
+            margin-top: -50px;
+            overflow: hidden;
         }
 
-        @keyframes bounceIn {
-            0% {
-                transform: scale(0.3);
-                opacity: 0;
+        /* Overlay agar teks terbaca jelas */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .fw-black {
+            font-weight: 900 !important;
+            letter-spacing: -1px;
+        }
+
+        .text-highlight {
+            color: #FF6B81;
+        }
+
+        .text-white-opacity {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-size: 1.15rem;
+            line-height: 1.8;
+        }
+
+        .cta-badge {
+            background: rgba(255, 107, 129, 0.2);
+            border: 1px solid #FF6B81;
+            color: #FF6B81;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-cta-pink {
+            background-color: #FF6B81;
+            color: white;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-cta-pink:hover {
+            background-color: white;
+            color: #FF6B81;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 107, 129, 0.3);
+        }
+
+        /* Responsif untuk HP */
+        @media (max-width: 768px) {
+            .custom-cta-section {
+                padding: 80px 0;
+                border-radius: 40px 40px 0 0;
             }
 
-            50% {
-                transform: scale(1.1);
-            }
-
-            70% {
-                transform: scale(0.9);
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
+            .display-4 {
+                font-size: 2.2rem;
             }
         }
     </style>
@@ -259,31 +344,38 @@
         style="border-radius: 60px 60px 0 0; margin-top: -50px; position: relative;">
         <div class="container">
             <div class="row g-4">
+                {{-- Warga Terdaftar --}}
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay=".2s">
                     <div class="stat-card card-blue text-center">
-                        <i class="lni lni-users fs-1 text-primary mb-3"></i>
-                        <h2 class="fw-bold">1.250+</h2>
+                        <i class="lni lni-users fs-1 mb-3"></i>
+                        <h2 class="fw-bold text-white">1.250+</h2>
                         <p class="mb-0">Warga Terdaftar</p>
                     </div>
                 </div>
+
+                {{-- Program Aktif --}}
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay=".4s">
                     <div class="stat-card card-green text-center">
-                        <i class="lni lni-checkmark-circle fs-1 text-success mb-3"></i>
-                        <h2 class="fw-bold">12</h2>
+                        <i class="lni lni-layers fs-1 mb-3"></i>
+                        <h2 class="fw-bold text-white">12</h2>
                         <p class="mb-0">Program Aktif</p>
                     </div>
                 </div>
+
+                {{-- Anggaran --}}
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay=".6s">
                     <div class="stat-card card-yellow text-center">
-                        <i class="lni lni-coin fs-1 text-warning mb-3"></i>
-                        <h2 class="fw-bold">4.5M</h2>
+                        <i class="lni lni-coin fs-1 mb-3"></i>
+                        <h2 class="fw-bold text-white">1.2 M</h2>
                         <p class="mb-0">Anggaran Tersalurkan</p>
                     </div>
                 </div>
+
+                {{-- Tepat Sasaran --}}
                 <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay=".8s">
                     <div class="stat-card card-pink text-center">
-                        <i class="lni lni-map-marker fs-1 text-danger mb-3"></i>
-                        <h2 class="fw-bold">100%</h2>
+                        <i class="lni lni-target fs-1 mb-3"></i>
+                        <h2 class="fw-bold text-white">100%</h2>
                         <p class="mb-0">Tepat Sasaran</p>
                     </div>
                 </div>
@@ -292,7 +384,7 @@
     </section>
 
     {{-- Alur Bantuan Section (Solid Background) --}}
-    <section class="section bg-light">
+    <section class="section" style="background: rgb(255, 226, 226);">
         <div class="container">
             <div class="section-title text-center mb-5">
                 <h3 class="wow zoomIn" style="color: #ff5876;">Bagaimana Cara Kerjanya?</h3>
@@ -426,16 +518,34 @@
             </div>
         </div>
     </section>
+
     {{-- Informasi Tambahan --}}
-    <section class="section bg-light">
-        <div class="container text-center">
+    {{-- Informasi Tambahan dengan Background Gambar --}}
+    <section class="section custom-cta-section">
+        <div class="overlay"></div> {{-- Lapisan pelindung teks --}}
+        <div class="container content-wrapper text-center">
             <div class="row justify-content-center">
                 <div class="col-lg-8 wow zoomIn">
-                    <img src="{{ asset('assets/images/about/about-img.png') }}" class="img-fluid rounded-4 mb-4"
-                        style="max-width: 300px;" alt="Tentang Kami">
-                    <h2 class="fw-bold">Bersama Membangun Desa</h2>
-                    <p class="text-muted">Sistem ini dikelola secara transparan oleh Pemerintah Desa untuk
-                        memastikan kesejahteraan seluruh warga.</p>
+                    {{-- Badge --}}
+                    <span class="badge px-4 py-2 rounded-pill mb-3 cta-badge">
+                        Visi & Misi Desa
+                    </span>
+
+                    {{-- Judul dengan penekanan --}}
+                    <h1 class="display-4 fw-black text-white mb-4">
+                        BERSAMA <span class="text-highlight">MEMBANGUN</span> DESA
+                    </h1>
+
+                    {{-- Deskripsi --}}
+                    <p class="lead text-white-opacity mb-5">
+                        Sistem ini dikelola secara transparan oleh Pemerintah Desa untuk
+                        memastikan kesejahteraan seluruh warga melalui tata kelola digital yang modern.
+                    </p>
+
+                    {{-- Tombol --}}
+                    <a href="#contact" class="btn btn-cta-pink px-5 py-3 rounded-pill fw-bold shadow-lg">
+                        Hubungi Kami <i class="lni lni-arrow-right ms-2"></i>
+                    </a>
                 </div>
             </div>
         </div>

@@ -18,33 +18,51 @@
                 </div>
             </div>
 
-            {{-- TOOLBAR: SEARCH & ADD BUTTON --}}
+            {{-- TOOLBAR: SEARCH, FILTER & ADD BUTTON --}}
             <div class="row mb-4 wow fadeInUp" data-wow-delay=".7s">
                 <div class="col-lg-12">
                     <div class="action-bar-container">
-                        {{-- FORM SEARCH --}}
-                        <form action="{{ route('riwayat.index') }}" method="GET" class="flex-grow-1">
-                            <div class="search-combined-group shadow-sm">
-                                <input type="text" name="q" class="form-control shadow-none"
-                                    placeholder="Cari Nama Penerima atau Program..." value="{{ request('q') }}">
-                                <button type="submit" class="btn btn-inner-search">
-                                    <i class="fas fa-search"></i>
-                                </button>
+                        <form action="{{ route('riwayat.index') }}" method="GET" class="w-100">
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+
+                                {{-- FILTER TAHAP --}}
+                                <div class="filter-wrapper">
+                                    <select name="tahap" class="form-select custom-filter-select"
+                                        onchange="this.form.submit()">
+                                        <option value="">Semua Tahap</option>
+                                        @for ($i = 1; $i <= 4; $i++)
+                                            <option value="{{ $i }}"
+                                                {{ request('tahap') == $i ? 'selected' : '' }}>
+                                                Tahap {{ $i }}
+                                            </option>
+                                        @endfor
+                                    </select>
+                                </div>
+
+                                {{-- SEARCH BAR --}}
+                                <div class="search-combined-group shadow-sm flex-grow-1">
+                                    <input type="text" name="q" class="form-control shadow-none"
+                                        placeholder="Cari Penerima..." value="{{ request('q') }}">
+                                    <button type="submit" class="btn btn-inner-search">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+
+                                {{-- TOMBOL TAMBAH --}}
+                                <a class="btn-add-warga shadow-sm" href="{{ route('riwayat.create') }}">
+                                    <i class="fas fa-plus-circle me-2"></i> Catat
+                                </a>
+
+                                {{-- RESET BUTTON --}}
+                                @if (request('q') || request('program_id') || request('tahap'))
+                                    <a href="{{ route('riwayat.index') }}"
+                                        class="btn btn-light border d-flex align-items-center justify-content-center shadow-sm reset-btn"
+                                        title="Reset Filter">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </a>
+                                @endif
                             </div>
                         </form>
-
-                        {{-- TOMBOL TAMBAH --}}
-                        <a class="btn-add-warga shadow-sm" href="{{ route('riwayat.create') }}">
-                            <i class="fas fa-plus-circle me-2"></i> Catat Penyaluran
-                        </a>
-
-                        @if (request('q'))
-                            <a href="{{ route('riwayat.index') }}"
-                                class="btn btn-light border d-flex align-items-center shadow-sm"
-                                style="height:48px; border-radius:12px;" title="Reset">
-                                <i class="fas fa-sync-alt"></i>
-                            </a>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -59,9 +77,12 @@
 
                             {{-- IMAGE / BUKTI --}}
                             <div class="riwayat-image-wrapper">
-                                @if ($item->file)
+                                {{-- Ambil file pertama dari relasi files --}}
+                                @php $firstFile = $item->files->first(); @endphp
+
+                                @if ($firstFile)
                                     @php
-                                        $extension = pathinfo($item->file, PATHINFO_EXTENSION);
+                                        $extension = pathinfo($firstFile->path, PATHINFO_EXTENSION);
                                         $isImage = in_array(strtolower($extension), [
                                             'jpg',
                                             'jpeg',
@@ -69,14 +90,23 @@
                                             'gif',
                                             'webp',
                                         ]);
+                                        $isPdf = strtolower($extension) === 'pdf';
                                     @endphp
+
                                     @if ($isImage)
-                                        <img src="{{ asset('storage/' . $item->file) }}" alt="Bukti Penyaluran">
-                                    @else
+                                        <img src="{{ asset('storage/' . $firstFile->path) }}" alt="Bukti Penyaluran">
+                                    @elseif ($isPdf)
                                         <div class="text-center">
-                                            <i class="fas fa-file-alt fa-3x text-muted opacity-25"></i>
-                                            <p class="mb-0 text-muted mt-2" style="font-size: 0.7rem;">File Dokumen</p>
+                                            <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                            <p class="mb-0 text-muted mt-2" style="font-size: 0.75rem;">Dokumen PDF</p>
                                         </div>
+                                    @endif
+
+                                    {{-- Badge jumlah file jika lebih dari satu --}}
+                                    @if ($item->files->count() > 1)
+                                        <span class="badge bg-dark position-absolute top-0 end-0 m-2 opacity-75">
+                                            +{{ $item->files->count() - 1 }} Foto
+                                        </span>
                                     @endif
                                 @else
                                     <div class="text-center">
@@ -85,7 +115,6 @@
                                     </div>
                                 @endif
                             </div>
-
                             <div class="card-body d-flex flex-column p-4">
                                 {{-- INFO ATAS --}}
                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -93,13 +122,15 @@
                                     <small class="text-muted"><i class="far fa-calendar-alt"></i>
                                         {{ date('d/m/Y', strtotime($item->tanggal)) }}</small>
                                 </div>
-
                                 <h5 class="fw-bold text-dark mb-1 text-truncate"
                                     title="{{ $item->program->nama_program ?? 'Program' }}">
                                     {{ $item->program->nama_program ?? 'Program Bantuan' }}
                                 </h5>
+
                                 <p class="text-primary mb-3" style="font-size: 0.85rem;">
-                                    <i class="fas fa-user-circle me-1"></i> {{ $item->penerima->nama_lengkap ?? 'N/A' }}
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    {{-- Sesuaikan: apakah di model Warga kolomnya 'nama' atau 'nama_lengkap' --}}
+                                    {{ $item->penerima->warga->nama ?? ($item->penerima->nama_lengkap ?? 'Nama Tidak Diketahui') }}
                                 </p>
 
                                 <hr class="opacity-50 mt-0">

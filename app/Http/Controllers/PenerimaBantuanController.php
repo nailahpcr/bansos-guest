@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PenerimaBantuan;
 use App\Models\Warga;
-use App\Models\ProgramBantuan; 
+use App\Models\ProgramBantuan;
 
 class PenerimaBantuanController extends Controller
 {
@@ -16,15 +16,15 @@ class PenerimaBantuanController extends Controller
     {
         // 1. INI BARIS PENTING: Definisikan $query di paling awal
         // Kita siapkan query dasar dengan relasi ke warga dan program
-        $query = PenerimaBantuan::with(['warga', 'program']); 
+        $query = PenerimaBantuan::with(['warga', 'program']);
 
         // 2. Logika Search (Opsional, hanya jalan jika ada input 'cari')
         if ($request->has('cari') && $request->cari != null) {
             $keyword = $request->cari;
-            
-            $query->whereHas('warga', function($q) use ($keyword) {
+
+            $query->whereHas('warga', function ($q) use ($keyword) {
                 $q->where('nama', 'like', "%{$keyword}%");
-            })->orWhereHas('program', function($q) use ($keyword) {
+            })->orWhereHas('program', function ($q) use ($keyword) {
                 $q->where('nama_program', 'like', "%{$keyword}%");
             });
         }
@@ -42,8 +42,8 @@ class PenerimaBantuanController extends Controller
      */
     public function create()
     {
-        $warga = Warga::all(); 
-        $program = ProgramBantuan::all(); 
+        $warga = Warga::all();
+        $program = ProgramBantuan::all();
         return view('pages.penerima.create', compact('warga', 'program'));
     }
 
@@ -97,5 +97,13 @@ class PenerimaBantuanController extends Controller
         $item->delete();
 
         return redirect()->route('penerima.index')->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function show($id)
+    {
+        // Contoh logika untuk mengambil data
+        $penerima = \App\Models\PenerimaBantuan::findOrFail($id);
+
+        return view('pages.penerima.show', compact('penerima'));
     }
 }

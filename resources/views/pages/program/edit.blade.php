@@ -189,7 +189,7 @@
 
                                     {{-- Tampilkan File yang Sudah Ada --}}
                                     @if (!empty($program->file))
-                                        <div class="mb-3">
+                                        <div id="file-container-{{ $program->program_id }}" class="mb-3">
                                             <small class="text-muted d-block mb-2 fw-bold">Berkas Saat Ini:</small>
                                             <div class="existing-file-item shadow-sm">
                                                 <div class="d-flex align-items-center overflow-hidden">
@@ -204,7 +204,7 @@
                                                     </a>
                                                     {{-- Tombol Hapus File --}}
                                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        onclick="if(confirm('Hapus lampiran?')) { document.getElementById('delete-file-form').submit(); }">
+                                                        onclick="confirmDeleteFile()">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -241,11 +241,20 @@
 
     {{-- Form Hapus File Program (Terpisah) --}}
     @if (!empty($program->file))
-        <form id="delete-program-file" action="{{ route('kelola-program.destroy', $program->program_id) }}"
+        <form id="form-delete-file-program" action="{{ route('kelola-program.deleteFile', $program->program_id) }}"
             method="POST" style="display: none;">
             @csrf
-            @method('DELETE')
+            @method('PATCH') {{-- Sesuai dengan permintaan Anda menggunakan PATCH --}}
         </form>
     @endif
+
+    <script>
+        function confirmDeleteFile() {
+            if (confirm('Yakin ingin menghapus lampiran berkas ini?')) {
+                // Pastikan ID ini sama dengan ID form di atas
+                document.getElementById('form-delete-file-program').submit();
+            }
+        }
+    </script>
 
 @endsection

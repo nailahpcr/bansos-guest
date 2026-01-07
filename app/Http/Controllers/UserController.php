@@ -21,10 +21,10 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
-        if ($request->has('cari') && $request->cari != '') {
+        if ($request->has('search') && $request->search != '') {
             $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->cari . '%')
-                ->orWhere('email', 'like', '%' . $request->cari . '%');
+                $q->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%');
             });
         } 
         $users = $query->latest()->paginate(9);

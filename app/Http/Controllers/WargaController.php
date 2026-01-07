@@ -8,17 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class WargaController extends Controller
 {
-    public function dashboard()
-    {
-        $warga = Auth::user();
-
-        $programDiajukan = $warga->programBantuan()
-                                ->orderBy('pivot_tanggal_pengajuan', 'desc')
-                                ->paginate(6);
-
-        return view('pages.warga.index', compact('warga', 'programDiajukan'));
-    }
-
 
     public function index(Request $request) 
     {

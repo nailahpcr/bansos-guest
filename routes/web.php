@@ -21,7 +21,7 @@ Route::get('/', [DashboardController::class, 'indexPublic'])->name('home');
 
 // Halaman Program Publik
 Route::get('/program', [DashboardController::class, 'indexPublic'])->name('program.public.index');
-Route::get('/program/{program}', [DashboardController::class, 'showPublic'])->name('program.public.show');    
+Route::get('/program/{program}', [DashboardController::class, 'showPublic'])->name('program.public.show');
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 
@@ -47,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
     // ========================================================
     Route::group(['middleware' => ['checkrole:admin']], function () {
         Route::get('/admin', [ProgramController::class, 'indexAdmin'])->name('home-admin');
-        
+
         Route::prefix('kelola-program')->name('kelola-program.')->group(function () {
             Route::get('/', [ProgramController::class, 'indexAdmin'])->name('index');
             Route::get('/create', [ProgramController::class, 'create'])->name('create');
@@ -74,11 +74,15 @@ Route::middleware(['auth'])->group(function () {
 
         Route::delete('/pendaftar/files/{file}', [PendaftarController::class, 'destroyFile'])->name('pendaftar.files.destroy');
         Route::delete('/pendaftar/file/{id}', [PendaftarController::class, 'destroyFile'])->name('pendaftar.files.destroy');
-        Route::delete('/verifikasi/file/{id}', [VerifikasiController::class, 'destroyFile'])->name('verifikasi.files.destroy');    
-        Route::delete('kelola-program/{id}/delete-file', [ProgramController::class, 'deleteFile'])->name('kelola-program.delete-file');
+        Route::delete('/verifikasi/file/{id}', [VerifikasiController::class, 'destroyFile'])->name('verifikasi.files.destroy');
+        Route::delete('/riwayat/files/{id}', [RiwayatPenyaluranController::class, 'destroyFile'])
+            ->name('riwayat.files.destroy');
+        Route::patch('/kelola-program/{id}/delete-file', [ProgramController::class, 'deleteFile'])
+            ->name('kelola-program.deleteFile');
     }); // <--- FIX: Kurung penutup grup admin
 
     // Route Resource Umum (Bisa diakses Admin & Warga asal Login)
+    Route::resource('pendaftar', PendaftarController::class);
     Route::resource('verifikasi', VerifikasiController::class);
     Route::resource('penerima', PenerimaBantuanController::class);
     Route::resource('riwayat', RiwayatPenyaluranController::class);
@@ -95,5 +99,5 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{program}/batalkan', [ProgramController::class, 'batalkanProgram'])->name('batalkan');
         });
     }); // <--- FIX: Kurung penutup grup warga harus di sini
-    
+
 }); // <--- FIX: Kurung penutup checkislogin

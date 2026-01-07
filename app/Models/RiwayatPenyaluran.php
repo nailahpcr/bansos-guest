@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RiwayatPenyaluran extends Model
 {
@@ -11,15 +12,15 @@ class RiwayatPenyaluran extends Model
 
     protected $table = 'riwayat_penyaluran_bantuans';
     protected $primaryKey = 'penyaluran_id';
-    
+
     protected $fillable = [
         'program_id',
         'penerima_id',
         'tahap_ke',
-        'tanggal_penyaluran',
         'tanggal',
         'nilai',
         'file',
+        'foto_penyerahan', // Tambahkan ini sesuai gambar database Anda
     ];
 
     public function program()
@@ -31,9 +32,9 @@ class RiwayatPenyaluran extends Model
     {
         return $this->belongsTo(PenerimaBantuan::class, 'penerima_id', 'penerima_id');
     }
-    public function pendaftar()
-{
-    // Pastikan pendaftar_id adalah foreign key di tabel riwayat_penyalurans
-    return $this->belongsTo(PendaftarBantuan::class, 'pendaftar_id');
-}
+    
+    public function files()
+    {
+        return $this->hasMany(RiwayatFile::class, 'riwayat_id');
+    }
 }

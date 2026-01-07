@@ -23,13 +23,13 @@
                                 <h6 class="text-white mb-2 fw-bold">Menu</h6>
                                 <ul class="list-unstyled small">
                                     <li class="mb-1"><a href="#"
-                                            class="text-white-50 text-decoration-none hover-white">Beranda</a></li>
+                                            class="text-white-50 small mb-0 hover-pink fs-5">Beranda</a></li>
                                     <li class="mb-1"><a href="#"
-                                            class="text-white-50 text-decoration-none hover-white">Data Master</a></li>
+                                            class="text-white-50 small mb-0 hover-pink fs-5">Data Master</a></li>
                                     <li class="mb-1"><a href="#"
-                                            class="text-white-50 text-decoration-none hover-white">Penyaluran</a></li>
+                                            class="text-white-50 small mb-0 hover-pink fs-5">Penyaluran</a></li>
                                     <li><a href="{{ route('about') }}"
-                                            class="text-white-50 text-decoration-none hover-white">Tentang Kami</a></li>
+                                            class="text-white-50 small mb-0 hover-pink fs-5">Tentang Kami</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -39,12 +39,12 @@
                                 <ul class="list-unstyled text-white-50 small">
                                     <li class="d-flex mb-1">
                                         <i class="lni lni-phone me-2 mt-1"></i>
-                                        <span>+62 812-3456</span>
+                                        <span>+62 812-3456-7890</span>
                                     </li>
                                     <li class="d-flex">
                                         <i class="lni lni-envelope me-2 mt-1"></i>
-                                        <a href="mailto:SistemBansos@mail.com"
-                                            class="text-white-50 text-decoration-none">SistemBansos@mail.com</a>
+                                        <a href="mailto:halo@sibansos.desa.id"
+                                            class="text-white-50 text-decoration-none">halo@sibansos.desa.id</a>
                                     </li>
                                 </ul>
                             </div>
@@ -60,7 +60,7 @@
                             <div class="d-flex align-items-center mb-3">
                                 <img src="{{ asset('assets/images/footer/nnai4.jpg') }}" alt="Foto"
                                     class="rounded-circle me-3 border border-2 border-white shadow-sm"
-                                    style="width: 75px; height: 75px; object-fit: cover;">
+                                    style="width: 100px; height: 100px; object-fit: cover;">
                                 <div>
                                     <h6 class="text-white mb-1 fw-bold" style="letter-spacing: 0.5px;">Nailah Houra
                                         Disanova</h6>
@@ -73,13 +73,13 @@
                                 </div>
                             </div>
                             <div class="dev-social d-flex gap-3 ps-1 mt-2">
-                                <a href="https://github.com/nailahpcr" target="_blank"
+                                <a href="https://github.com/nailahpcr" target="_blank" title="GitHub"
                                     class="text-white-50 hover-pink fs-5"><i class="lni lni-github-original"></i></a>
-                                <a href="https://www.instagram.com/nailahdisanova" target="_blank"
+                                <a href="https://www.instagram.com/nailahdisanova" target="_blank" title="Instagram"
                                     class="text-white-50 hover-pink fs-5"><i class="lni lni-instagram-original"></i></a>
-                                <a href="https://www.linkedin.com/in/nailah-houra-2461853a1" target="_blank"
+                                <a href="https://www.linkedin.com/in/nailah-houra-2461853a1" target="_blank" title="LinkedIn"
                                     class="text-white-50 hover-pink fs-5"><i class="lni lni-linkedin-original"></i></a>
-                                <a href="mailto:nailah24si@mahasiswa.pcr.ac.id" class="text-white-50 hover-pink fs-5"><i
+                                <a href="mailto:nailah24si@mahasiswa.pcr.ac.id" title="Email" class="text-white-50 hover-pink fs-5"><i
                                         class="lni lni-envelope"></i></a>
                             </div>
                         </div>

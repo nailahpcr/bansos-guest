@@ -55,22 +55,27 @@
 
         /* Hero Section */
         .hero-about {
-            background: linear-gradient(135deg, #fff5f6 0%, #ffffff 100%);
-            border-radius: 0 0 80px 80px;
-            padding: 100px 0;
             position: relative;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(255, 107, 129, 0.1);
+            min-height: 500px;
+            display: flex;
+            align-items: center;
         }
 
-        .hero-bg-icon {
-            position: absolute;
-            font-size: 18rem;
-            color: rgba(255, 107, 129, 0.03);
-            bottom: -60px;
-            right: -40px;
-            transform: rotate(-15deg);
-            z-index: 0;
+        /* Memastikan deskripsi tetap putih transparan */
+        .hero-about .text-white-50 {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        /* Penyesuaian Responsif */
+        @media (max-width: 768px) {
+            .hero-about {
+                padding: 80px 0 !important;
+                border-radius: 0 0 40px 40px !important;
+            }
+
+            .display-4 {
+                font-size: 2.2rem;
+            }
         }
 
         /* Card Custom Styling */
@@ -157,18 +162,35 @@
         <div class="blob-bg blob-2"></div>
 
         {{-- HERO SECTION --}}
-        <section class="hero-about text-center">
-            <i class="fas fa-hand-holding-heart hero-bg-icon"></i>
-            <div class="container" style="position: relative; z-index: 1;">
+        {{-- HERO SECTION DENGAN BACKGROUND GAMBAR --}}
+        <section class="hero-about text-center position-relative overflow-hidden"
+            style="background: url('{{ asset('assets/images/about/desa (1).jpg') }}'); 
+           background-size: cover; 
+           background-position: center; 
+           padding: 150px 0; 
+           border-radius: 0 0 80px 80px;">
+
+            {{-- Overlay Gelap agar teks terbaca jelas --}}
+            <div class="hero-overlay"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+               background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%); 
+               z-index: 1;">
+            </div>
+
+            <div class="container" style="position: relative; z-index: 2;">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <span class="badge px-4 py-2 rounded-pill mb-3 wow fadeInDown"
-                            style="background-color: #FF6B81; font-weight: 600;">SI-BANSOS DESA</span>
-                        <h1 class="display-4 fw-bold mb-4 wow fadeInUp">
+                            style="background-color: #FF6B81; font-weight: 600;">
+                            SI-BANSOS DESA
+                        </span>
+
+                        <h1 class="display-4 fw-bold mb-4 wow fadeInUp text-white">
                             Membangun Desa yang <br>
                             <span style="color: #FF6B81;">Lebih Terbuka & Adil</span>
                         </h1>
-                        <p class="lead text-muted line-height-lg wow fadeInUp" data-wow-delay="0.2s">
+
+                        <p class="lead text-white-50 line-height-lg wow fadeInUp" data-wow-delay="0.2s">
                             Kami hadir sebagai jembatan digital untuk memastikan setiap bantuan, program, dan pelatihan
                             sampai ke tangan warga yang tepat secara transparan.
                         </p>
@@ -228,7 +250,7 @@
                 <div class="col-lg-5 mb-5 mb-lg-0 wow fadeInRight">
                     <div class="img-frame">
                         {{-- Ganti src dengan foto asli Kepala Desa jika sudah ada --}}
-                        <img src="https://ui-avatars.com/api/?name=Ahmad+Subarjo&background=FF6B81&color=fff&size=500"
+                        <img src="{{ asset('assets/images/about/orank1.jpg') }}"
                             class="img-fluid rounded-4 shadow-lg position-relative"
                             style="z-index: 1; width: 100%; height: 450px; object-fit: cover;" alt="Kepala Desa">
                     </div>
@@ -339,6 +361,65 @@
                             style="background-color: #ffffff; color: #FF6B81; border: none; padding-top: 14px; padding-bottom: 14px; transition: 0.3s;">
                             Mulai Sekarang <i class="fas fa-arrow-right ms-2"></i>
                         </a>
+                    </div>
+                </div>
+            </section>
+
+            {{-- SECTION KONTAK DETAIL --}}
+            <section class="container py-5 mb-5">
+                <div class="row g-4">
+                    {{-- Info Kontak Kolom Kiri --}}
+                    <div class="col-lg-4 wow fadeInLeft">
+                        <div class="p-4 h-100 rounded-5 shadow-sm position-relative overflow-hidden"
+                            style="background-color: #ffffff; border: 1px solid rgba(0,0,0,0.05);">
+                            <div class="position-relative z-index-1">
+                                <h4 class="fw-bold mb-4" style="color: #2d3436;">Hubungi Kami</h4>
+                                <p class="text-muted small mb-4">Punya pertanyaan seputar bantuan sosial? Tim kami siap
+                                    melayani Anda pada jam kerja.</p>
+
+                                <div class="contact-item d-flex align-items-center mb-4">
+                                    <div class="contact-icon-box me-3">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Lokasi Kantor</small>
+                                        <span class="fw-600">Jl. Raya Makmur No. 12, Desa Sejahtera</span>
+                                    </div>
+                                </div>
+
+                                <div class="contact-item d-flex align-items-center mb-4">
+                                    <div class="contact-icon-box me-3">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Telepon/WA</small>
+                                        <span class="fw-600">+62 812-3456-7890</span>
+                                    </div>
+                                </div>
+
+                                <div class="contact-item d-flex align-items-center">
+                                    <div class="contact-icon-box me-3">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Email Resmi</small>
+                                        <span class="fw-600">halo@sibansos.desa.id</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mini-blob"></div>
+                        </div>
+                    </div>
+
+                    {{-- Google Maps Kolom Kanan --}}
+                    <div class="col-lg-8 wow fadeInRight">
+                        <div class="rounded-5 shadow-sm overflow-hidden border border-light bg-white p-2 h-100">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127669.04874052957!2d101.36208316223204!3d0.5143372074360668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac6050630739%3A0x26ca33827ca3e7d4!2sPoliteknik%20Caltex%20Riau!5e0!3m2!1sid!2sid!4v1716123456789!5m2!1sid!2sid"
+                                width="100%" height="380" style="border:0; border-radius: 20px;" allowfullscreen=""
+                                loading="lazy">
+                            </iframe>
+                        </div>
                     </div>
                 </div>
             </section>
