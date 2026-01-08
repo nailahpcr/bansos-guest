@@ -24,8 +24,10 @@ Route::get('/program', [DashboardController::class, 'indexPublic'])->name('progr
 Route::get('/program/{program}', [DashboardController::class, 'showPublic'])->name('program.public.show');
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/about', function () {
+    return view('pages.about'); // Pastikan Anda punya file resources/views/about.blade.php
+})->name('about');
 
-// Route Auth Umum
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);

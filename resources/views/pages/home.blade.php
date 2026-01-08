@@ -96,21 +96,30 @@
         }
 
         /* Opsional: Menambahkan pola lingkaran halus di background kartu */
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.1);
+        /* Mengubah indikator menjadi bulatan kecil */
+        .carousel-indicators [button] {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            z-index: -1;
+            /* Membuat jadi bulat sempurna */
+            background-color: #ff5876;
+            /* Warna pink tema Anda */
+            border: none;
+            opacity: 0.5;
+            transition: all 0.3s ease;
         }
 
-        .stat-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-pink);
+        /* Warna saat indikator aktif */
+        .carousel-indicators .active {
+            opacity: 1;
+            width: 25px;
+            /* Sedikit memanjang saat aktif agar modern */
+            border-radius: 10px;
+        }
+
+        /* Memposisikan agar tidak terlalu nempel ke bawah gambar */
+        .carousel-indicators {
+            bottom: 20px;
         }
 
         /* --- Step/Alur Section (Adopted from About Card) --- */
@@ -163,11 +172,41 @@
 
         /* --- Kotak Saran (Contact Card) --- */
         .contact-card {
-            background: white;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+            border-radius: 20px;
             padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 107, 129, 0.1);
+            /* Tambah padding agar ruang lebih luas */
+            min-height: 450px;
+            /* Kunci perbaikan: Beri tinggi minimal agar tidak terpotong */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .success-message-css {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            display: none;
+            /* Default sembunyi */
+            flex-direction: column;
+            justify-content: center;
+            /* Pusatkan secara vertikal */
+            align-items: center;
+            /* Pusatkan secara horizontal */
+            padding: 30px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Munculkan saat URL memiliki ID #success */
+        #success:target .success-message-css {
+            display: flex;
         }
 
         .form-control-custom {
@@ -325,13 +364,29 @@
 
                 <div class="col-lg-7 col-md-12">
                     <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
+                                aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"
+                                aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"
+                                aria-label="Slide 3"></button>
+                        </div>
+
                         <div class="carousel-inner rounded-4 shadow-lg">
-                            <div class="carousel-item active"><img src="{{ asset('assets/images/about/about1.jpg') }}"
-                                    class="d-block w-100 hero-slide-img" alt="Slide 1"></div>
-                            <div class="carousel-item"><img src="{{ asset('assets/images/about/bantuan1.jpg') }}"
-                                    class="d-block w-100 hero-slide-img" alt="Slide 2"></div>
-                            <div class="carousel-item"><img src="{{ asset('assets/images/about/bantuan2.jpg') }}"
-                                    class="d-block w-100 hero-slide-img" alt="Slide 3"></div>
+                            <div class="carousel-item active">
+                                <img src="{{ asset('assets/images/about/about1.jpg') }}"
+                                    class="d-block w-100 hero-slide-img" alt="Slide 1">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{{ asset('assets/images/about/bantuan2.jpg') }}"
+                                    class="d-block w-100 hero-slide-img" alt="Slide 2">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="{{ asset('assets/images/about/bantuan1.jpg') }}"
+                                    class="d-block w-100 hero-slide-img" alt="Slide 3">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -483,7 +538,7 @@
                 </div>
 
                 {{-- KOTAK SARAN --}}
-                <div class="col-lg-6 wow fadeInRight">
+                <div class="col-lg-6 wow fadeInRight" id="success">
                     <div class="contact-card position-relative overflow-hidden">
                         <div class="success-message-css">
                             <div class="text-center">
@@ -519,7 +574,6 @@
         </div>
     </section>
 
-    {{-- Informasi Tambahan --}}
     {{-- Informasi Tambahan dengan Background Gambar --}}
     <section class="section custom-cta-section">
         <div class="overlay"></div> {{-- Lapisan pelindung teks --}}
@@ -543,8 +597,8 @@
                     </p>
 
                     {{-- Tombol --}}
-                    <a href="#contact" class="btn btn-cta-pink px-5 py-3 rounded-pill fw-bold shadow-lg">
-                        Hubungi Kami <i class="lni lni-arrow-right ms-2"></i>
+                    <a href="{{ route('about') }}" class="btn btn-cta-pink px-5 py-3 rounded-pill fw-bold shadow-lg">
+                        Tentang Kami <i class="lni lni-arrow-right ms-2"></i>
                     </a>
                 </div>
             </div>

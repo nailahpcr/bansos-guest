@@ -162,7 +162,6 @@
         <div class="blob-bg blob-2"></div>
 
         {{-- HERO SECTION --}}
-        {{-- HERO SECTION DENGAN BACKGROUND GAMBAR --}}
         <section class="hero-about text-center position-relative overflow-hidden"
             style="background: url('{{ asset('assets/images/about/desa (1).jpg') }}'); 
            background-size: cover; 

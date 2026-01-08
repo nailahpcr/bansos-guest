@@ -353,7 +353,7 @@
                     <div class="col-md-6 col-lg-4 wow fadeInUp">
                         <div class="card program-card border-0 shadow-sm h-100">
                             {{-- Image Logic --}}
-                            <div class="program-image-wrapper bg-light">
+                            <div class="program-image-wrapper bg-light">.
                                 @php
                                     $filePath = $program->file;
                                     $isImage =
