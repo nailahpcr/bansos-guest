@@ -20,15 +20,17 @@ class RiwayatPenyaluranBantuanSeeder extends Seeder
         }
 
         foreach ($penerimas as $penerima) {
-            DB::table('riwayat_penyaluran_bantuans')->insert([
-                'program_id'  => $penerima->program_id,
-                'penerima_id' => $penerima->penerima_id,
-                'tahap_ke'    => $faker->numberBetween(1, 4),
-                'tanggal'     => $faker->dateTimeBetween('-6 months', 'now'),
-                'nilai'       => $faker->randomElement([300000, 600000, 1000000]),
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ]);
+            for ($i = 1; $i <= 3; $i++) {
+                DB::table('riwayat_penyaluran_bantuans')->insert([
+                    'program_id'  => $penerima->program_id,
+                    'penerima_id' => $penerima->penerima_id,
+                    'tahap_ke'    => $i,
+                    'tanggal'     => $faker->dateTimeBetween('-6 months', 'now'),
+                    'nilai'       => $faker->randomElement([300000, 600000, 1000000]),
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
         }
     }
 }

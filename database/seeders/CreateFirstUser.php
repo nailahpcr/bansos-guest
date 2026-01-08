@@ -2,23 +2,19 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class CreateFirstUser extends Seeder
 {
-    
     public function run(): void
     {
-     // 1. Membuat Admin Pertama
+        // 1. Membuat Admin Utama
         DB::table('users')->updateOrInsert(
-            ['email' => 'admin@example.com'], // Kunci pencarian berdasarkan email
+            ['email' => 'admin@example.com'], 
             [
-                'name'       => 'Admin',
+                'name'       => 'Admin Sistem',
                 'password'   => Hash::make('admin123'),
                 'role'       => 'admin',
                 'created_at' => now(),
@@ -26,14 +22,15 @@ class CreateFirstUser extends Seeder
             ]
         );
 
+        // 2. Mengambil data dari tabel warga
         $wargas = DB::table('warga')->get();
 
         foreach ($wargas as $warga) {
             DB::table('users')->updateOrInsert(
-                ['email' => $warga->email],
+                ['email' => $warga->email], 
                 [
                     'name'              => $warga->nama,
-                    'password'          => $warga->password, // Password sama dengan di tabel warga
+                    'password'          => $warga->password, 
                     'role'              => 'user',
                     'email_verified_at' => now(),
                     'created_at'        => now(),
